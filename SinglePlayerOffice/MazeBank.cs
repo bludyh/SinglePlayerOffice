@@ -76,39 +76,40 @@ namespace SinglePlayerOffice {
                 heliPadSpawn = new Vector3(-65.938f, -822.145f, 321.285f);
                 heliPadHeading = 253.635f;
                 exteriors = new List<string>() { "dt1_11_dt1_emissive_dt1_11", "dt1_11_dt1_tower" };
-                officeSofaTrigger = new Vector3(-68.486f, -804.237f, 242.386f);
-                officeSofaHeading = 340f;
-                officeSofaStartPos = new Vector3(-68.700f, -804.797f, 243.386f);
-                officeSofaStartHeading = 160f;
+                officeSofaPos = new Vector3(-68.486f, -804.237f, 242.386f);
+                officeSofaRot = new Vector3(0f, 0f, 340f);
+                //officeSofaStartPos = new Vector3(-68.700f, -804.797f, 243.386f);
+                //officeSofaStartHeading = 160f;
                 officeTVTrigger = new Vector3(-70.083f, -808.826f, 243.801f);
-                officeComputerTrigger = new Vector3(-80.969f, -802.237f, 243.401f);
-                officeComputerHeading = 302.28f;
-                officeLeftSafeTrigger = new Vector3(-83.064f, -802.753f, 243.386f);
-                officeLeftSafeStartPos = new Vector3(-81.764f, -803.244f, 243.386f);
-                officeLeftSafeStartHeading = 70f;
-                officeRightSafeTrigger = new Vector3(-81.779f, -799.318f, 243.386f);
-                officeRightSafeStartPos = new Vector3(-80.329f, -799.799f, 243.386f);
-                officeRightSafeStartHeading = 70f;
+                //officeComputerChairPos = new Vector3(-80.645f, -801.3f, 243.006f);
+                //officeComputerChairRot = new Vector3(0f, 0f, 25f);
+                //officeLeftSafeTrigger = new Vector3(-83.064f, -802.753f, 243.386f);
+                //officeLeftSafeStartPos = new Vector3(-81.764f, -803.244f, 243.386f);
+                //officeLeftSafeStartHeading = 70f;
+                //officeRightSafeTrigger = new Vector3(-81.779f, -799.318f, 243.386f);
+                //officeRightSafeStartPos = new Vector3(-80.329f, -799.799f, 243.386f);
+                //officeRightSafeStartHeading = 70f;
                 officeRadioTrigger = new Vector3(-79.807f, -805.420f, 243.386f);
                 officeRadioHeading = 158.076f;
                 officeBossChairTrigger = new Vector3(-59.807f, -805.983f, 243.386f);
-                officeBossChairHeading = 159.971f;
+                //officeBossChairHeading = 159.971f;
                 officeStaffChairTriggers = new List<Vector3>() {
-                    new Vector3(-58.570f, -808.573f, 243.386f),
+                new Vector3(-58.570f, -808.573f, 243.386f),
                     new Vector3(-59.061f, -809.654f, 243.386f),
                     new Vector3(-59.457f, -810.764f, 243.386f),
                     new Vector3(-62.394f, -807.197f, 243.386f),
                     new Vector3(-62.813f, -808.352f, 243.386f),
                     new Vector3(-63.273f, -809.462f, 243.386f)
-                    
+
+
                 };
                 officeStaffChairHeadings = new List<float>() { 70.543f, 69.427f, 70.151f, 248.893f, 250.610f, 249.552f };
-                officeLaptopChairTriggers = new List<Vector3>() {
-                    new Vector3(-63.980f, -813.590f, 243.386f),
-                    new Vector3(-64.423f, -815.084f, 243.386f),
-                    new Vector3(-64.970f, -816.533f, 243.386f)
-                };
-                officeLaptopChairHeadings = new List<float>() { 69.990f, 70.530f, 70.000f };
+                //officeLaptopChairTriggers = new List<Vector3>() {
+                //    new Vector3(-63.980f, -813.590f, 243.386f),
+                //    new Vector3(-64.423f, -815.084f, 243.386f),
+                //    new Vector3(-64.970f, -816.533f, 243.386f)
+                //};
+                //officeLaptopChairHeadings = new List<float>() { 69.990f, 70.530f, 70.000f };
                 officeWardrobeTrigger = new Vector3(-78.625f, -812.353f, 243.386f);
                 officeWardrobeHeading = 70.638f;
                 officeWardrobeCamPos = new Vector3(-80.053f, -811.888f, 243.386f);

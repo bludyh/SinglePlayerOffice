@@ -52,7 +52,8 @@
     <Compile Include="Arcadius.cs" />
     <Compile Include="Building.cs" />
     <Compile Include="InteractionsController.cs" />
-    <Compile Include="Interior.cs" />
+    <Compile Include="InteractionsThread.cs" />
+    <Compile Include="Floor.cs" />
     <Compile Include="GarageDecorationStyle.cs" />
     <Compile Include="GarageLightingStyle.cs" />
     <Compile Include="GarageNumberingStyle.cs" />

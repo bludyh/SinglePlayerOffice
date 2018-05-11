@@ -5,5 +5,5 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SinglePlayerOffice {
-    enum Interior { None, Entrance, Garage, Office, ModShop, HeliPad}
+    enum Floor { None, Entrance, Garage, Office, ModShop, HeliPad}
 }

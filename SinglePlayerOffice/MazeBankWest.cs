@@ -76,39 +76,39 @@ namespace SinglePlayerOffice {
                 heliPadSpawn = new Vector3(-1368.162f, -471.002f, 84.447f);
                 heliPadHeading = 304.157f;
                 exteriors = new List<string>() { "sm_15_bld2_dtl", "hei_sm_15_bld2", "sm_15_bld2_LOD", "sm_15_bld2_dtl3", "sm_15_bld1_dtl3", "sm_15_bld2_railing", "sm_15_emissive", "sm_15_emissive_LOD" };
-                officeSofaTrigger = new Vector3(-1369.017f, -476.016f, 71.05f);
-                officeSofaHeading = 262f;
-                officeSofaStartPos = new Vector3(-1369.649f, -475.963f, 72.050f);
-                officeSofaStartHeading = 82f;
+                officeSofaPos = new Vector3(-1369.017f, -476.016f, 71.05f);
+                officeSofaRot = new Vector3(0f, 0f, 262f);
+                //officeSofaStartPos = new Vector3(-1369.649f, -475.963f, 72.050f);
+                //officeSofaStartHeading = 82f;
                 officeTVTrigger = new Vector3(-1373.887f, -476.763f, 72.457f);
-                officeComputerTrigger = new Vector3(-1373.164f, -464.091f, 72.057f);
-                officeComputerHeading = 234.271f;
-                officeLeftSafeTrigger = new Vector3(-1374.602f, -462.492f, 72.042f);
-                officeLeftSafeStartPos = new Vector3(-1374.428f, -463.860f, 72.042f);
-                officeLeftSafeStartHeading = 8f;
-                officeRightSafeTrigger = new Vector3(-1371.012f, -461.985f, 72.042f);
-                officeRightSafeStartPos = new Vector3(-1370.773f, -463.448f, 72.042f);
-                officeRightSafeStartHeading = 8f;
+                //officeComputerChairPos = new Vector3(-1372.186f, -463.935f, 71.662f);
+                //officeComputerChairRot = new Vector3(0f, 0f, -37f);
+                //officeLeftSafeTrigger = new Vector3(-1374.602f, -462.492f, 72.042f);
+                //officeLeftSafeStartPos = new Vector3(-1374.428f, -463.860f, 72.042f);
+                //officeLeftSafeStartHeading = 8f;
+                //officeRightSafeTrigger = new Vector3(-1371.012f, -461.985f, 72.042f);
+                //officeRightSafeStartPos = new Vector3(-1370.773f, -463.448f, 72.042f);
+                //officeRightSafeStartHeading = 8f;
                 officeRadioTrigger = new Vector3(-1375.435f, -466.592f, 72.042f);
                 officeRadioHeading = 99.656f;
-                officeBossChairTrigger = new Vector3(-1366.565f, -484.533f, 72.042f);
-                officeBossChairHeading = 98.170f;
-                officeStaffChairTriggers = new List<Vector3>() {
-                    new Vector3(-1368.276f, -486.732f, 72.042f),
-                    new Vector3(-1369.445f, -487.079f, 72.042f),
-                    new Vector3(-1370.602f, -487.322f, 72.042f),
-                    new Vector3(-1368.891f, -482.801f, 72.042f),
-                    new Vector3(-1370.087f, -482.876f, 72.042f),
-                    new Vector3(-1371.214f, -483.069f, 72.042f)
+                //officeBossChairTrigger = new Vector3(-1366.565f, -484.533f, 72.042f);
+                //officeBossChairHeading = 98.170f;
+                //officeStaffChairTriggers = new List<Vector3>() {
+                //    new Vector3(-1368.276f, -486.732f, 72.042f),
+                //    new Vector3(-1369.445f, -487.079f, 72.042f),
+                //    new Vector3(-1370.602f, -487.322f, 72.042f),
+                //    new Vector3(-1368.891f, -482.801f, 72.042f),
+                //    new Vector3(-1370.087f, -482.876f, 72.042f),
+                //    new Vector3(-1371.214f, -483.069f, 72.042f)
                    
-                };
-                officeStaffChairHeadings = new List<float>() { 8.117f, 10.439f, 8.851f, 186.431f, 187.639f, 188.926f };
-                officeLaptopChairTriggers = new List<Vector3>() {
-                    new Vector3(-1375.267f, -484.522f, 72.042f),
-                    new Vector3(-1376.765f, -484.648f, 72.042f),
-                    new Vector3(-1378.255f, -484.893f, 72.042f)
-                };
-                officeLaptopChairHeadings = new List<float>() { 7.009f, 8.154f, 10.243f };
+                //};
+                //officeStaffChairHeadings = new List<float>() { 8.117f, 10.439f, 8.851f, 186.431f, 187.639f, 188.926f };
+                //officeLaptopChairTriggers = new List<Vector3>() {
+                //    new Vector3(-1375.267f, -484.522f, 72.042f),
+                //    new Vector3(-1376.765f, -484.648f, 72.042f),
+                //    new Vector3(-1378.255f, -484.893f, 72.042f)
+                //};
+                //officeLaptopChairHeadings = new List<float>() { 7.009f, 8.154f, 10.243f };
                 officeWardrobeTrigger = new Vector3(-1381.006f, -470.913f, 72.042f);
                 officeWardrobeHeading = 8.162f;
                 officeWardrobeCamPos = new Vector3(-1381.236f, -469.422f, 72.042f);

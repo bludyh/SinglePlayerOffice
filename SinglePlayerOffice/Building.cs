@@ -81,27 +81,27 @@ namespace SinglePlayerOffice {
         private UIMenu purchaseMenu;
         private UIMenu teleportMenu;
         protected List<string> exteriors;
-        protected Vector3 officeSofaTrigger;
-        protected float officeSofaHeading;
-        protected Vector3 officeSofaStartPos;
-        protected float officeSofaStartHeading;
+        protected Vector3 officeSofaPos;
+        protected Vector3 officeSofaRot;
+        //protected Vector3 officeSofaStartPos;
+        //protected float officeSofaStartHeading;
         protected Vector3 officeTVTrigger;
-        protected Vector3 officeComputerTrigger;
-        protected float officeComputerHeading;
-        protected Vector3 officeLeftSafeTrigger;
-        protected Vector3 officeLeftSafeStartPos;
-        protected float officeLeftSafeStartHeading;
-        protected Vector3 officeRightSafeTrigger;
-        protected Vector3 officeRightSafeStartPos;
-        protected float officeRightSafeStartHeading;
+        //protected Vector3 officeComputerChairPos;
+        //protected Vector3 officeComputerChairRot;
+        //protected Vector3 officeLeftSafeTrigger;
+        //protected Vector3 officeLeftSafeStartPos;
+        //protected float officeLeftSafeStartHeading;
+        //protected Vector3 officeRightSafeTrigger;
+        //protected Vector3 officeRightSafeStartPos;
+        //protected float officeRightSafeStartHeading;
         protected Vector3 officeRadioTrigger;
         protected float officeRadioHeading;
         protected Vector3 officeBossChairTrigger;
-        protected float officeBossChairHeading;
+        //protected float officeBossChairHeading;
         protected List<Vector3> officeStaffChairTriggers;
         protected List<float> officeStaffChairHeadings;
-        protected List<Vector3> officeLaptopChairTriggers;
-        protected List<float> officeLaptopChairHeadings;
+        //protected List<Vector3> officeLaptopChairTriggers;
+        //protected List<float> officeLaptopChairHeadings;
         protected Vector3 officeWardrobeTrigger;
         protected float officeWardrobeHeading;
         protected Vector3 officeWardrobeCamPos;
@@ -109,6 +109,8 @@ namespace SinglePlayerOffice {
         protected float officeWardrobeCamFOV;
         protected Vector3 officePaChairPos;
         protected Vector3 officePaChairRot;
+
+        public InteractionsController InteractionsController { get; set; }
 
         protected Building() {
             garageDecorationStyles = new List<GarageDecorationStyle>() {
@@ -230,6 +232,7 @@ namespace SinglePlayerOffice {
                 "swag_silver3"
             };
             extraOfficeDecorsPrice = 0;
+            InteractionsController = new InteractionsController();
         }
 
         protected void CreateBuildingBlip() {
@@ -295,25 +298,25 @@ namespace SinglePlayerOffice {
             return null;
         }
 
-        private Interior GetCurrentInterior() {
+        private Floor GetCurrentFloor() {
             int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
             Vector3 currentPlayerPos = new Vector3(Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
             if (currentPlayerPos.DistanceTo(entranceTrigger) < 10f) {
-                return Interior.Entrance;
+                return Floor.Entrance;
             }
             if (officeInteriorIDs.Contains(currentInteriorID)) {
-                return Interior.Office;
+                return Floor.Office;
             }
             if (currentInteriorID == garageInteriorID) {
-                return Interior.Garage;
+                return Floor.Garage;
             }
             if (currentInteriorID == modShopInteriorID) {
-                return Interior.ModShop;
+                return Floor.ModShop;
             }
             if (currentPlayerPos.DistanceTo(heliPadTrigger) < 10f) {
-                return Interior.HeliPad;
+                return Floor.HeliPad;
             }
-            return Interior.None;
+            return Floor.None;
         }
 
         private int GetToTalPrice() {
@@ -332,32 +335,32 @@ namespace SinglePlayerOffice {
             UIMenuItem goToModShopBtn = new UIMenuItem("Mod Shop");
             UIMenuItem goToHeliPadBtn = new UIMenuItem("Heli Pad");
             UIMenuItem exitBuildingBtn = new UIMenuItem("Exit the building");
-            switch (GetCurrentInterior()) {
-                case Interior.Entrance:
+            switch (GetCurrentFloor()) {
+                case Floor.Entrance:
                     teleportMenu.AddItem(goToOfficeBtn);
                     teleportMenu.AddItem(goToGarageBtn);
                     teleportMenu.AddItem(goToModShopBtn);
                     teleportMenu.AddItem(goToHeliPadBtn);
                     break;
-                case Interior.Office:
+                case Floor.Office:
                     teleportMenu.AddItem(goToGarageBtn);
                     teleportMenu.AddItem(goToModShopBtn);
                     teleportMenu.AddItem(goToHeliPadBtn);
                     teleportMenu.AddItem(exitBuildingBtn);
                     break;
-                case Interior.Garage:
+                case Floor.Garage:
                     teleportMenu.AddItem(goToOfficeBtn);
                     teleportMenu.AddItem(goToModShopBtn);
                     teleportMenu.AddItem(goToHeliPadBtn);
                     teleportMenu.AddItem(exitBuildingBtn);
                     break;
-                case Interior.ModShop:
+                case Floor.ModShop:
                     teleportMenu.AddItem(goToOfficeBtn);
                     teleportMenu.AddItem(goToGarageBtn);
                     teleportMenu.AddItem(goToHeliPadBtn);
                     teleportMenu.AddItem(exitBuildingBtn);
                     break;
-                case Interior.HeliPad:
+                case Floor.HeliPad:
                     teleportMenu.AddItem(goToOfficeBtn);
                     teleportMenu.AddItem(goToGarageBtn);
                     teleportMenu.AddItem(goToModShopBtn);
@@ -896,8 +899,8 @@ namespace SinglePlayerOffice {
         }
 
         public void OnTick() {
-            switch (GetCurrentInterior()) {
-                case Interior.Entrance:
+            switch (GetCurrentFloor()) {
+                case Floor.Entrance:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(entranceTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         if (owner != Owner.None) {
                             if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
@@ -943,111 +946,114 @@ namespace SinglePlayerOffice {
                         }
                     }
                     break;
-                case Interior.Office:
+                case Floor.Office:
                     Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
                     HideBuildingExteriors();
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-                        SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
-                        if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                            Game.Player.Character.Task.StandStill(-1);
-                            UpdateTeleportMenuButtons();
-                            SinglePlayerOffice.IsHudHidden = true;
-                            teleportMenu.Visible = true;
-                        }
-                    }
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeSofaTrigger) < 1.5f && InteractionsController.SofaInteractionStatus == -1) {
-                        SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SofaInteractionHelpText);
-                        if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                            InteractionsController.StartSofaInteraction(officeSofaStartPos, officeSofaStartHeading,officeSofaTrigger, officeSofaHeading);
-                        }
-                    }
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeTVTrigger) < 1.5f && InteractionsController.TVInteractionStatus == -1) {
-                        SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.TVInteractionHelpText);
-                        if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                            InteractionsController.StartTVInteraction();
-                        }
-                    }
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeComputerTrigger) < 1.0f && InteractionsController.ComputerInteractionStatus == -1) {
-                        if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.ComputerInterationHelpText);
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        if (Game.Player.Character.Position.DistanceTo(officeTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                            SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
                             if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartComputerInteraction(officeComputerTrigger, officeComputerHeading);
+                                Game.Player.Character.Task.StandStill(-1);
+                                UpdateTeleportMenuButtons();
+                                SinglePlayerOffice.IsHudHidden = true;
+                                teleportMenu.Visible = true;
                             }
                         }
-                        else {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.ComputerInteractionRejectHelpText);
-                        }
-                    }
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeLeftSafeTrigger) < 1.0f && InteractionsController.LeftSafeInteractionStatus == -1) {
-                        if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.LeftSafeInteractionHelpText);
+                        if (Game.Player.Character.Position.DistanceTo(officeSofaPos) < 1.5f && InteractionsController.SofaInteractionStatus == -1) {
+                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SofaInteractionHelpText);
                             if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartLeftSafeInteraction(officeLeftSafeStartPos, officeLeftSafeStartHeading);
+                                InteractionsController.StartSofaInteraction(officeSofaPos, officeSofaRot);
                             }
                         }
-                        else {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SafeInteractionRejectHelpText);
-                        }
-                    }
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeRightSafeTrigger) < 1.0f && InteractionsController.RightSafeInteractionStatus == -1) {
-                        if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.RightSafeInteractionHelpText);
-                            if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartRightSafeInteraction(officeRightSafeStartPos, officeRightSafeStartHeading);
+                        if (Game.Player.Character.Position.DistanceTo(officeTVTrigger) < 1.5f && InteractionsController.TVInteractionStatus == -1) {
+                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.TVInteractionHelpText);
+                            if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                InteractionsController.StartTVInteraction();
                             }
                         }
-                        else {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SafeInteractionRejectHelpText);
-                        }
-                    }
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeRadioTrigger) < 1.0f && InteractionsController.RadioInteractionStatus == -1) {
-                        SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.RadioInteractionHelpText);
-                        if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                            InteractionsController.StartRadioInteraction(officeRadioTrigger, officeRadioHeading);
-                        }
-                    }
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeBossChairTrigger) < 1.0f && InteractionsController.BossChairInteractionStatus == -1) {
-                        if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.BossChairInteractionHelpText);
+                        if (Game.Player.Character.Position.DistanceTo(officeRadioTrigger) < 1.0f && InteractionsController.RadioInteractionStatus == -1) {
+                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.RadioInteractionHelpText);
                             if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartBossChairInteraction(officeBossChairTrigger, officeBossChairHeading);
+                                InteractionsController.StartRadioInteraction(officeRadioTrigger, officeRadioHeading, officeInteriorStyle);
                             }
                         }
-                        else {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.BossChairInteractionRejectHelpText);
-                        }
-                    }
-                    for (int i = 0; i < officeStaffChairTriggers.Count; i++) {
-                        if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeStaffChairTriggers[i]) < 1.0f && InteractionsController.StaffChairInteractionStatus == -1) {
-                            Prop chair = Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 3f, -1278649385, 0, 0, 0);
-                            if (Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, chair, "anim@amb@office@boardroom@crew@male@var_b@base@", "base_chair", 2) || Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, chair, "anim@amb@office@boardroom@crew@female@var_c@base@", "base_chair", 2)) return;
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.StaffChairInteractionHelpText);
-                            if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartStaffChairInteraction(officeStaffChairTriggers[i], officeStaffChairHeadings[i]);
+                        if (Game.Player.Character.Position.DistanceTo(officeWardrobeTrigger) < 1.0f && InteractionsController.WardrobeInteractionStatus == -1) {
+                            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
+                                SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.WardrobeInteractionHelpText);
+                                if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                                    InteractionsController.StartWardrobeInteraction(officeWardrobeTrigger, officeWardrobeHeading, officeWardrobeCamPos, officeWardrobeCamRot, officeWardrobeCamFOV);
+                                }
+                            }
+                            else {
+                                SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.WardrobeInteractionRejectHelpText);
                             }
                         }
-                    }
-                    for (int i = 0; i < officeLaptopChairTriggers.Count; i++) {
-                        if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeLaptopChairTriggers[i]) < 1.0f && InteractionsController.LaptopChairInteractionStatus == -1) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.LaptopChairInteractionHelpText);
-                            if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartLaptopChairInteraction(officeLaptopChairTriggers[i], officeLaptopChairHeadings[i]);
-                            }
-                        }
-                    }
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeWardrobeTrigger) < 1.0f && InteractionsController.WardrobeInteractionStatus == -1) {
-                        if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.WardrobeInteractionHelpText);
-                            if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartWardrobeInteraction(officeWardrobeTrigger, officeWardrobeHeading, officeWardrobeCamPos, officeWardrobeCamRot, officeWardrobeCamFOV);
-                            }
-                        }
-                        else {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.WardrobeInteractionRejectHelpText);
+                        Prop[] nearbyProps = World.GetNearbyProps(Game.Player.Character.Position, 1.4f);
+                        if (nearbyProps.Length == 0) break;
+                        Prop closestProp = World.GetClosest(Game.Player.Character.Position, nearbyProps);
+                        switch (closestProp.Model.Hash) {
+                            case -1626066319:
+                            case 1339364336:
+                                if (InteractionsController.ComputerInteractionStatus != -1) break;
+                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.ComputerInterationHelpText);
+                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartComputerInteraction(closestProp);
+                                }
+                                else SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.ComputerInteractionRejectHelpText);
+                                break;
+                            case 646926492:
+                            case 845785021:
+                            case -1126494299:
+                            case -524920966:
+                            case -1842578680:
+                            case -1387653807:
+                                if (InteractionsController.LeftSafeInteractionStatus != -1) break;
+                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.LeftSafeInteractionHelpText);
+                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartLeftSafeInteraction(closestProp);
+                                }
+                                else SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SafeInteractionRejectHelpText);
+                                break;
+                            case -1176373441:
+                            case -1149617688:
+                            case -548219756:
+                            case 1854960432:
+                            case 682108925:
+                            case 1002451519:
+                                if (InteractionsController.RightSafeInteractionStatus != -1) break;
+                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.RightSafeInteractionHelpText);
+                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartRightSafeInteraction(closestProp);
+                                }
+                                else SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SafeInteractionRejectHelpText);
+                                break;
+                            case -1278649385:
+                                Prop[] nearbyChairs = World.GetNearbyProps(closestProp.Position, 1.4f, -1278649385);
+                                Prop[] nearbyLaptops = World.GetNearbyProps(closestProp.Position, 1f, 1385417869);
+                                if (nearbyChairs.Length == 1 && nearbyLaptops.Length == 0) {
+                                    if (InteractionsController.BossChairInteractionStatus != -1) break;
+                                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
+                                        SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.BossChairInteractionHelpText);
+                                        if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartBossChairInteraction(closestProp);
+                                    }
+                                    else SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.BossChairInteractionRejectHelpText);
+                                }
+                                else if (nearbyChairs.Length != 1 && nearbyLaptops.Length == 0) {
+                                    if (InteractionsController.StaffChairInteractionStatus != -1) break;
+                                    if (Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, closestProp, "anim@amb@office@boardroom@crew@male@var_b@base@", "base_chair", 2) || Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, closestProp, "anim@amb@office@boardroom@crew@female@var_c@base@", "base_chair", 2)) break;
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.StaffChairInteractionHelpText);
+                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartStaffChairInteraction(closestProp);
+                                }
+                                else if (nearbyChairs.Length == 1 && nearbyLaptops.Length != 0) {
+                                    if (InteractionsController.LaptopChairInteractionStatus != -1) break;
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.LaptopChairInteractionHelpText);
+                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartLaptopChairInteraction(closestProp);
+                                }
+                                break;
                         }
                     }
                     break;
-                case Interior.Garage:
+                case Floor.Garage:
                     Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
                     HideBuildingExteriors();
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(garageTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
@@ -1060,7 +1066,7 @@ namespace SinglePlayerOffice {
                         }
                     }
                     break;
-                case Interior.ModShop:
+                case Floor.ModShop:
                     Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
                     HideBuildingExteriors();
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(modShopTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
@@ -1073,7 +1079,7 @@ namespace SinglePlayerOffice {
                         }
                     }
                     break;
-                case Interior.HeliPad:
+                case Floor.HeliPad:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(heliPadTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the stairs");
                         if (Game.IsControlPressed(2, GTA.Control.Context)) {

@@ -375,10 +375,10 @@ namespace SinglePlayerOffice {
         public static void ResetScenes() {
             if (boss != null) boss.Delete();
             isBossGreeted = false;
-            if (maleStaff != null) maleStaff.Delete();
-            isMaleStaffGreeted = false;
-            if (femaleStaff != null) femaleStaff.Delete();
-            isFemaleStaffGreeted = false;
+            //if (maleStaff != null) maleStaff.Delete();
+            //isMaleStaffGreeted = false;
+            //if (femaleStaff != null) femaleStaff.Delete();
+            //isFemaleStaffGreeted = false;
             if (pa != null) pa.Delete();
             if (paChair != null) paChair.Delete();
             isPaGreeted = false;
