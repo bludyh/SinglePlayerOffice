@@ -17,7 +17,6 @@ namespace SinglePlayerOffice {
         public static LomBank LomBank { get; private set; }
         public static MazeBank MazeBank { get; private set; }
         public static MazeBankWest MazeBankWest { get; private set; }
-        public static List<Building> Buildings { get; private set; }
 
         public SinglePlayerOffice() {
             Tick += OnTick;
@@ -29,20 +28,9 @@ namespace SinglePlayerOffice {
             LomBank = new LomBank();
             MazeBank = new MazeBank();
             MazeBankWest = new MazeBankWest();
-            Buildings = new List<Building>() { Arcadius, LomBank, MazeBank, MazeBankWest };
         }
 
-        private void OnTick(object sender, EventArgs e) {
-            MenuPool.ProcessMenus();
-            if (IsHudHidden) {
-                Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
-            }
-            foreach (Building building in Buildings) {
-                building.OnTick();
-            }
-        }
-
-        private void LoadConfigs() {
+        private static void LoadConfigs() {
             try {
                 Configs = ScriptSettings.Load(@"scripts\SinglePlayerOffice.ini");
             }
@@ -51,7 +39,7 @@ namespace SinglePlayerOffice {
             }
         }
 
-        private void LoadMPMap() {
+        private static void LoadMPMap() {
             Function.Call(Hash._LOAD_MP_DLC_MAPS);
             Function.Call(Hash._ENABLE_MP_DLC_MAPS, 1);
         }
@@ -62,11 +50,30 @@ namespace SinglePlayerOffice {
             Function.Call(Hash._0x238FFE5C7B0498A6, 0, 0, 1, -1);
         }
 
+        public static Building GetCurrentBuilding() {
+            int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
+            if (Game.Player.Character.Position.DistanceTo(Arcadius.EntranceTrigger) < 10f || Arcadius.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(Arcadius.HeliPadTrigger) < 10f) return Arcadius;
+            else if (Game.Player.Character.Position.DistanceTo(LomBank.EntranceTrigger) < 10f || LomBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(LomBank.HeliPadTrigger) < 10f) return LomBank;
+            else if (Game.Player.Character.Position.DistanceTo(MazeBank.EntranceTrigger) < 10f || MazeBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBank.HeliPadTrigger) < 10f) return MazeBank;
+            else if (Game.Player.Character.Position.DistanceTo(MazeBankWest.EntranceTrigger) < 10f || MazeBankWest.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBankWest.HeliPadTrigger) < 10f) return MazeBankWest;
+            return null;
+        }
+
+        private void OnTick(object sender, EventArgs e) {
+            if (IsHudHidden) Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
+            MenuPool.ProcessMenus();
+            Arcadius.OnTick();
+            LomBank.OnTick();
+            MazeBank.OnTick();
+            MazeBankWest.OnTick();
+        }
+
         protected override void Dispose(bool A_0) {
             if (A_0) {
-                foreach (Building building in Buildings) {
-                    building.Dispose();
-                }
+                Arcadius.Dispose();
+                LomBank.Dispose();
+                MazeBank.Dispose();
+                MazeBankWest.Dispose();
                 World.RenderingCamera = null;
                 World.DestroyAllCameras();
             }

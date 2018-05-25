@@ -52,8 +52,7 @@
     <Compile Include="Arcadius.cs" />
     <Compile Include="Building.cs" />
     <Compile Include="InteractionsController.cs" />
-    <Compile Include="InteractionsThread.cs" />
-    <Compile Include="Floor.cs" />
+    <Compile Include="Location.cs" />
     <Compile Include="GarageDecorationStyle.cs" />
     <Compile Include="GarageLightingStyle.cs" />
     <Compile Include="GarageNumberingStyle.cs" />
@@ -73,6 +72,8 @@
     </Compile>
     <Compile Include="RadioStation.cs" />
     <Compile Include="ScenesController.cs" />
+    <Compile Include="Sofa.cs" />
+    <Compile Include="Wardrobe.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

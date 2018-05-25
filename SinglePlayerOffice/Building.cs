@@ -13,9 +13,9 @@ namespace SinglePlayerOffice {
         protected string buildingName;
         protected string buildingDescription;
         protected int price;
+        protected Owner owner;
         protected Vector3 blipPosition;
         protected Blip buildingBlip;
-        protected Owner owner;
         protected Vector3 entranceTrigger;
         protected Vector3 entranceSpawn;
         protected float entranceHeading;
@@ -23,7 +23,7 @@ namespace SinglePlayerOffice {
         protected Vector3 purchaseCamRot;
         protected float purchaseFOV;
         private Camera purchaseCam;
-        private int officeInteriorID;
+        protected List<int> interiorIDs;
         protected List<int> officeInteriorIDs;
         protected Vector3 officeTrigger;
         protected Vector3 officeSpawn;
@@ -34,33 +34,83 @@ namespace SinglePlayerOffice {
         private Camera officeCam;
         protected List<OfficeInteriorStyle> officeInteriorStyles;
         protected OfficeInteriorStyle officeInteriorStyle;
-        protected string garageIPL;
-        protected int garageInteriorID;
-        protected Vector3 garageTrigger;
-        protected Vector3 garageSpawn;
-        protected float garageHeading;
-        protected Vector3 garageCamPos;
-        protected Vector3 garageCamRot;
-        protected float garageCamFOV;
-        private Camera garageCam;
-        protected Vector3 garageDecorationCamPos;
-        protected Vector3 garageDecorationCamRot;
-        protected float garageDecorationCamFOV;
-        private Camera garageDecorationCam;
+        protected string garageOneIPL;
+        protected int garageOneInteriorID;
+        protected Vector3 garageOneTrigger;
+        protected Vector3 garageOneSpawn;
+        protected float garageOneHeading;
+        protected Vector3 garageOneCamPos;
+        protected Vector3 garageOneCamRot;
+        protected float garageOneCamFOV;
+        private Camera garageOneCam;
+        protected Vector3 garageOneDecorationCamPos;
+        protected Vector3 garageOneDecorationCamRot;
+        protected float garageOneDecorationCamFOV;
+        private Camera garageOneDecorationCam;
         private List<GarageDecorationStyle> garageDecorationStyles;
-        protected GarageDecorationStyle garageDecorationStyle;
-        protected Vector3 garageLightingCamPos;
-        protected Vector3 garageLightingCamRot;
-        protected float garageLightingCamFOV;
-        private Camera garageLightingCam;
+        protected GarageDecorationStyle garageOneDecorationStyle;
+        protected Vector3 garageOneLightingCamPos;
+        protected Vector3 garageOneLightingCamRot;
+        protected float garageOneLightingCamFOV;
+        private Camera garageOneLightingCam;
         private List<GarageLightingStyle> garageLightingStyles;
-        protected GarageLightingStyle garageLightingStyle;
-        protected Vector3 garageNumberingCamPos;
-        protected Vector3 garageNumberingCamRot;
-        protected float garageNumberingCamFOV;
-        private Camera garageNumberingCam;
-        private List<GarageNumberingStyle> garageNumberingStyles;
-        protected GarageNumberingStyle garageNumberingStyle;
+        protected GarageLightingStyle garageOneLightingStyle;
+        protected Vector3 garageOneNumberingCamPos;
+        protected Vector3 garageOneNumberingCamRot;
+        protected float garageOneNumberingCamFOV;
+        private Camera garageOneNumberingCam;
+        private List<GarageNumberingStyle> garageOneNumberingStyles;
+        protected GarageNumberingStyle garageOneNumberingStyle;
+        protected string garageTwoIPL;
+        protected int garageTwoInteriorID;
+        protected Vector3 garageTwoTrigger;
+        protected Vector3 garageTwoSpawn;
+        protected float garageTwoHeading;
+        protected Vector3 garageTwoCamPos;
+        protected Vector3 garageTwoCamRot;
+        protected float garageTwoCamFOV;
+        private Camera garageTwoCam;
+        protected Vector3 garageTwoDecorationCamPos;
+        protected Vector3 garageTwoDecorationCamRot;
+        protected float garageTwoDecorationCamFOV;
+        private Camera garageTwoDecorationCam;
+        protected GarageDecorationStyle garageTwoDecorationStyle;
+        protected Vector3 garageTwoLightingCamPos;
+        protected Vector3 garageTwoLightingCamRot;
+        protected float garageTwoLightingCamFOV;
+        private Camera garageTwoLightingCam;
+        protected GarageLightingStyle garageTwoLightingStyle;
+        protected Vector3 garageTwoNumberingCamPos;
+        protected Vector3 garageTwoNumberingCamRot;
+        protected float garageTwoNumberingCamFOV;
+        private Camera garageTwoNumberingCam;
+        private List<GarageNumberingStyle> garageTwoNumberingStyles;
+        protected GarageNumberingStyle garageTwoNumberingStyle;
+        protected string garageThreeIPL;
+        protected int garageThreeInteriorID;
+        protected Vector3 garageThreeTrigger;
+        protected Vector3 garageThreeSpawn;
+        protected float garageThreeHeading;
+        protected Vector3 garageThreeCamPos;
+        protected Vector3 garageThreeCamRot;
+        protected float garageThreeCamFOV;
+        private Camera garageThreeCam;
+        protected Vector3 garageThreeDecorationCamPos;
+        protected Vector3 garageThreeDecorationCamRot;
+        protected float garageThreeDecorationCamFOV;
+        private Camera garageThreeDecorationCam;
+        protected GarageDecorationStyle garageThreeDecorationStyle;
+        protected Vector3 garageThreeLightingCamPos;
+        protected Vector3 garageThreeLightingCamRot;
+        protected float garageThreeLightingCamFOV;
+        private Camera garageThreeLightingCam;
+        protected GarageLightingStyle garageThreeLightingStyle;
+        protected Vector3 garageThreeNumberingCamPos;
+        protected Vector3 garageThreeNumberingCamRot;
+        protected float garageThreeNumberingCamFOV;
+        private Camera garageThreeNumberingCam;
+        private List<GarageNumberingStyle> garageThreeNumberingStyles;
+        protected GarageNumberingStyle garageThreeNumberingStyle;
         protected string modShopIPL;
         protected int modShopInteriorID;
         protected Vector3 modShopTrigger;
@@ -80,37 +130,12 @@ namespace SinglePlayerOffice {
         protected float heliPadHeading;
         private UIMenu purchaseMenu;
         private UIMenu teleportMenu;
-        protected List<string> exteriors;
-        protected Vector3 officeSofaPos;
-        protected Vector3 officeSofaRot;
-        //protected Vector3 officeSofaStartPos;
-        //protected float officeSofaStartHeading;
-        protected Vector3 officeTVTrigger;
-        //protected Vector3 officeComputerChairPos;
-        //protected Vector3 officeComputerChairRot;
-        //protected Vector3 officeLeftSafeTrigger;
-        //protected Vector3 officeLeftSafeStartPos;
-        //protected float officeLeftSafeStartHeading;
-        //protected Vector3 officeRightSafeTrigger;
-        //protected Vector3 officeRightSafeStartPos;
-        //protected float officeRightSafeStartHeading;
-        protected Vector3 officeRadioTrigger;
-        protected float officeRadioHeading;
-        protected Vector3 officeBossChairTrigger;
-        //protected float officeBossChairHeading;
-        protected List<Vector3> officeStaffChairTriggers;
-        protected List<float> officeStaffChairHeadings;
-        //protected List<Vector3> officeLaptopChairTriggers;
-        //protected List<float> officeLaptopChairHeadings;
-        protected Vector3 officeWardrobeTrigger;
-        protected float officeWardrobeHeading;
-        protected Vector3 officeWardrobeCamPos;
-        protected Vector3 officeWardrobeCamRot;
-        protected float officeWardrobeCamFOV;
-        protected Vector3 officePaChairPos;
-        protected Vector3 officePaChairRot;
+        protected List<string> exteriorIPLs;
 
-        public InteractionsController InteractionsController { get; set; }
+        public Owner Owner { get { return owner; } }
+        public List<int> InteriorIDs { get { return interiorIDs; } }
+        public Vector3 EntranceTrigger { get { return entranceTrigger; } }
+        public Vector3 HeliPadTrigger { get { return heliPadTrigger; } }
 
         protected Building() {
             garageDecorationStyles = new List<GarageDecorationStyle>() {
@@ -130,7 +155,7 @@ namespace SinglePlayerOffice {
                 new GarageLightingStyle("Lighting 8", 127500, "lighting_option02"),
                 new GarageLightingStyle("Lighting 9", 150000, "lighting_option09")
             };
-            garageNumberingStyles = new List<GarageNumberingStyle>() {
+            garageOneNumberingStyles = new List<GarageNumberingStyle>() {
                 new GarageNumberingStyle("Signage 1", 0, "numbering_style07_n1"),
                 new GarageNumberingStyle("Signage 2", 62500, "numbering_style08_n1"),
                 new GarageNumberingStyle("Signage 3", 75000, "numbering_style09_n1"),
@@ -140,6 +165,28 @@ namespace SinglePlayerOffice {
                 new GarageNumberingStyle("Signage 7", 165000, "numbering_style06_n1"),
                 new GarageNumberingStyle("Signage 8", 197500, "numbering_style05_n1"),
                 new GarageNumberingStyle("Signage 9", 250000, "numbering_style04_n1"),
+            };
+            garageTwoNumberingStyles = new List<GarageNumberingStyle>() {
+                new GarageNumberingStyle("Signage 1", 0, "numbering_style07_n2"),
+                new GarageNumberingStyle("Signage 2", 62500, "numbering_style08_n2"),
+                new GarageNumberingStyle("Signage 3", 75000, "numbering_style09_n2"),
+                new GarageNumberingStyle("Signage 4", 87500, "numbering_style02_n2"),
+                new GarageNumberingStyle("Signage 5", 100000, "numbering_style03_n2"),
+                new GarageNumberingStyle("Signage 6", 132500, "numbering_style01_n2"),
+                new GarageNumberingStyle("Signage 7", 165000, "numbering_style06_n2"),
+                new GarageNumberingStyle("Signage 8", 197500, "numbering_style05_n2"),
+                new GarageNumberingStyle("Signage 9", 250000, "numbering_style04_n2"),
+            };
+            garageThreeNumberingStyles = new List<GarageNumberingStyle>() {
+                new GarageNumberingStyle("Signage 1", 0, "numbering_style07_n3"),
+                new GarageNumberingStyle("Signage 2", 62500, "numbering_style08_n3"),
+                new GarageNumberingStyle("Signage 3", 75000, "numbering_style09_n3"),
+                new GarageNumberingStyle("Signage 4", 87500, "numbering_style02_n3"),
+                new GarageNumberingStyle("Signage 5", 100000, "numbering_style03_n3"),
+                new GarageNumberingStyle("Signage 6", 132500, "numbering_style01_n3"),
+                new GarageNumberingStyle("Signage 7", 165000, "numbering_style06_n3"),
+                new GarageNumberingStyle("Signage 8", 197500, "numbering_style05_n3"),
+                new GarageNumberingStyle("Signage 9", 250000, "numbering_style04_n3"),
             };
             modShopFloorStyles = new List<ModShopFloorStyle>() {
                 new ModShopFloorStyle("Floor 1", 0, ""),
@@ -231,8 +278,41 @@ namespace SinglePlayerOffice {
                 "swag_silver2",
                 "swag_silver3"
             };
-            extraOfficeDecorsPrice = 0;
-            InteractionsController = new InteractionsController();
+        }
+
+        protected OfficeInteriorStyle GetOfficeInteriorStyle(string name) {
+            foreach (OfficeInteriorStyle style in officeInteriorStyles) if (style.Name == name) return style;
+            return null;
+        }
+
+        protected GarageDecorationStyle GetGarageDecorationStyle(string name) {
+            foreach (GarageDecorationStyle style in garageDecorationStyles) if (style.Name == name) return style;
+            return null;
+        }
+
+        protected GarageLightingStyle GetGarageLightingStyle(string name) {
+            foreach (GarageLightingStyle style in garageLightingStyles) if (style.Name == name) return style;
+            return null;
+        }
+
+        protected GarageNumberingStyle GetGarageOneNumberingStyle(string name) {
+            foreach (GarageNumberingStyle style in garageOneNumberingStyles) if (style.Name == name) return style;
+            return null;
+        }
+
+        protected GarageNumberingStyle GetGarageTwoNumberingStyle(string name) {
+            foreach (GarageNumberingStyle style in garageTwoNumberingStyles) if (style.Name == name) return style;
+            return null;
+        }
+
+        protected GarageNumberingStyle GetGarageThreeNumberingStyle(string name) {
+            foreach (GarageNumberingStyle style in garageThreeNumberingStyles) if (style.Name == name) return style;
+            return null;
+        }
+
+        protected ModShopFloorStyle GetModShopFloorStyle(string name) {
+            foreach (ModShopFloorStyle style in modShopFloorStyles) if (style.Name == name) return style;
+            return null;
         }
 
         protected void CreateBuildingBlip() {
@@ -244,7 +324,7 @@ namespace SinglePlayerOffice {
             SetBuildingBlipColor();
         }
 
-        public void SetBuildingBlipColor() {
+        private void SetBuildingBlipColor() {
             switch (owner) {
                 case Owner.Michael: Function.Call(Hash.SET_BLIP_COLOUR, buildingBlip, 3); break;
                 case Owner.Franklin: Function.Call(Hash.SET_BLIP_COLOUR, buildingBlip, 11); break;
@@ -253,137 +333,16 @@ namespace SinglePlayerOffice {
             }
         }
 
-        protected OfficeInteriorStyle GetOfficeInteriorStyle(string name) {
-            foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                if (style.Name == name) {
-                    return style;
-                }
-            }
-            return null;
-        }
-
-        protected GarageDecorationStyle GetGarageDecorationStyle(string name) {
-            foreach (GarageDecorationStyle style in garageDecorationStyles) {
-                if (style.Name == name) {
-                    return style;
-                }
-            }
-            return null;
-        }
-
-        protected GarageLightingStyle GetGarageLightingStyle(string name) {
-            foreach (GarageLightingStyle style in garageLightingStyles) {
-                if (style.Name == name) {
-                    return style;
-                }
-            }
-            return null;
-        }
-
-        protected GarageNumberingStyle GetGarageNumberingStyle(string name) {
-            foreach (GarageNumberingStyle style in garageNumberingStyles) {
-                if (style.Name == name) {
-                    return style;
-                }
-            }
-            return null;
-        }
-
-        protected ModShopFloorStyle GetModShopFloorStyle(string name) {
-            foreach (ModShopFloorStyle style in modShopFloorStyles) {
-                if (style.Name == name) {
-                    return style;
-                }
-            }
-            return null;
-        }
-
-        private Floor GetCurrentFloor() {
-            int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
-            Vector3 currentPlayerPos = new Vector3(Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            if (currentPlayerPos.DistanceTo(entranceTrigger) < 10f) {
-                return Floor.Entrance;
-            }
-            if (officeInteriorIDs.Contains(currentInteriorID)) {
-                return Floor.Office;
-            }
-            if (currentInteriorID == garageInteriorID) {
-                return Floor.Garage;
-            }
-            if (currentInteriorID == modShopInteriorID) {
-                return Floor.ModShop;
-            }
-            if (currentPlayerPos.DistanceTo(heliPadTrigger) < 10f) {
-                return Floor.HeliPad;
-            }
-            return Floor.None;
-        }
-
-        private int GetToTalPrice() {
-            return price + officeInteriorStyle.Price + garageDecorationStyle.Price + garageLightingStyle.Price + garageNumberingStyle.Price + modShopFloorStyle.Price + extraOfficeDecorsPrice;
-        }
-
-        private void UpdatePurchaseMenuPriceDescription() {
-            purchaseMenu.RemoveItemAt(purchaseMenu.MenuItems.Count - 1);
-            purchaseMenu.AddItem(new UIMenuItem("Purchase", String.Format("Total Price: ~g~${0:n0}", GetToTalPrice())));
-        }
-
-        private void UpdateTeleportMenuButtons() {
-            teleportMenu.Clear();
-            UIMenuItem goToOfficeBtn = new UIMenuItem("Office");
-            UIMenuItem goToGarageBtn = new UIMenuItem("Garage");
-            UIMenuItem goToModShopBtn = new UIMenuItem("Mod Shop");
-            UIMenuItem goToHeliPadBtn = new UIMenuItem("Heli Pad");
-            UIMenuItem exitBuildingBtn = new UIMenuItem("Exit the building");
-            switch (GetCurrentFloor()) {
-                case Floor.Entrance:
-                    teleportMenu.AddItem(goToOfficeBtn);
-                    teleportMenu.AddItem(goToGarageBtn);
-                    teleportMenu.AddItem(goToModShopBtn);
-                    teleportMenu.AddItem(goToHeliPadBtn);
-                    break;
-                case Floor.Office:
-                    teleportMenu.AddItem(goToGarageBtn);
-                    teleportMenu.AddItem(goToModShopBtn);
-                    teleportMenu.AddItem(goToHeliPadBtn);
-                    teleportMenu.AddItem(exitBuildingBtn);
-                    break;
-                case Floor.Garage:
-                    teleportMenu.AddItem(goToOfficeBtn);
-                    teleportMenu.AddItem(goToModShopBtn);
-                    teleportMenu.AddItem(goToHeliPadBtn);
-                    teleportMenu.AddItem(exitBuildingBtn);
-                    break;
-                case Floor.ModShop:
-                    teleportMenu.AddItem(goToOfficeBtn);
-                    teleportMenu.AddItem(goToGarageBtn);
-                    teleportMenu.AddItem(goToHeliPadBtn);
-                    teleportMenu.AddItem(exitBuildingBtn);
-                    break;
-                case Floor.HeliPad:
-                    teleportMenu.AddItem(goToOfficeBtn);
-                    teleportMenu.AddItem(goToGarageBtn);
-                    teleportMenu.AddItem(goToModShopBtn);
-                    teleportMenu.AddItem(exitBuildingBtn);
-                    break;
-            }
-            teleportMenu.RefreshIndex();
-        }
-
-        private void HideBuildingExteriors() {
-            Function.Call(Hash._0x4B5CFC83122DF602);
-            foreach (string exterior in exteriors) {
-                int exteriorHash = Function.Call<int>(Hash.GET_HASH_KEY, exterior);
-                Function.Call(Hash._HIDE_MAP_OBJECT_THIS_FRAME, exteriorHash);
-                Function.Call((Hash)5819624144786551657, exteriorHash);
-            }
-            Function.Call(Hash._0x3669F1B198DCAA4F);
+        private void RemoveAllIPLs() {
+            foreach (OfficeInteriorStyle style in officeInteriorStyles) Function.Call(Hash.REMOVE_IPL, style.IPL);
+            Function.Call(Hash.REMOVE_IPL, garageOneIPL);
+            Function.Call(Hash.REMOVE_IPL, garageTwoIPL);
+            Function.Call(Hash.REMOVE_IPL, garageThreeIPL);
+            Function.Call(Hash.REMOVE_IPL, modShopIPL);
         }
 
         protected void CreatePurchaseMenu() {
-            purchaseMenu = new UIMenu(buildingName, "~b~Purchase Options") {
-                MouseEdgeEnabled = false,
-            };
+            purchaseMenu = new UIMenu(buildingName, "~b~Purchase Options") { MouseEdgeEnabled = false };
             
             UIMenu officeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(purchaseMenu, "Office Interiors", buildingDescription);
             foreach (OfficeInteriorStyle style in officeInteriorStyles) {
@@ -396,136 +355,307 @@ namespace SinglePlayerOffice {
                 Game.FadeScreenOut(500);
                 Script.Wait(500);
 
-                foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                    Function.Call(Hash.REMOVE_IPL, style.IPL);
-                }
+                foreach (OfficeInteriorStyle style in officeInteriorStyles) Function.Call(Hash.REMOVE_IPL, style.IPL);
                 Function.Call(Hash.REQUEST_IPL, officeInteriorStyles[index].IPL);
-                officeInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-                if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_chairs");
-                if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_booze");
-                foreach (string decor in extraOfficeDecors) {
-                    Function.Call(Hash._DISABLE_INTERIOR_PROP, officeInteriorID, decor);
-                }
-                if (hasExtraOfficeDecors) {
-                    foreach (string decor in extraOfficeDecors) {
-                        Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, decor);
-                    }
-                }
-                Function.Call(Hash.REFRESH_INTERIOR, officeInteriorID);
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
+                if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_booze");
+                foreach (string decor in extraOfficeDecors) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, decor);
+                if (hasExtraOfficeDecors) foreach (string decor in extraOfficeDecors) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decor);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
 
                 Script.Wait(500);
                 Game.FadeScreenIn(500);
             };
             officeInteriorsMenu.OnItemSelect += (sender, item, index) => {
                 officeInteriorStyle = officeInteriorStyles[index];
-                foreach (UIMenuItem i in officeInteriorsMenu.MenuItems) {
-                    i.SetRightBadge(UIMenuItem.BadgeStyle.None);
-                }
+                foreach (UIMenuItem i in officeInteriorsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
                 item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
                 UpdatePurchaseMenuPriceDescription();
             };
 
-            UIMenu garageInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(purchaseMenu, "Garage Interiors", buildingDescription);
-            UIMenu garageDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageInteriorsMenu, "Decorations");
+            UIMenu garageOneInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(purchaseMenu, "Garage One Interiors", buildingDescription);
+            UIMenu garageOneDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageOneInteriorsMenu, "Decorations");
             foreach (GarageDecorationStyle style in garageDecorationStyles) {
                 UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
-                garageDecorationsMenu.AddItem(item);
+                garageOneDecorationsMenu.AddItem(item);
             }
-            garageDecorationsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
-            garageDecorationsMenu.RefreshIndex();
-            garageDecorationsMenu.OnIndexChange += (sender, index) => {
+            garageOneDecorationsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageOneDecorationsMenu.RefreshIndex();
+            garageOneDecorationsMenu.OnIndexChange += (sender, index) => {
                 Game.FadeScreenOut(500);
                 Script.Wait(500);
 
-                foreach (GarageDecorationStyle style in garageDecorationStyles) {
-                    Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                }
-                Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageDecorationStyles[index].PropName);
-                Function.Call(Hash.REFRESH_INTERIOR, garageInteriorID);
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageDecorationStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
 
                 Script.Wait(500);
                 Game.FadeScreenIn(500);
             };
-            garageDecorationsMenu.OnItemSelect += (sender, item, index) => {
-                garageDecorationStyle = garageDecorationStyles[index];
-                foreach (UIMenuItem i in garageDecorationsMenu.MenuItems) {
-                    i.SetRightBadge(UIMenuItem.BadgeStyle.None);
-                }
+            garageOneDecorationsMenu.OnItemSelect += (sender, item, index) => {
+                garageOneDecorationStyle = garageDecorationStyles[index];
+                foreach (UIMenuItem i in garageOneDecorationsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
                 item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
                 UpdatePurchaseMenuPriceDescription();
             };
 
-            UIMenu garageLightingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageInteriorsMenu, "Lightings");
+            UIMenu garageOneLightingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageOneInteriorsMenu, "Lightings");
             foreach (GarageLightingStyle style in garageLightingStyles) {
                 UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
-                garageLightingsMenu.AddItem(item);
+                garageOneLightingsMenu.AddItem(item);
             }
-            garageLightingsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
-            garageLightingsMenu.RefreshIndex();
-            garageLightingsMenu.OnIndexChange += (sender, index) => {
+            garageOneLightingsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageOneLightingsMenu.RefreshIndex();
+            garageOneLightingsMenu.OnIndexChange += (sender, index) => {
                 Game.FadeScreenOut(500);
                 Script.Wait(500);
 
-                foreach (GarageLightingStyle style in garageLightingStyles) {
-                    Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                }
-                Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageLightingStyles[index].PropName);
-                Function.Call(Hash.REFRESH_INTERIOR, garageInteriorID);
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageLightingStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
 
                 Script.Wait(500);
                 Game.FadeScreenIn(500);
             };
-            garageLightingsMenu.OnItemSelect += (sender, item, index) => {
-                garageLightingStyle = garageLightingStyles[index];
-                foreach (UIMenuItem i in garageLightingsMenu.MenuItems) {
-                    i.SetRightBadge(UIMenuItem.BadgeStyle.None);
-                }
+            garageOneLightingsMenu.OnItemSelect += (sender, item, index) => {
+                garageOneLightingStyle = garageLightingStyles[index];
+                foreach (UIMenuItem i in garageOneLightingsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
                 item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
                 UpdatePurchaseMenuPriceDescription();
             };
 
-            UIMenu garageNumberingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageInteriorsMenu, "Numberings");
-            foreach (GarageNumberingStyle style in garageNumberingStyles) {
+            UIMenu garageOneNumberingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageOneInteriorsMenu, "Numberings");
+            foreach (GarageNumberingStyle style in garageOneNumberingStyles) {
                 UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
-                garageNumberingsMenu.AddItem(item);
+                garageOneNumberingsMenu.AddItem(item);
             }
-            garageNumberingsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
-            garageNumberingsMenu.RefreshIndex();
-            garageNumberingsMenu.OnIndexChange += (sender, index) => {
+            garageOneNumberingsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageOneNumberingsMenu.RefreshIndex();
+            garageOneNumberingsMenu.OnIndexChange += (sender, index) => {
                 Game.FadeScreenOut(500);
                 Script.Wait(500);
 
-                foreach (GarageNumberingStyle style in garageNumberingStyles) {
-                    Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                }
-                Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageNumberingStyles[index].PropName);
-                Function.Call(Hash.REFRESH_INTERIOR, garageInteriorID);
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageNumberingStyle style in garageOneNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageOneNumberingStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
 
                 Script.Wait(500);
                 Game.FadeScreenIn(500);
             };
-            garageNumberingsMenu.OnItemSelect += (sender, item, index) => {
-                garageNumberingStyle = garageNumberingStyles[index];
-                foreach (UIMenuItem i in garageNumberingsMenu.MenuItems) {
-                    i.SetRightBadge(UIMenuItem.BadgeStyle.None);
-                }
+            garageOneNumberingsMenu.OnItemSelect += (sender, item, index) => {
+                garageOneNumberingStyle = garageOneNumberingStyles[index];
+                foreach (UIMenuItem i in garageOneNumberingsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
                 item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
                 UpdatePurchaseMenuPriceDescription();
             };
 
-            garageInteriorsMenu.RefreshIndex();
-            garageInteriorsMenu.OnMenuChange += (sender, nextMenu, forward) => {
-                if (nextMenu == garageDecorationsMenu && World.RenderingCamera != garageDecorationCam) {
-                    garageDecorationCam = World.CreateCamera(garageDecorationCamPos, garageDecorationCamRot, garageDecorationCamFOV);
-                    World.RenderingCamera.InterpTo(garageDecorationCam, 1000, true, true);
+            garageOneInteriorsMenu.RefreshIndex();
+            garageOneInteriorsMenu.OnMenuChange += (sender, nextMenu, forward) => {
+                if (nextMenu == garageOneDecorationsMenu && World.RenderingCamera != garageOneDecorationCam) {
+                    garageOneDecorationCam = World.CreateCamera(garageOneDecorationCamPos, garageOneDecorationCamRot, garageOneDecorationCamFOV);
+                    World.RenderingCamera.InterpTo(garageOneDecorationCam, 1000, true, true);
                 }
-                if (nextMenu == garageLightingsMenu && World.RenderingCamera != garageLightingCam) {
-                    garageLightingCam = World.CreateCamera(garageLightingCamPos, garageLightingCamRot, garageLightingCamFOV);
-                    World.RenderingCamera.InterpTo(garageLightingCam, 1000, true, true);
+                if (nextMenu == garageOneLightingsMenu && World.RenderingCamera != garageOneLightingCam) {
+                    garageOneLightingCam = World.CreateCamera(garageOneLightingCamPos, garageOneLightingCamRot, garageOneLightingCamFOV);
+                    World.RenderingCamera.InterpTo(garageOneLightingCam, 1000, true, true);
                 }
-                if (nextMenu == garageNumberingsMenu && World.RenderingCamera != garageNumberingCam) {
-                    garageNumberingCam = World.CreateCamera(garageNumberingCamPos, garageNumberingCamRot, garageNumberingCamFOV);
-                    World.RenderingCamera.InterpTo(garageNumberingCam, 1000, true, true);
+                if (nextMenu == garageOneNumberingsMenu && World.RenderingCamera != garageOneNumberingCam) {
+                    garageOneNumberingCam = World.CreateCamera(garageOneNumberingCamPos, garageOneNumberingCamRot, garageOneNumberingCamFOV);
+                    World.RenderingCamera.InterpTo(garageOneNumberingCam, 1000, true, true);
+                }
+            };
+
+            UIMenu garageTwoInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(purchaseMenu, "Garage Two Interiors", buildingDescription);
+            UIMenu garageTwoDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageTwoInteriorsMenu, "Decorations");
+            foreach (GarageDecorationStyle style in garageDecorationStyles) {
+                UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
+                garageTwoDecorationsMenu.AddItem(item);
+            }
+            garageTwoDecorationsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageTwoDecorationsMenu.RefreshIndex();
+            garageTwoDecorationsMenu.OnIndexChange += (sender, index) => {
+                Game.FadeScreenOut(500);
+                Script.Wait(500);
+
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageDecorationStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+
+                Script.Wait(500);
+                Game.FadeScreenIn(500);
+            };
+            garageTwoDecorationsMenu.OnItemSelect += (sender, item, index) => {
+                garageTwoDecorationStyle = garageDecorationStyles[index];
+                foreach (UIMenuItem i in garageTwoDecorationsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
+                item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+                UpdatePurchaseMenuPriceDescription();
+            };
+
+            UIMenu garageTwoLightingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageTwoInteriorsMenu, "Lightings");
+            foreach (GarageLightingStyle style in garageLightingStyles) {
+                UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
+                garageTwoLightingsMenu.AddItem(item);
+            }
+            garageTwoLightingsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageTwoLightingsMenu.RefreshIndex();
+            garageTwoLightingsMenu.OnIndexChange += (sender, index) => {
+                Game.FadeScreenOut(500);
+                Script.Wait(500);
+
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageLightingStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+
+                Script.Wait(500);
+                Game.FadeScreenIn(500);
+            };
+            garageTwoLightingsMenu.OnItemSelect += (sender, item, index) => {
+                garageTwoLightingStyle = garageLightingStyles[index];
+                foreach (UIMenuItem i in garageTwoLightingsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
+                item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+                UpdatePurchaseMenuPriceDescription();
+            };
+
+            UIMenu garageTwoNumberingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageTwoInteriorsMenu, "Numberings");
+            foreach (GarageNumberingStyle style in garageTwoNumberingStyles) {
+                UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
+                garageTwoNumberingsMenu.AddItem(item);
+            }
+            garageTwoNumberingsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageTwoNumberingsMenu.RefreshIndex();
+            garageTwoNumberingsMenu.OnIndexChange += (sender, index) => {
+                Game.FadeScreenOut(500);
+                Script.Wait(500);
+
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageNumberingStyle style in garageTwoNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageTwoNumberingStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+
+                Script.Wait(500);
+                Game.FadeScreenIn(500);
+            };
+            garageTwoNumberingsMenu.OnItemSelect += (sender, item, index) => {
+                garageTwoNumberingStyle = garageTwoNumberingStyles[index];
+                foreach (UIMenuItem i in garageTwoNumberingsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
+                item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+                UpdatePurchaseMenuPriceDescription();
+            };
+
+            garageTwoInteriorsMenu.RefreshIndex();
+            garageTwoInteriorsMenu.OnMenuChange += (sender, nextMenu, forward) => {
+                if (nextMenu == garageTwoDecorationsMenu && World.RenderingCamera != garageTwoDecorationCam) {
+                    garageTwoDecorationCam = World.CreateCamera(garageTwoDecorationCamPos, garageTwoDecorationCamRot, garageTwoDecorationCamFOV);
+                    World.RenderingCamera.InterpTo(garageTwoDecorationCam, 1000, true, true);
+                }
+                if (nextMenu == garageTwoLightingsMenu && World.RenderingCamera != garageTwoLightingCam) {
+                    garageTwoLightingCam = World.CreateCamera(garageTwoLightingCamPos, garageTwoLightingCamRot, garageTwoLightingCamFOV);
+                    World.RenderingCamera.InterpTo(garageTwoLightingCam, 1000, true, true);
+                }
+                if (nextMenu == garageTwoNumberingsMenu && World.RenderingCamera != garageTwoNumberingCam) {
+                    garageTwoNumberingCam = World.CreateCamera(garageTwoNumberingCamPos, garageTwoNumberingCamRot, garageTwoNumberingCamFOV);
+                    World.RenderingCamera.InterpTo(garageTwoNumberingCam, 1000, true, true);
+                }
+            };
+
+            UIMenu garageThreeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(purchaseMenu, "Garage Three Interiors", buildingDescription);
+            UIMenu garageThreeDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageThreeInteriorsMenu, "Decorations");
+            foreach (GarageDecorationStyle style in garageDecorationStyles) {
+                UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
+                garageThreeDecorationsMenu.AddItem(item);
+            }
+            garageThreeDecorationsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageThreeDecorationsMenu.RefreshIndex();
+            garageThreeDecorationsMenu.OnIndexChange += (sender, index) => {
+                Game.FadeScreenOut(500);
+                Script.Wait(500);
+
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageDecorationStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+
+                Script.Wait(500);
+                Game.FadeScreenIn(500);
+            };
+            garageThreeDecorationsMenu.OnItemSelect += (sender, item, index) => {
+                garageThreeDecorationStyle = garageDecorationStyles[index];
+                foreach (UIMenuItem i in garageThreeDecorationsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
+                item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+                UpdatePurchaseMenuPriceDescription();
+            };
+
+            UIMenu garageThreeLightingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageThreeInteriorsMenu, "Lightings");
+            foreach (GarageLightingStyle style in garageLightingStyles) {
+                UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
+                garageThreeLightingsMenu.AddItem(item);
+            }
+            garageThreeLightingsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageThreeLightingsMenu.RefreshIndex();
+            garageThreeLightingsMenu.OnIndexChange += (sender, index) => {
+                Game.FadeScreenOut(500);
+                Script.Wait(500);
+
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageLightingStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+
+                Script.Wait(500);
+                Game.FadeScreenIn(500);
+            };
+            garageThreeLightingsMenu.OnItemSelect += (sender, item, index) => {
+                garageThreeLightingStyle = garageLightingStyles[index];
+                foreach (UIMenuItem i in garageThreeLightingsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
+                item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+                UpdatePurchaseMenuPriceDescription();
+            };
+
+            UIMenu garageThreeNumberingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageThreeInteriorsMenu, "Numberings");
+            foreach (GarageNumberingStyle style in garageThreeNumberingStyles) {
+                UIMenuItem item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
+                garageThreeNumberingsMenu.AddItem(item);
+            }
+            garageThreeNumberingsMenu.MenuItems[0].SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+            garageThreeNumberingsMenu.RefreshIndex();
+            garageThreeNumberingsMenu.OnIndexChange += (sender, index) => {
+                Game.FadeScreenOut(500);
+                Script.Wait(500);
+
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (GarageNumberingStyle style in garageThreeNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageThreeNumberingStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+
+                Script.Wait(500);
+                Game.FadeScreenIn(500);
+            };
+            garageThreeNumberingsMenu.OnItemSelect += (sender, item, index) => {
+                garageThreeNumberingStyle = garageThreeNumberingStyles[index];
+                foreach (UIMenuItem i in garageThreeNumberingsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
+                item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
+                UpdatePurchaseMenuPriceDescription();
+            };
+
+            garageThreeInteriorsMenu.RefreshIndex();
+            garageThreeInteriorsMenu.OnMenuChange += (sender, nextMenu, forward) => {
+                if (nextMenu == garageThreeDecorationsMenu && World.RenderingCamera != garageThreeDecorationCam) {
+                    garageThreeDecorationCam = World.CreateCamera(garageThreeDecorationCamPos, garageThreeDecorationCamRot, garageThreeDecorationCamFOV);
+                    World.RenderingCamera.InterpTo(garageThreeDecorationCam, 1000, true, true);
+                }
+                if (nextMenu == garageThreeLightingsMenu && World.RenderingCamera != garageThreeLightingCam) {
+                    garageThreeLightingCam = World.CreateCamera(garageThreeLightingCamPos, garageThreeLightingCamRot, garageThreeLightingCamFOV);
+                    World.RenderingCamera.InterpTo(garageThreeLightingCam, 1000, true, true);
+                }
+                if (nextMenu == garageThreeNumberingsMenu && World.RenderingCamera != garageThreeNumberingCam) {
+                    garageThreeNumberingCam = World.CreateCamera(garageThreeNumberingCamPos, garageThreeNumberingCamRot, garageThreeNumberingCamFOV);
+                    World.RenderingCamera.InterpTo(garageThreeNumberingCam, 1000, true, true);
                 }
             };
 
@@ -540,20 +670,17 @@ namespace SinglePlayerOffice {
                 Game.FadeScreenOut(500);
                 Script.Wait(500);
 
-                foreach (ModShopFloorStyle style in modShopFloorStyles) {
-                    Function.Call(Hash._DISABLE_INTERIOR_PROP, modShopInteriorID, style.PropName);
-                }
-                Function.Call(Hash._ENABLE_INTERIOR_PROP, modShopInteriorID, modShopFloorStyles[index].PropName);
-                Function.Call(Hash.REFRESH_INTERIOR, modShopInteriorID);
+                int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                foreach (ModShopFloorStyle style in modShopFloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, modShopFloorStyles[index].PropName);
+                Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
 
                 Script.Wait(500);
                 Game.FadeScreenIn(500);
             };
             modShopInteriorsMenu.OnItemSelect += (sender, item, index) => {
                 modShopFloorStyle = modShopFloorStyles[index];
-                foreach (UIMenuItem i in modShopInteriorsMenu.MenuItems) {
-                    i.SetRightBadge(UIMenuItem.BadgeStyle.None);
-                }
+                foreach (UIMenuItem i in modShopInteriorsMenu.MenuItems) i.SetRightBadge(UIMenuItem.BadgeStyle.None);
                 item.SetRightBadge(UIMenuItem.BadgeStyle.Tick);
                 UpdatePurchaseMenuPriceDescription();
             };
@@ -570,52 +697,84 @@ namespace SinglePlayerOffice {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
-                    foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                        Function.Call(Hash.REMOVE_IPL, style.IPL);
-                    }
+                    RemoveAllIPLs();
                     Function.Call(Hash.REQUEST_IPL, officeInteriorStyles[officeInteriorsMenu.CurrentSelection].IPL);
                     Game.Player.Character.Position = officeSpawn;
                     Game.Player.Character.Task.StandStill(-1);
-                    officeInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_chairs");
-                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_booze");
-                    foreach (string decor in extraOfficeDecors) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, officeInteriorID, decor);
-                    }
-                    if (hasExtraOfficeDecors) {
-                        foreach (string decor in extraOfficeDecors) {
-                            Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, decor);
-                        }
-                    }
-                    Function.Call(Hash.REFRESH_INTERIOR, officeInteriorID);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
+                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_booze");
+                    foreach (string decor in extraOfficeDecors) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, decor);
+                    if (hasExtraOfficeDecors) foreach (string decor in extraOfficeDecors) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decor);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
                     officeCam = World.CreateCamera(officeCamPos, officeCamRot, officeCamFOV);
                     World.RenderingCamera = officeCam;
 
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (nextMenu == garageInteriorsMenu) {
+                if (nextMenu == garageOneInteriorsMenu) {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
-                    foreach (GarageDecorationStyle style in garageDecorationStyles) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                    }
-                    foreach (GarageLightingStyle style in garageLightingStyles) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                    }
-                    foreach (GarageNumberingStyle style in garageNumberingStyles) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                    }
-                    if (!Function.Call<bool>(Hash.IS_IPL_ACTIVE, garageIPL)) Function.Call(Hash.REQUEST_IPL, garageIPL);
-                    Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageDecorationStyles[garageDecorationsMenu.CurrentSelection].PropName);
-                    Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageLightingStyles[garageLightingsMenu.CurrentSelection].PropName);
-                    Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageNumberingStyles[garageNumberingsMenu.CurrentSelection].PropName);
-                    Function.Call(Hash.REFRESH_INTERIOR, garageInteriorID);
-                    Game.Player.Character.Position = garageSpawn;
+                    RemoveAllIPLs();
+                    Function.Call(Hash.REQUEST_IPL, garageOneIPL);
+                    Game.Player.Character.Position = garageOneSpawn;
                     Game.Player.Character.Task.StandStill(-1);
-                    garageCam = World.CreateCamera(garageCamPos, garageCamRot, garageCamFOV);
-                    World.RenderingCamera = garageCam;
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageNumberingStyle style in garageOneNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageDecorationStyles[garageOneDecorationsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageLightingStyles[garageOneLightingsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageOneNumberingStyles[garageOneNumberingsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+                    garageOneCam = World.CreateCamera(garageOneCamPos, garageOneCamRot, garageOneCamFOV);
+                    World.RenderingCamera = garageOneCam;
+
+                    Script.Wait(1000);
+                    Game.FadeScreenIn(1000);
+                }
+                if (nextMenu == garageTwoInteriorsMenu) {
+                    Game.FadeScreenOut(1000);
+                    Script.Wait(1000);
+
+                    RemoveAllIPLs();
+                    Function.Call(Hash.REQUEST_IPL, garageTwoIPL);
+                    Game.Player.Character.Position = garageTwoSpawn;
+                    Game.Player.Character.Task.StandStill(-1);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageNumberingStyle style in garageTwoNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageDecorationStyles[garageTwoDecorationsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageLightingStyles[garageTwoLightingsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageTwoNumberingStyles[garageTwoNumberingsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+                    garageTwoCam = World.CreateCamera(garageTwoCamPos, garageTwoCamRot, garageTwoCamFOV);
+                    World.RenderingCamera = garageTwoCam;
+
+                    Script.Wait(1000);
+                    Game.FadeScreenIn(1000);
+                }
+                if (nextMenu == garageThreeInteriorsMenu) {
+                    Game.FadeScreenOut(1000);
+                    Script.Wait(1000);
+
+                    RemoveAllIPLs();
+                    Function.Call(Hash.REQUEST_IPL, garageThreeIPL);
+                    Game.Player.Character.Position = garageThreeSpawn;
+                    Game.Player.Character.Task.StandStill(-1);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageNumberingStyle style in garageThreeNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageDecorationStyles[garageThreeDecorationsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageLightingStyles[garageThreeLightingsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageThreeNumberingStyles[garageThreeNumberingsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+                    garageThreeCam = World.CreateCamera(garageThreeCamPos, garageThreeCamRot, garageThreeCamFOV);
+                    World.RenderingCamera = garageThreeCam;
 
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
@@ -624,14 +783,14 @@ namespace SinglePlayerOffice {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
-                    foreach (ModShopFloorStyle style in modShopFloorStyles) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, modShopInteriorID, style.PropName);
-                    }
-                    if (!Function.Call<bool>(Hash.IS_IPL_ACTIVE, modShopIPL)) Function.Call(Hash.REQUEST_IPL, modShopIPL);
-                    Function.Call(Hash._ENABLE_INTERIOR_PROP, modShopInteriorID, modShopFloorStyles[modShopInteriorsMenu.CurrentSelection].PropName);
-                    Function.Call(Hash.REFRESH_INTERIOR, modShopInteriorID);
+                    RemoveAllIPLs();
+                    Function.Call(Hash.REQUEST_IPL, modShopIPL);
                     Game.Player.Character.Position = modShopSpawn;
                     Game.Player.Character.Task.StandStill(-1);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    foreach (ModShopFloorStyle style in modShopFloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, modShopFloorStyles[modShopInteriorsMenu.CurrentSelection].PropName);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
                     modShopCam = World.CreateCamera(modShopCamPos, modShopCamRot, modShopCamFOV);
                     World.RenderingCamera = modShopCam;
 
@@ -662,70 +821,71 @@ namespace SinglePlayerOffice {
                     Game.FadeScreenOut(500);
                     Script.Wait(500);
 
-                    foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                        Function.Call(Hash.REMOVE_IPL, style.IPL);
-                    }
+                    RemoveAllIPLs();
                     Function.Call(Hash.REQUEST_IPL, officeInteriorStyles[officeInteriorsMenu.CurrentSelection].IPL);
                     Game.Player.Character.Position = officeSpawn;
                     Game.Player.Character.Task.StandStill(-1);
-                    officeInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_chairs");
-                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_booze");
-                    foreach (string decor in extraOfficeDecors) {
-                        if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, decor)) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, decor);
-                    }
-                    Function.Call(Hash.REFRESH_INTERIOR, officeInteriorID);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
+                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_booze");
+                    foreach (string decor in extraOfficeDecors) if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, decor)) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decor);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
                     officeCam = World.CreateCamera(officeCamPos, officeCamRot, officeCamFOV);
                     World.RenderingCamera = officeCam;
 
+                    extraOfficeDecorsPrice = 1650000;
+
                     Script.Wait(500);
                     Game.FadeScreenIn(500);
-
-                    extraOfficeDecorsPrice = 1650000;
                 }
                 else {
                     Game.FadeScreenOut(500);
                     Script.Wait(500);
 
-                    foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                        Function.Call(Hash.REMOVE_IPL, style.IPL);
-                    }
+                    RemoveAllIPLs();
                     Function.Call(Hash.REQUEST_IPL, officeInteriorStyles[officeInteriorsMenu.CurrentSelection].IPL);
                     Game.Player.Character.Position = officeSpawn;
                     Game.Player.Character.Task.StandStill(-1);
-                    officeInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_chairs");
-                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_booze");
-                    foreach (string decor in extraOfficeDecors) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, officeInteriorID, decor);
-                    }
-                    Function.Call(Hash.REFRESH_INTERIOR, officeInteriorID);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
+                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_booze");
+                    foreach (string decor in extraOfficeDecors) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, decor);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
                     officeCam = World.CreateCamera(officeCamPos, officeCamRot, officeCamFOV);
                     World.RenderingCamera = officeCam;
 
+                    extraOfficeDecorsPrice = 0;
+
                     Script.Wait(500);
                     Game.FadeScreenIn(500);
-
-                    extraOfficeDecorsPrice = 0;
                 }
                 UpdatePurchaseMenuPriceDescription();
             };
             purchaseMenu.OnItemSelect += (sender, item, index) => {
                 if (item.Text == "Purchase") {
-                    if (Game.Player.Money < GetToTalPrice()) {
-                        UI.ShowSubtitle("~r~Not enough money!");
-                    }
+                    if (Game.Player.Money < GetToTalPrice()) UI.ShowSubtitle("~r~Not enough money!");
                     else {
                         owner = (Owner)Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character);
+                        try {
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "Owner", (int)owner);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "OfficeInteriorStyle", officeInteriorStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageOneDecorationStyle", garageOneDecorationStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageOneLightingStyle", garageOneLightingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageOneNumberingStyle", garageOneNumberingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageTwoDecorationStyle", garageTwoDecorationStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageTwoLightingStyle", garageTwoLightingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageTwoNumberingStyle", garageTwoNumberingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageThreeDecorationStyle", garageThreeDecorationStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageThreeLightingStyle", garageThreeLightingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageThreeNumberingStyle", garageThreeNumberingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "ModShopFloorStyle", modShopFloorStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(buildingName, "HasExtraOfficeDecors", hasExtraOfficeDecors);
+                            SinglePlayerOffice.Configs.Save();
+                        }
+                        catch (Exception ex) {
+                            Logger.Log(ex.ToString());
+                        }
                         SetBuildingBlipColor();
-                        SinglePlayerOffice.Configs.SetValue(buildingName, "Owner", (int)owner);
-                        SinglePlayerOffice.Configs.SetValue(buildingName, "OfficeInteriorStyle", officeInteriorStyle.Name);
-                        SinglePlayerOffice.Configs.SetValue(buildingName, "GarageDecorationStyle", garageDecorationStyle.Name);
-                        SinglePlayerOffice.Configs.SetValue(buildingName, "GarageLightingStyle", garageLightingStyle.Name);
-                        SinglePlayerOffice.Configs.SetValue(buildingName, "GarageNumberingStyle", garageNumberingStyle.Name);
-                        SinglePlayerOffice.Configs.SetValue(buildingName, "ModShopFloorStyle", modShopFloorStyle.Name);
-                        SinglePlayerOffice.Configs.SetValue(buildingName, "HasExtraOfficeDecors", hasExtraOfficeDecors);
-                        SinglePlayerOffice.Configs.Save();
 
                         SinglePlayerOffice.MenuPool.CloseAllMenus();
                         Game.FadeScreenOut(1000);
@@ -757,16 +917,12 @@ namespace SinglePlayerOffice {
             teleportMenu = new UIMenu(buildingName, "");
             teleportMenu.OnItemSelect += (sender, item, index) => {
                 InteractionsController.ResetInterations();
-                ScenesController.ResetScenes();
+                //ScenesController.ResetScenes();
                 if (item.Text == "Office") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
-                    foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                        Function.Call(Hash.REMOVE_IPL, style.IPL);
-                    }
-                    Function.Call(Hash.REMOVE_IPL, garageIPL);
-                    Function.Call(Hash.REMOVE_IPL, modShopIPL);
+                    RemoveAllIPLs();
                     Function.Call(Hash.REQUEST_IPL, officeInteriorStyle.IPL);
                     SinglePlayerOffice.MenuPool.CloseAllMenus();
                     SinglePlayerOffice.IsHudHidden = false;
@@ -775,52 +931,87 @@ namespace SinglePlayerOffice {
                     Game.Player.Character.Task.ClearAll();
                     Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
                     Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
-                    officeInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_chairs");
-                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, officeInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, "office_booze");
-                    foreach (string decor in extraOfficeDecors) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, officeInteriorID, decor);
-                    }
-                    if (hasExtraOfficeDecors) {
-                        foreach (string decor in extraOfficeDecors) {
-                            Function.Call(Hash._ENABLE_INTERIOR_PROP, officeInteriorID, decor);
-                        }
-                    }
-                    Function.Call(Hash.REFRESH_INTERIOR, officeInteriorID);
-                    ScenesController.StartOfficeScenes(officeInteriorID, owner, officeBossChairTrigger, officeStaffChairTriggers, officePaChairPos, officePaChairRot);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
+                    if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_booze");
+                    foreach (string decor in extraOfficeDecors) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, decor);
+                    if (hasExtraOfficeDecors) foreach (string decor in extraOfficeDecors) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decor);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
 
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (item.Text == "Garage") {
+                if (item.Text == "Garage One") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
-                    foreach (GarageDecorationStyle style in garageDecorationStyles) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                    }
-                    foreach (GarageLightingStyle style in garageLightingStyles) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                    }
-                    foreach (GarageNumberingStyle style in garageNumberingStyles) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, garageInteriorID, style.PropName);
-                    }
-                    foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                        Function.Call(Hash.REMOVE_IPL, style.IPL);
-                    }
-                    Function.Call(Hash.REMOVE_IPL, modShopIPL);
-                    if (!Function.Call<bool>(Hash.IS_IPL_ACTIVE, garageIPL)) Function.Call(Hash.REQUEST_IPL, garageIPL);
-                    Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageDecorationStyle.PropName);
-                    Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageLightingStyle.PropName);
-                    Function.Call(Hash._ENABLE_INTERIOR_PROP, garageInteriorID, garageNumberingStyle.PropName);
-                    Function.Call(Hash.REFRESH_INTERIOR, garageInteriorID);
+                    RemoveAllIPLs();
+                    Function.Call(Hash.REQUEST_IPL, garageOneIPL);
                     SinglePlayerOffice.MenuPool.CloseAllMenus();
                     SinglePlayerOffice.IsHudHidden = false;
-                    Game.Player.Character.Position = garageSpawn;
-                    Game.Player.Character.Heading = garageHeading;
+                    Game.Player.Character.Position = garageOneSpawn;
+                    Game.Player.Character.Heading = garageOneHeading;
                     Game.Player.Character.Task.ClearAll();
                     Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
                     Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageNumberingStyle style in garageOneNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageOneDecorationStyle.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageOneLightingStyle.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageOneNumberingStyle.PropName);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+
+                    Script.Wait(1000);
+                    Game.FadeScreenIn(1000);
+                }
+                if (item.Text == "Garage Two") {
+                    Game.FadeScreenOut(1000);
+                    Script.Wait(1000);
+
+                    RemoveAllIPLs();
+                    Function.Call(Hash.REQUEST_IPL, garageTwoIPL);
+                    SinglePlayerOffice.MenuPool.CloseAllMenus();
+                    SinglePlayerOffice.IsHudHidden = false;
+                    Game.Player.Character.Position = garageTwoSpawn;
+                    Game.Player.Character.Heading = garageTwoHeading;
+                    Game.Player.Character.Task.ClearAll();
+                    Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
+                    Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageNumberingStyle style in garageTwoNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageTwoDecorationStyle.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageTwoLightingStyle.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageTwoNumberingStyle.PropName);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+
+                    Script.Wait(1000);
+                    Game.FadeScreenIn(1000);
+                }
+                if (item.Text == "Garage Three") {
+                    Game.FadeScreenOut(1000);
+                    Script.Wait(1000);
+
+                    RemoveAllIPLs();
+                    Function.Call(Hash.REQUEST_IPL, garageThreeIPL);
+                    SinglePlayerOffice.MenuPool.CloseAllMenus();
+                    SinglePlayerOffice.IsHudHidden = false;
+                    Game.Player.Character.Position = garageThreeSpawn;
+                    Game.Player.Character.Heading = garageThreeHeading;
+                    Game.Player.Character.Task.ClearAll();
+                    Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
+                    Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    foreach (GarageDecorationStyle style in garageDecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageLightingStyle style in garageLightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    foreach (GarageNumberingStyle style in garageThreeNumberingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageThreeDecorationStyle.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageThreeLightingStyle.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, garageThreeNumberingStyle.PropName);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
 
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
@@ -829,16 +1020,8 @@ namespace SinglePlayerOffice {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
-                    foreach (ModShopFloorStyle style in modShopFloorStyles) {
-                        Function.Call(Hash._DISABLE_INTERIOR_PROP, modShopInteriorID, style.PropName);
-                    }
-                    foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                        Function.Call(Hash.REMOVE_IPL, style.IPL);
-                    }
-                    Function.Call(Hash.REMOVE_IPL, garageIPL);
-                    if (!Function.Call<bool>(Hash.IS_IPL_ACTIVE, modShopIPL)) Function.Call(Hash.REQUEST_IPL, modShopIPL);
-                    Function.Call(Hash._ENABLE_INTERIOR_PROP, modShopInteriorID, modShopFloorStyle.PropName);
-                    Function.Call(Hash.REFRESH_INTERIOR, modShopInteriorID);
+                    RemoveAllIPLs();
+                    Function.Call(Hash.REQUEST_IPL, modShopIPL);
                     SinglePlayerOffice.MenuPool.CloseAllMenus();
                     SinglePlayerOffice.IsHudHidden = false;
                     Game.Player.Character.Position = modShopSpawn;
@@ -846,6 +1029,10 @@ namespace SinglePlayerOffice {
                     Game.Player.Character.Task.ClearAll();
                     Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
                     Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
+                    int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+                    foreach (ModShopFloorStyle style in modShopFloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
+                    Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, modShopFloorStyle.PropName);
+                    Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
 
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
@@ -854,11 +1041,7 @@ namespace SinglePlayerOffice {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
-                    foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                        Function.Call(Hash.REMOVE_IPL, style.IPL);
-                    }
-                    Function.Call(Hash.REMOVE_IPL, garageIPL);
-                    Function.Call(Hash.REMOVE_IPL, modShopIPL);
+                    RemoveAllIPLs();
                     SinglePlayerOffice.MenuPool.CloseAllMenus();
                     SinglePlayerOffice.IsHudHidden = false;
                     Game.Player.Character.Position = heliPadSpawn;
@@ -874,11 +1057,7 @@ namespace SinglePlayerOffice {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
-                    foreach (OfficeInteriorStyle style in officeInteriorStyles) {
-                        Function.Call(Hash.REMOVE_IPL, style.IPL);
-                    }
-                    Function.Call(Hash.REMOVE_IPL, garageIPL);
-                    Function.Call(Hash.REMOVE_IPL, modShopIPL);
+                    RemoveAllIPLs();
                     SinglePlayerOffice.MenuPool.CloseAllMenus();
                     SinglePlayerOffice.IsHudHidden = false;
                     Game.Player.Character.Position = entranceSpawn;
@@ -898,9 +1077,129 @@ namespace SinglePlayerOffice {
             SinglePlayerOffice.MenuPool.Add(teleportMenu);
         }
 
+        private Location GetCurrentLocation() {
+            int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
+            if (Game.Player.Character.Position.DistanceTo(entranceTrigger) < 10f) return Location.Entrance;
+            else if (officeInteriorIDs.Contains(currentInteriorID)) return Location.Office;
+            else if (currentInteriorID == garageOneInteriorID) return Location.GarageOne;
+            else if (currentInteriorID == garageTwoInteriorID) return Location.GarageTwo;
+            else if (currentInteriorID == garageThreeInteriorID) return Location.GarageThree;
+            else if (currentInteriorID == modShopInteriorID) return Location.ModShop;
+            else if (Game.Player.Character.Position.DistanceTo(heliPadTrigger) < 10f) return Location.HeliPad;
+            return Location.None;
+        }
+
+        private int GetToTalPrice() {
+            return price + officeInteriorStyle.Price
+                + garageOneDecorationStyle.Price + garageOneLightingStyle.Price + garageOneNumberingStyle.Price
+                + garageTwoDecorationStyle.Price + garageTwoLightingStyle.Price + garageTwoNumberingStyle.Price
+                + garageThreeDecorationStyle.Price + garageThreeLightingStyle.Price + garageThreeNumberingStyle.Price
+                + modShopFloorStyle.Price + extraOfficeDecorsPrice;
+        }
+
+        private void UpdatePurchaseMenuPriceDescription() {
+            purchaseMenu.RemoveItemAt(purchaseMenu.MenuItems.Count - 1);
+            purchaseMenu.AddItem(new UIMenuItem("Purchase", String.Format("Total Price: ~g~${0:n0}", GetToTalPrice())));
+        }
+
+        private void UpdateTeleportMenuButtons() {
+            teleportMenu.Clear();
+            UIMenuItem goToOfficeBtn = new UIMenuItem("Office");
+            UIMenuItem goToGarageOneBtn = new UIMenuItem("Garage One");
+            UIMenuItem goToGarageTwoBtn = new UIMenuItem("Garage Two");
+            UIMenuItem goToGarageThreeBtn = new UIMenuItem("Garage Three");
+            UIMenuItem goToModShopBtn = new UIMenuItem("Mod Shop");
+            UIMenuItem goToHeliPadBtn = new UIMenuItem("Heli Pad");
+            UIMenuItem exitBuildingBtn = new UIMenuItem("Exit the building");
+            switch (GetCurrentLocation()) {
+                case Location.Entrance:
+                    teleportMenu.AddItem(goToOfficeBtn);
+                    teleportMenu.AddItem(goToGarageOneBtn);
+                    teleportMenu.AddItem(goToGarageTwoBtn);
+                    teleportMenu.AddItem(goToGarageThreeBtn);
+                    teleportMenu.AddItem(goToModShopBtn);
+                    teleportMenu.AddItem(goToHeliPadBtn);
+                    break;
+                case Location.Office:
+                    teleportMenu.AddItem(goToGarageOneBtn);
+                    teleportMenu.AddItem(goToGarageTwoBtn);
+                    teleportMenu.AddItem(goToGarageThreeBtn);
+                    teleportMenu.AddItem(goToModShopBtn);
+                    teleportMenu.AddItem(goToHeliPadBtn);
+                    teleportMenu.AddItem(exitBuildingBtn);
+                    break;
+                case Location.GarageOne:
+                    teleportMenu.AddItem(goToOfficeBtn);
+                    teleportMenu.AddItem(goToGarageTwoBtn);
+                    teleportMenu.AddItem(goToGarageThreeBtn);
+                    teleportMenu.AddItem(goToModShopBtn);
+                    teleportMenu.AddItem(goToHeliPadBtn);
+                    teleportMenu.AddItem(exitBuildingBtn);
+                    break;
+                case Location.GarageTwo:
+                    teleportMenu.AddItem(goToOfficeBtn);
+                    teleportMenu.AddItem(goToGarageOneBtn);
+                    teleportMenu.AddItem(goToGarageThreeBtn);
+                    teleportMenu.AddItem(goToModShopBtn);
+                    teleportMenu.AddItem(goToHeliPadBtn);
+                    teleportMenu.AddItem(exitBuildingBtn);
+                    break;
+                case Location.GarageThree:
+                    teleportMenu.AddItem(goToOfficeBtn);
+                    teleportMenu.AddItem(goToGarageOneBtn);
+                    teleportMenu.AddItem(goToGarageTwoBtn);
+                    teleportMenu.AddItem(goToModShopBtn);
+                    teleportMenu.AddItem(goToHeliPadBtn);
+                    teleportMenu.AddItem(exitBuildingBtn);
+                    break;
+                case Location.ModShop:
+                    teleportMenu.AddItem(goToOfficeBtn);
+                    teleportMenu.AddItem(goToGarageOneBtn);
+                    teleportMenu.AddItem(goToGarageTwoBtn);
+                    teleportMenu.AddItem(goToGarageThreeBtn);
+                    teleportMenu.AddItem(goToHeliPadBtn);
+                    teleportMenu.AddItem(exitBuildingBtn);
+                    break;
+                case Location.HeliPad:
+                    teleportMenu.AddItem(goToOfficeBtn);
+                    teleportMenu.AddItem(goToGarageOneBtn);
+                    teleportMenu.AddItem(goToGarageTwoBtn);
+                    teleportMenu.AddItem(goToGarageThreeBtn);
+                    teleportMenu.AddItem(goToModShopBtn);
+                    teleportMenu.AddItem(exitBuildingBtn);
+                    break;
+            }
+            teleportMenu.RefreshIndex();
+        }
+
+        private void HideBuildingExteriors() {
+            Function.Call(Hash._0x4B5CFC83122DF602);
+            foreach (string exterior in exteriorIPLs) {
+                int exteriorHash = Function.Call<int>(Hash.GET_HASH_KEY, exterior);
+                Function.Call(Hash._HIDE_MAP_OBJECT_THIS_FRAME, exteriorHash);
+                Function.Call((Hash)5819624144786551657, exteriorHash);
+            }
+            Function.Call(Hash._0x3669F1B198DCAA4F);
+        }
+
+        public string GetRadioEmitter() {
+            switch (officeInteriorStyle.Name) {
+                case "Old Spice Warms": return "SE_ex_int_office_01a_Radio_01";
+                case "Old Spice Classical": return "SE_ex_int_office_01b_Radio_01";
+                case "Old Spice Vintage": return "SE_ex_int_office_01c_Radio_01";
+                case "Executive Contrast": return "SE_ex_int_office_02a_Radio_01";
+                case "Executive Rich": return "SE_ex_int_office_02b_Radio_01";
+                case "Executive Cool": return "SE_ex_int_office_02c_Radio_01";
+                case "Power Broker Ice": return "SE_ex_int_office_03a_Radio_01";
+                case "Power Broker Conservative": return "SE_ex_int_office_03b_Radio_01";
+                case "Power Broker Polished": return "SE_ex_int_office_03c_Radio_01";
+            }
+            return null;
+        }
+
         public void OnTick() {
-            switch (GetCurrentFloor()) {
-                case Floor.Entrance:
+            switch (GetCurrentLocation()) {
+                case Location.Entrance:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(entranceTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         if (owner != Owner.None) {
                             if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
@@ -946,117 +1245,10 @@ namespace SinglePlayerOffice {
                         }
                     }
                     break;
-                case Floor.Office:
+                case Location.Office:
                     Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
                     HideBuildingExteriors();
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
-                        if (Game.Player.Character.Position.DistanceTo(officeTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
-                            if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                Game.Player.Character.Task.StandStill(-1);
-                                UpdateTeleportMenuButtons();
-                                SinglePlayerOffice.IsHudHidden = true;
-                                teleportMenu.Visible = true;
-                            }
-                        }
-                        if (Game.Player.Character.Position.DistanceTo(officeSofaPos) < 1.5f && InteractionsController.SofaInteractionStatus == -1) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SofaInteractionHelpText);
-                            if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartSofaInteraction(officeSofaPos, officeSofaRot);
-                            }
-                        }
-                        if (Game.Player.Character.Position.DistanceTo(officeTVTrigger) < 1.5f && InteractionsController.TVInteractionStatus == -1) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.TVInteractionHelpText);
-                            if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartTVInteraction();
-                            }
-                        }
-                        if (Game.Player.Character.Position.DistanceTo(officeRadioTrigger) < 1.0f && InteractionsController.RadioInteractionStatus == -1) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.RadioInteractionHelpText);
-                            if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.StartRadioInteraction(officeRadioTrigger, officeRadioHeading, officeInteriorStyle);
-                            }
-                        }
-                        if (Game.Player.Character.Position.DistanceTo(officeWardrobeTrigger) < 1.0f && InteractionsController.WardrobeInteractionStatus == -1) {
-                            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                                SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.WardrobeInteractionHelpText);
-                                if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                    InteractionsController.StartWardrobeInteraction(officeWardrobeTrigger, officeWardrobeHeading, officeWardrobeCamPos, officeWardrobeCamRot, officeWardrobeCamFOV);
-                                }
-                            }
-                            else {
-                                SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.WardrobeInteractionRejectHelpText);
-                            }
-                        }
-                        Prop[] nearbyProps = World.GetNearbyProps(Game.Player.Character.Position, 1.4f);
-                        if (nearbyProps.Length == 0) break;
-                        Prop closestProp = World.GetClosest(Game.Player.Character.Position, nearbyProps);
-                        switch (closestProp.Model.Hash) {
-                            case -1626066319:
-                            case 1339364336:
-                                if (InteractionsController.ComputerInteractionStatus != -1) break;
-                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.ComputerInterationHelpText);
-                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartComputerInteraction(closestProp);
-                                }
-                                else SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.ComputerInteractionRejectHelpText);
-                                break;
-                            case 646926492:
-                            case 845785021:
-                            case -1126494299:
-                            case -524920966:
-                            case -1842578680:
-                            case -1387653807:
-                                if (InteractionsController.LeftSafeInteractionStatus != -1) break;
-                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.LeftSafeInteractionHelpText);
-                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartLeftSafeInteraction(closestProp);
-                                }
-                                else SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SafeInteractionRejectHelpText);
-                                break;
-                            case -1176373441:
-                            case -1149617688:
-                            case -548219756:
-                            case 1854960432:
-                            case 682108925:
-                            case 1002451519:
-                                if (InteractionsController.RightSafeInteractionStatus != -1) break;
-                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.RightSafeInteractionHelpText);
-                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartRightSafeInteraction(closestProp);
-                                }
-                                else SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.SafeInteractionRejectHelpText);
-                                break;
-                            case -1278649385:
-                                Prop[] nearbyChairs = World.GetNearbyProps(closestProp.Position, 1.4f, -1278649385);
-                                Prop[] nearbyLaptops = World.GetNearbyProps(closestProp.Position, 1f, 1385417869);
-                                if (nearbyChairs.Length == 1 && nearbyLaptops.Length == 0) {
-                                    if (InteractionsController.BossChairInteractionStatus != -1) break;
-                                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
-                                        SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.BossChairInteractionHelpText);
-                                        if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartBossChairInteraction(closestProp);
-                                    }
-                                    else SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.BossChairInteractionRejectHelpText);
-                                }
-                                else if (nearbyChairs.Length != 1 && nearbyLaptops.Length == 0) {
-                                    if (InteractionsController.StaffChairInteractionStatus != -1) break;
-                                    if (Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, closestProp, "anim@amb@office@boardroom@crew@male@var_b@base@", "base_chair", 2) || Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, closestProp, "anim@amb@office@boardroom@crew@female@var_c@base@", "base_chair", 2)) break;
-                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.StaffChairInteractionHelpText);
-                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartStaffChairInteraction(closestProp);
-                                }
-                                else if (nearbyChairs.Length == 1 && nearbyLaptops.Length != 0) {
-                                    if (InteractionsController.LaptopChairInteractionStatus != -1) break;
-                                    SinglePlayerOffice.DisplayHelpTextThisFrame(InteractionsController.LaptopChairInteractionHelpText);
-                                    if (Game.IsControlPressed(2, GTA.Control.Context)) InteractionsController.StartLaptopChairInteraction(closestProp);
-                                }
-                                break;
-                        }
-                    }
-                    break;
-                case Floor.Garage:
-                    Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
-                    HideBuildingExteriors();
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(garageTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(officeTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
                         if (Game.IsControlPressed(2, GTA.Control.Context)) {
                             Game.Player.Character.Task.StandStill(-1);
@@ -1066,7 +1258,46 @@ namespace SinglePlayerOffice {
                         }
                     }
                     break;
-                case Floor.ModShop:
+                case Location.GarageOne:
+                    Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
+                    HideBuildingExteriors();
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(garageOneTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                        SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
+                        if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                            Game.Player.Character.Task.StandStill(-1);
+                            UpdateTeleportMenuButtons();
+                            SinglePlayerOffice.IsHudHidden = true;
+                            teleportMenu.Visible = true;
+                        }
+                    }
+                    break;
+                case Location.GarageTwo:
+                    Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
+                    HideBuildingExteriors();
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(garageTwoTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                        SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
+                        if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                            Game.Player.Character.Task.StandStill(-1);
+                            UpdateTeleportMenuButtons();
+                            SinglePlayerOffice.IsHudHidden = true;
+                            teleportMenu.Visible = true;
+                        }
+                    }
+                    break;
+                case Location.GarageThree:
+                    Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
+                    HideBuildingExteriors();
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(garageThreeTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                        SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
+                        if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                            Game.Player.Character.Task.StandStill(-1);
+                            UpdateTeleportMenuButtons();
+                            SinglePlayerOffice.IsHudHidden = true;
+                            teleportMenu.Visible = true;
+                        }
+                    }
+                    break;
+                case Location.ModShop:
                     Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
                     HideBuildingExteriors();
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(modShopTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
@@ -1079,7 +1310,7 @@ namespace SinglePlayerOffice {
                         }
                     }
                     break;
-                case Floor.HeliPad:
+                case Location.HeliPad:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(heliPadTrigger) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the stairs");
                         if (Game.IsControlPressed(2, GTA.Control.Context)) {

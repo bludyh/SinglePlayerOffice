@@ -5,5 +5,5 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SinglePlayerOffice {
-    enum Floor { None, Entrance, Garage, Office, ModShop, HeliPad}
+    enum Location { None, Entrance, Office, GarageOne, GarageTwo, GarageThree, ModShop, HeliPad}
 }
