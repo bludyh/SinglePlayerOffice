@@ -51,6 +51,9 @@
   <ItemGroup>
     <Compile Include="Arcadius.cs" />
     <Compile Include="Building.cs" />
+    <Compile Include="Entrance.cs" />
+    <Compile Include="Garage.cs" />
+    <Compile Include="HeliPad.cs" />
     <Compile Include="InteractionsController.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="GarageDecorationStyle.cs" />
@@ -58,6 +61,8 @@
     <Compile Include="GarageNumberingStyle.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LomBank.cs" />
+    <Compile Include="ModShop.cs" />
+    <Compile Include="Office.cs" />
     <Compile Include="SinglePlayerOffice.cs" />
     <Compile Include="MazeBank.cs" />
     <Compile Include="MazeBankWest.cs" />
@@ -83,6 +88,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "D:\Games\Steam\steamapps\common\Grand Theft Auto V\scripts"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripts"</PostBuildEvent>
   </PropertyGroup>
 </Project>

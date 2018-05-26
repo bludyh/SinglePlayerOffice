@@ -10,3 +10,12 @@ D:\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\SinglePlayerOffice\
 D:\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.csproj.CopyComplete
 D:\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.dll
 D:\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.pdb
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\bin\Debug\SinglePlayerOffice.dll
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\bin\Debug\SinglePlayerOffice.pdb
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\bin\Debug\ScriptHookVDotNet2.xml
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.csprojResolveAssemblyReference.cache
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.Properties.Resources.resources
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.csproj.GenerateResource.Cache
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.csproj.CoreCompileInputs.cache
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.dll
+D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripting\My Scripts\SinglePlayerOffice\SinglePlayerOffice\obj\Debug\SinglePlayerOffice.pdb

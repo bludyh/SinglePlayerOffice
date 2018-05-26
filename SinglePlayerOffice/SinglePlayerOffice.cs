@@ -52,20 +52,17 @@ namespace SinglePlayerOffice {
 
         public static Building GetCurrentBuilding() {
             int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
-            if (Game.Player.Character.Position.DistanceTo(Arcadius.EntranceTrigger) < 10f || Arcadius.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(Arcadius.HeliPadTrigger) < 10f) return Arcadius;
-            else if (Game.Player.Character.Position.DistanceTo(LomBank.EntranceTrigger) < 10f || LomBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(LomBank.HeliPadTrigger) < 10f) return LomBank;
-            else if (Game.Player.Character.Position.DistanceTo(MazeBank.EntranceTrigger) < 10f || MazeBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBank.HeliPadTrigger) < 10f) return MazeBank;
-            else if (Game.Player.Character.Position.DistanceTo(MazeBankWest.EntranceTrigger) < 10f || MazeBankWest.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBankWest.HeliPadTrigger) < 10f) return MazeBankWest;
+            if (Game.Player.Character.Position.DistanceTo(Arcadius.Entrance.Trigger) < 20f || Arcadius.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(Arcadius.HeliPad.Trigger) < 20f) return Arcadius;
+            else if (Game.Player.Character.Position.DistanceTo(LomBank.Entrance.Trigger) < 20f || LomBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(LomBank.HeliPad.Trigger) < 20f) return LomBank;
+            else if (Game.Player.Character.Position.DistanceTo(MazeBank.Entrance.Trigger) < 20f || MazeBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBank.HeliPad.Trigger) < 20f) return MazeBank;
+            else if (Game.Player.Character.Position.DistanceTo(MazeBankWest.Entrance.Trigger) < 20f || MazeBankWest.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBankWest.HeliPad.Trigger) < 20f) return MazeBankWest;
             return null;
         }
 
         private void OnTick(object sender, EventArgs e) {
-            if (IsHudHidden) Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
             MenuPool.ProcessMenus();
-            Arcadius.OnTick();
-            LomBank.OnTick();
-            MazeBank.OnTick();
-            MazeBankWest.OnTick();
+            if (IsHudHidden) Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
+            if (GetCurrentBuilding() != null) GetCurrentBuilding().OnTick();
         }
 
         protected override void Dispose(bool A_0) {
