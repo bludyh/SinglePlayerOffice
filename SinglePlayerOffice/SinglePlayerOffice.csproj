@@ -32,10 +32,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NativeUI">
-      <HintPath>..\..\..\scripts\NativeUI.dll</HintPath>
+      <HintPath>..\..\..\..\scripts\NativeUI.dll</HintPath>
     </Reference>
     <Reference Include="ScriptHookVDotNet2">
-      <HintPath>..\..\..\ScriptHookVDotNet2.dll</HintPath>
+      <HintPath>..\..\..\..\ScriptHookVDotNet2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,6 +54,8 @@
     <Compile Include="Building\Entrance.cs" />
     <Compile Include="Building\Garage.cs" />
     <Compile Include="Building\HeliPad.cs" />
+    <Compile Include="Building\GarageEntrance.cs" />
+    <Compile Include="Building\GaragesController.cs" />
     <Compile Include="Interactions\InteractionsController.cs" />
     <Compile Include="Building\Location.cs" />
     <Compile Include="Building\GarageDecorationStyle.cs" />

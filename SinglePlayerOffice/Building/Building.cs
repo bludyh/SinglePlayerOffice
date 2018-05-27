@@ -19,6 +19,7 @@ namespace SinglePlayerOffice {
         protected List<int> interiorIDs;
         protected List<string> exteriorIPLs;
         protected Entrance entrance;
+        protected GarageEntrance garageEntrance;
         protected List<string> extraOfficeDecors;
         protected Office office;
         protected List<GarageDecorationStyle> garageDecorationStyles;
@@ -38,17 +39,18 @@ namespace SinglePlayerOffice {
         private Camera purchaseCam;
         private UIMenu purchaseMenu;
         private UIMenu teleportMenu;
+        private UIMenu vehicleElevatorMenu;
 
         public Owner Owner { get { return owner; } }
         public List<int> InteriorIDs { get { return interiorIDs; } }
         public Entrance Entrance { get { return entrance; } }
+        public GarageEntrance GarageEntrance { get { return garageEntrance; } }
         public Office Office { get { return office; } }
         public Garage GarageOne { get { return garageOne; } }
         public Garage GarageTwo { get { return garageTwo; } }
         public Garage GarageThree { get { return garageThree; } }
         public ModShop ModShop { get { return modShop; } }
         public HeliPad HeliPad { get { return heliPad; } }
-
 
         protected Building() {
             extraOfficeDecors = new List<string>() {
@@ -375,11 +377,11 @@ namespace SinglePlayerOffice {
                     garageOne.DecorationCam = World.CreateCamera(garageOne.DecorationCamPos, garageOne.DecorationCamRot, garageOne.DecorationCamFOV);
                     World.RenderingCamera.InterpTo(garageOne.DecorationCam, 1000, true, true);
                 }
-                if (nextMenu == garageOneLightingsMenu && World.RenderingCamera != garageOne.LightingCam) {
+                else if (nextMenu == garageOneLightingsMenu && World.RenderingCamera != garageOne.LightingCam) {
                     garageOne.LightingCam = World.CreateCamera(garageOne.LightingCamPos, garageOne.LightingCamRot, garageOne.LightingCamFOV);
                     World.RenderingCamera.InterpTo(garageOne.LightingCam, 1000, true, true);
                 }
-                if (nextMenu == garageOneNumberingsMenu && World.RenderingCamera != garageOne.NumberingCam) {
+                else if (nextMenu == garageOneNumberingsMenu && World.RenderingCamera != garageOne.NumberingCam) {
                     garageOne.NumberingCam = World.CreateCamera(garageOne.NumberingCamPos, garageOne.NumberingCamRot, garageOne.NumberingCamFOV);
                     World.RenderingCamera.InterpTo(garageOne.NumberingCam, 1000, true, true);
                 }
@@ -470,11 +472,11 @@ namespace SinglePlayerOffice {
                     garageTwo.DecorationCam = World.CreateCamera(garageTwo.DecorationCamPos, garageTwo.DecorationCamRot, garageTwo.DecorationCamFOV);
                     World.RenderingCamera.InterpTo(garageTwo.DecorationCam, 1000, true, true);
                 }
-                if (nextMenu == garageTwoLightingsMenu && World.RenderingCamera != garageTwo.LightingCam) {
+                else if (nextMenu == garageTwoLightingsMenu && World.RenderingCamera != garageTwo.LightingCam) {
                     garageTwo.LightingCam = World.CreateCamera(garageTwo.LightingCamPos, garageTwo.LightingCamRot, garageTwo.LightingCamFOV);
                     World.RenderingCamera.InterpTo(garageTwo.LightingCam, 1000, true, true);
                 }
-                if (nextMenu == garageTwoNumberingsMenu && World.RenderingCamera != garageTwo.NumberingCam) {
+                else if (nextMenu == garageTwoNumberingsMenu && World.RenderingCamera != garageTwo.NumberingCam) {
                     garageTwo.NumberingCam = World.CreateCamera(garageTwo.NumberingCamPos, garageTwo.NumberingCamRot, garageTwo.NumberingCamFOV);
                     World.RenderingCamera.InterpTo(garageTwo.NumberingCam, 1000, true, true);
                 }
@@ -565,11 +567,11 @@ namespace SinglePlayerOffice {
                     garageThree.DecorationCam = World.CreateCamera(garageThree.DecorationCamPos, garageThree.DecorationCamRot, garageThree.DecorationCamFOV);
                     World.RenderingCamera.InterpTo(garageThree.DecorationCam, 1000, true, true);
                 }
-                if (nextMenu == garageThreeLightingsMenu && World.RenderingCamera != garageThree.LightingCam) {
+                else if (nextMenu == garageThreeLightingsMenu && World.RenderingCamera != garageThree.LightingCam) {
                     garageThree.LightingCam = World.CreateCamera(garageThree.LightingCamPos, garageThree.LightingCamRot, garageThree.LightingCamFOV);
                     World.RenderingCamera.InterpTo(garageThree.LightingCam, 1000, true, true);
                 }
-                if (nextMenu == garageThreeNumberingsMenu && World.RenderingCamera != garageThree.NumberingCam) {
+                else if (nextMenu == garageThreeNumberingsMenu && World.RenderingCamera != garageThree.NumberingCam) {
                     garageThree.NumberingCam = World.CreateCamera(garageThree.NumberingCamPos, garageThree.NumberingCamRot, garageThree.NumberingCamFOV);
                     World.RenderingCamera.InterpTo(garageThree.NumberingCam, 1000, true, true);
                 }
@@ -626,7 +628,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (nextMenu == garageOneInteriorsMenu) {
+                else if (nextMenu == garageOneInteriorsMenu) {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -648,7 +650,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (nextMenu == garageTwoInteriorsMenu) {
+                else if (nextMenu == garageTwoInteriorsMenu) {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -670,7 +672,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (nextMenu == garageThreeInteriorsMenu) {
+                else if (nextMenu == garageThreeInteriorsMenu) {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -692,7 +694,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (nextMenu == modShopInteriorsMenu) {
+                else if (nextMenu == modShopInteriorsMenu) {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -826,11 +828,16 @@ namespace SinglePlayerOffice {
             SinglePlayerOffice.MenuPool.Add(purchaseMenu);
         }
 
+        private void UpdatePurchaseMenuPriceDescription() {
+            purchaseMenu.RemoveItemAt(purchaseMenu.MenuItems.Count - 1);
+            purchaseMenu.AddItem(new UIMenuItem("Purchase", String.Format("Total Price: ~g~${0:n0}", GetToTalPrice())));
+        }
+
         protected void CreateTeleportMenu() {
-            teleportMenu = new UIMenu(buildingName, "");
+            teleportMenu = new UIMenu(buildingName, "~b~Floor Options");
+
             teleportMenu.OnItemSelect += (sender, item, index) => {
                 InteractionsController.ResetInterations();
-                //ScenesController.ResetScenes();
                 if (item.Text == "Office") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
@@ -854,7 +861,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (item.Text == "Garage One") {
+                else if (item.Text == "Garage One") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -879,7 +886,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (item.Text == "Garage Two") {
+                else if (item.Text == "Garage Two") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -904,7 +911,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (item.Text == "Garage Three") {
+                else if (item.Text == "Garage Three") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -929,7 +936,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (item.Text == "Mod Shop") {
+                else if (item.Text == "Mod Shop") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -950,7 +957,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (item.Text == "Heli Pad") {
+                else if (item.Text == "Heli Pad") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -966,7 +973,7 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     Game.FadeScreenIn(1000);
                 }
-                if (item.Text == "Exit the building") {
+                else if (item.Text == "Exit the building") {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
 
@@ -988,31 +995,6 @@ namespace SinglePlayerOffice {
                 Game.Player.Character.Task.ClearAll();
             };
             SinglePlayerOffice.MenuPool.Add(teleportMenu);
-        }
-
-        private Location GetCurrentLocation() {
-            int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
-            if (Game.Player.Character.Position.DistanceTo(entrance.Trigger) < 20f) return Location.Entrance;
-            else if (office.InteriorIDs.Contains(currentInteriorID)) return Location.Office;
-            else if (currentInteriorID == garageOne.InteriorID) return Location.GarageOne;
-            else if (currentInteriorID == garageTwo.InteriorID) return Location.GarageTwo;
-            else if (currentInteriorID == garageThree.InteriorID) return Location.GarageThree;
-            else if (currentInteriorID == modShop.InteriorID) return Location.ModShop;
-            else if (Game.Player.Character.Position.DistanceTo(heliPad.Trigger) < 20f) return Location.HeliPad;
-            return Location.None;
-        }
-
-        private int GetToTalPrice() {
-            return price + office.InteriorStyle.Price
-                + garageOne.DecorationStyle.Price + garageOne.LightingStyle.Price + garageOne.NumberingStyle.Price
-                + garageTwo.DecorationStyle.Price + garageTwo.LightingStyle.Price + garageTwo.NumberingStyle.Price
-                + garageThree.DecorationStyle.Price + garageThree.LightingStyle.Price + garageThree.NumberingStyle.Price
-                + modShop.FloorStyle.Price + office.ExtraDecorsPrice;
-        }
-
-        private void UpdatePurchaseMenuPriceDescription() {
-            purchaseMenu.RemoveItemAt(purchaseMenu.MenuItems.Count - 1);
-            purchaseMenu.AddItem(new UIMenuItem("Purchase", String.Format("Total Price: ~g~${0:n0}", GetToTalPrice())));
         }
 
         private void UpdateTeleportMenuButtons() {
@@ -1085,14 +1067,43 @@ namespace SinglePlayerOffice {
             teleportMenu.RefreshIndex();
         }
 
-        private void HideBuildingExteriors() {
-            Function.Call(Hash._0x4B5CFC83122DF602);
-            foreach (string exterior in exteriorIPLs) {
-                int exteriorHash = Function.Call<int>(Hash.GET_HASH_KEY, exterior);
-                Function.Call(Hash._HIDE_MAP_OBJECT_THIS_FRAME, exteriorHash);
-                Function.Call((Hash)5819624144786551657, exteriorHash);
-            }
-            Function.Call(Hash._0x3669F1B198DCAA4F);
+        protected void CreateVehicleElevatorMenu() {
+            vehicleElevatorMenu = new UIMenu(buildingName, "~b~Garage Options") { MouseEdgeEnabled = false };
+            vehicleElevatorMenu.AddItem(new UIMenuItem("Garage One"));
+            vehicleElevatorMenu.AddItem(new UIMenuItem("Garage Two"));
+            vehicleElevatorMenu.AddItem(new UIMenuItem("Garage Three"));
+            vehicleElevatorMenu.RefreshIndex();
+            vehicleElevatorMenu.OnItemSelect += (sender, item, index) => {
+            };
+            vehicleElevatorMenu.OnMenuClose += (sender) => {
+                World.RenderingCamera = null;
+                World.DestroyAllCameras();
+                SinglePlayerOffice.IsHudHidden = false;
+                Game.Player.Character.Task.ClearAll();
+                garageEntrance.Status = 0;
+            };
+            SinglePlayerOffice.MenuPool.Add(vehicleElevatorMenu);
+        }
+
+        public Location GetCurrentLocation() {
+            int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
+            if (Game.Player.Character.Position.DistanceTo(entrance.Trigger) < 10f) return Location.Entrance;
+            else if (Game.Player.Character.Position.DistanceTo(garageEntrance.Trigger) < 10f) return Location.GarageEntrance;
+            else if (office.InteriorIDs.Contains(currentInteriorID)) return Location.Office;
+            else if (currentInteriorID == garageOne.InteriorID) return Location.GarageOne;
+            else if (currentInteriorID == garageTwo.InteriorID) return Location.GarageTwo;
+            else if (currentInteriorID == garageThree.InteriorID) return Location.GarageThree;
+            else if (currentInteriorID == modShop.InteriorID) return Location.ModShop;
+            else if (Game.Player.Character.Position.DistanceTo(heliPad.Trigger) < 10f) return Location.HeliPad;
+            return Location.None;
+        }
+
+        private int GetToTalPrice() {
+            return price + office.InteriorStyle.Price
+                + garageOne.DecorationStyle.Price + garageOne.LightingStyle.Price + garageOne.NumberingStyle.Price
+                + garageTwo.DecorationStyle.Price + garageTwo.LightingStyle.Price + garageTwo.NumberingStyle.Price
+                + garageThree.DecorationStyle.Price + garageThree.LightingStyle.Price + garageThree.NumberingStyle.Price
+                + modShop.FloorStyle.Price + office.ExtraDecorsPrice;
         }
 
         public string GetRadioEmitter() {
@@ -1108,6 +1119,16 @@ namespace SinglePlayerOffice {
                 case "Power Broker Polished": return "SE_ex_int_office_03c_Radio_01";
             }
             return null;
+        }
+
+        private void HideBuildingExteriors() {
+            Function.Call(Hash._0x4B5CFC83122DF602);
+            foreach (string exterior in exteriorIPLs) {
+                int exteriorHash = Function.Call<int>(Hash.GET_HASH_KEY, exterior);
+                Function.Call(Hash._HIDE_MAP_OBJECT_THIS_FRAME, exteriorHash);
+                Function.Call((Hash)5819624144786551657, exteriorHash);
+            }
+            Function.Call(Hash._0x3669F1B198DCAA4F);
         }
 
         public void OnTick() {
@@ -1156,6 +1177,22 @@ namespace SinglePlayerOffice {
                                 Game.FadeScreenIn(1000);
                             }
                         }
+                    }
+                    break;
+                case Location.GarageEntrance:
+                    if (!Game.Player.Character.IsDead && Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(garageEntrance.Trigger) < 10f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                        if (owner != Owner.None) {
+                            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)owner) {
+                                SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the vehicle elevator");
+                                if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                                    garageEntrance.Status = 1;
+                                    SinglePlayerOffice.IsHudHidden = true;
+                                    vehicleElevatorMenu.Visible = true;
+                                }
+                            }
+                            else SinglePlayerOffice.DisplayHelpTextThisFrame("Only the owner can use the vehicle elevator");
+                        }
+                        else SinglePlayerOffice.DisplayHelpTextThisFrame("You do not own this building");
                     }
                     break;
                 case Location.Office:

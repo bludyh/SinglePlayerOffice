@@ -52,10 +52,10 @@ namespace SinglePlayerOffice {
 
         public static Building GetCurrentBuilding() {
             int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
-            if (Game.Player.Character.Position.DistanceTo(Arcadius.Entrance.Trigger) < 20f || Arcadius.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(Arcadius.HeliPad.Trigger) < 20f) return Arcadius;
-            else if (Game.Player.Character.Position.DistanceTo(LomBank.Entrance.Trigger) < 20f || LomBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(LomBank.HeliPad.Trigger) < 20f) return LomBank;
-            else if (Game.Player.Character.Position.DistanceTo(MazeBank.Entrance.Trigger) < 20f || MazeBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBank.HeliPad.Trigger) < 20f) return MazeBank;
-            else if (Game.Player.Character.Position.DistanceTo(MazeBankWest.Entrance.Trigger) < 20f || MazeBankWest.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBankWest.HeliPad.Trigger) < 20f) return MazeBankWest;
+            if (Game.Player.Character.Position.DistanceTo(Arcadius.Entrance.Trigger) < 10f || Game.Player.Character.Position.DistanceTo(Arcadius.GarageEntrance.Trigger) < 10f || Arcadius.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(Arcadius.HeliPad.Trigger) < 10f) return Arcadius;
+            else if (Game.Player.Character.Position.DistanceTo(LomBank.Entrance.Trigger) < 10f || Game.Player.Character.Position.DistanceTo(LomBank.GarageEntrance.Trigger) < 10f || LomBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(LomBank.HeliPad.Trigger) < 10f) return LomBank;
+            else if (Game.Player.Character.Position.DistanceTo(MazeBank.Entrance.Trigger) < 10f || Game.Player.Character.Position.DistanceTo(MazeBank.GarageEntrance.Trigger) < 10f || MazeBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBank.HeliPad.Trigger) < 10f) return MazeBank;
+            else if (Game.Player.Character.Position.DistanceTo(MazeBankWest.Entrance.Trigger) < 10f || Game.Player.Character.Position.DistanceTo(MazeBankWest.GarageEntrance.Trigger) < 10f || MazeBankWest.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBankWest.HeliPad.Trigger) < 10f) return MazeBankWest;
             return null;
         }
 

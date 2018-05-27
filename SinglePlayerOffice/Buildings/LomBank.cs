@@ -24,6 +24,14 @@ namespace SinglePlayerOffice {
                     Spawn = new Vector3(-1582.192f, -556.967f, 34.954f),
                     Heading = 32.916f
                 };
+                garageEntrance = new GarageEntrance {
+                    Trigger = new Vector3(-1537.423f, -577.773f, 25.344f),
+                    Spawn = new Vector3(-1537.423f, -577.773f, 25.344f),
+                    Heading = 35f,
+                    CamPos = new Vector3(-1536.926f, -581.923f, 26.708f),
+                    CamRot = new Vector3(-10f, 0f, 0f),
+                    CamFOV = 60f
+                };
                 office = new Office {
                     InteriorIDs = new List<int>() { 241921, 242177, 241665, 240897, 241153, 241409, 242433, 242689, 242945 },
                     Trigger = new Vector3(-1579.750f, -565.049f, 108.523f),
@@ -176,6 +184,7 @@ namespace SinglePlayerOffice {
                 CreateBuildingBlip();
                 CreatePurchaseMenu();
                 CreateTeleportMenu();
+                CreateVehicleElevatorMenu();
             }
             catch (Exception ex) {
                 Logger.Log(ex.ToString());
