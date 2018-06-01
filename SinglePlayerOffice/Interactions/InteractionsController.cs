@@ -144,7 +144,7 @@ namespace SinglePlayerOffice {
 
         public InteractionsController() {
             Tick += OnTick;
-
+            Aborted += OnAborted;
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@seating@male@var_a@base@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@seating@male@var_a@base@");
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@game@seated@male@var_c@base@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@game@seated@male@var_c@base@");
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boss@male@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boss@male@");
@@ -155,8 +155,7 @@ namespace SinglePlayerOffice {
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boardroom@crew@male@var_c@base@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@crew@male@var_c@base@");
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boardroom@crew@male@var_b@base@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@crew@male@var_b@base@");
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@laptops@male@var_b@base@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@laptops@male@var_b@base@");
-            if (!Function.Call<bool>(Hash._0x0145F696AAAAD2E4, "MPDesktop")) Function.Call(Hash._0xDFA2EF8E04127DD5, "MPDesktop", false);
-
+            if (!Function.Call<bool>(Hash.HAS_STREAMED_TEXTURE_DICT_LOADED, "MPDesktop")) Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, "MPDesktop", false);
             CreateRadioMenu();
             CreateWardrobeMenu();
         }
@@ -470,16 +469,17 @@ namespace SinglePlayerOffice {
         private static void SofaOnTick() {
             switch (sofaInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Sofa sofa in sofas) {
-                        if (Game.Player.Character.Position.DistanceTo(sofa.Position) < 1.5f) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(SofaInteractionHelpText);
-                            if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                InteractionsController.sofa = sofa;
-                                SinglePlayerOffice.IsHudHidden = true;
-                                sofaInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Sofa sofa in sofas) {
+                            if (Game.Player.Character.Position.DistanceTo(sofa.Position) < 1.5f) {
+                                SinglePlayerOffice.DisplayHelpTextThisFrame(SofaInteractionHelpText);
+                                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                    InteractionsController.sofa = sofa;
+                                    SinglePlayerOffice.IsHudHidden = true;
+                                    sofaInteractionStatus = 1;
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                     break;
@@ -503,11 +503,11 @@ namespace SinglePlayerOffice {
                     break;
                 case 4:
                     SinglePlayerOffice.DisplayHelpTextThisFrame(TVInteractionHelpText + "~n~Press ~INPUT_AIM~ to stand up");
-                    if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                         sofaInteractionStatus = 5;
                         break;
                     }
-                    if (Game.IsControlPressed(2, GTA.Control.Aim)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Aim)) {
                         sofaInteractionStatus = 8;
                         break;
                     }
@@ -565,15 +565,16 @@ namespace SinglePlayerOffice {
         private static void TVOnTick() {
             switch (tvInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.5f)) {
-                        if (prop.Model.Hash == 608950395 || prop.Model.Hash == 1036195894) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(TVInteractionHelpText);
-                            if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                tv = prop;
-                                tvInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.5f)) {
+                            if (prop.Model.Hash == 608950395 || prop.Model.Hash == 1036195894) {
+                                SinglePlayerOffice.DisplayHelpTextThisFrame(TVInteractionHelpText);
+                                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                    tv = prop;
+                                    tvInteractionStatus = 1;
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                     break;
@@ -626,19 +627,20 @@ namespace SinglePlayerOffice {
         private static void ComputerOnTick() {
             switch (computerInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.2f)) {
-                        if (prop.Model.Hash == -1626066319 || prop.Model.Hash == 1339364336) {
-                            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
-                                SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
-                                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                    computerChair = prop;
-                                    SinglePlayerOffice.IsHudHidden = true;
-                                    computerInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.2f)) {
+                            if (prop.Model.Hash == -1626066319 || prop.Model.Hash == 1339364336) {
+                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
+                                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                        computerChair = prop;
+                                        SinglePlayerOffice.IsHudHidden = true;
+                                        computerInteractionStatus = 1;
+                                    }
                                 }
+                                else SinglePlayerOffice.DisplayHelpTextThisFrame(ComputerInteractionRejectHelpText);
+                                break;
                             }
-                            else SinglePlayerOffice.DisplayHelpTextThisFrame(ComputerInteractionRejectHelpText);
-                            break;
                         }
                     }
                     break;
@@ -664,11 +666,11 @@ namespace SinglePlayerOffice {
                     break;
                 case 4:
                     SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the computer~n~Press ~INPUT_AIM~ to stand up");
-                    if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                         computerInteractionStatus = 5;
                         break;
                     }
-                    if (Game.IsControlPressed(2, GTA.Control.Aim)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Aim)) {
                         computerInteractionStatus = 9;
                         break;
                     }
@@ -713,7 +715,7 @@ namespace SinglePlayerOffice {
                     Function.Call((Hash)16403195341277969835);
                     Function.Call(Hash.SET_TEXT_RENDER_ID, Function.Call<int>(Hash.GET_DEFAULT_SCRIPT_RENDERTARGET_RENDER_ID));
                     SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_AIM~ to stop using the computer");
-                    if (Game.IsControlPressed(2, GTA.Control.Aim)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Aim)) {
                         computerInteractionStatus = 8;
                         break;
                     }
@@ -746,25 +748,26 @@ namespace SinglePlayerOffice {
         private static void LeftSafeOnTick() {
             switch (leftSafeInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.4f)) {
-                        switch (prop.Model.Hash) {
-                            case 646926492:
-                            case 845785021:
-                            case -1126494299:
-                            case -524920966:
-                            case -1842578680:
-                            case -1387653807:
-                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
-                                    SinglePlayerOffice.DisplayHelpTextThisFrame(LeftSafeInteractionHelpText);
-                                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                        leftSafeDoor = prop;
-                                        SinglePlayerOffice.IsHudHidden = true;
-                                        leftSafeInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.4f)) {
+                            switch (prop.Model.Hash) {
+                                case 646926492:
+                                case 845785021:
+                                case -1126494299:
+                                case -524920966:
+                                case -1842578680:
+                                case -1387653807:
+                                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
+                                        SinglePlayerOffice.DisplayHelpTextThisFrame(LeftSafeInteractionHelpText);
+                                        if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                            leftSafeDoor = prop;
+                                            SinglePlayerOffice.IsHudHidden = true;
+                                            leftSafeInteractionStatus = 1;
+                                        }
                                     }
-                                }
-                                else SinglePlayerOffice.DisplayHelpTextThisFrame(SafeInteractionRejectHelpText);
-                                break;
+                                    else SinglePlayerOffice.DisplayHelpTextThisFrame(SafeInteractionRejectHelpText);
+                                    break;
+                            }
                         }
                     }
                     break;
@@ -810,25 +813,26 @@ namespace SinglePlayerOffice {
         private static void RightSafeOnTick() {
             switch (rightSafeInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.4f)) {
-                        switch (prop.Model.Hash) {
-                            case -1176373441:
-                            case -1149617688:
-                            case -548219756:
-                            case 1854960432:
-                            case 682108925:
-                            case 1002451519:
-                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
-                                    SinglePlayerOffice.DisplayHelpTextThisFrame(RightSafeInteractionHelpText);
-                                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                        rightSafeDoor = prop;
-                                        SinglePlayerOffice.IsHudHidden = true;
-                                        rightSafeInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.4f)) {
+                            switch (prop.Model.Hash) {
+                                case -1176373441:
+                                case -1149617688:
+                                case -548219756:
+                                case 1854960432:
+                                case 682108925:
+                                case 1002451519:
+                                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
+                                        SinglePlayerOffice.DisplayHelpTextThisFrame(RightSafeInteractionHelpText);
+                                        if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                            rightSafeDoor = prop;
+                                            SinglePlayerOffice.IsHudHidden = true;
+                                            rightSafeInteractionStatus = 1;
+                                        }
                                     }
-                                }
-                                else SinglePlayerOffice.DisplayHelpTextThisFrame(SafeInteractionRejectHelpText);
-                                break;
+                                    else SinglePlayerOffice.DisplayHelpTextThisFrame(SafeInteractionRejectHelpText);
+                                    break;
+                            }
                         }
                     }
                     break;
@@ -874,17 +878,18 @@ namespace SinglePlayerOffice {
         private static void RadioOnTick() {
             switch (radioInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
-                        switch (prop.Model.Hash) {
-                            case -364924791:
-                                SinglePlayerOffice.DisplayHelpTextThisFrame(RadioInteractionHelpText);
-                                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                    radio = prop;
-                                    SinglePlayerOffice.IsHudHidden = true;
-                                    radioInteractionStatus = 1;
-                                }
-                                break;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
+                            switch (prop.Model.Hash) {
+                                case -364924791:
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(RadioInteractionHelpText);
+                                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                        radio = prop;
+                                        SinglePlayerOffice.IsHudHidden = true;
+                                        radioInteractionStatus = 1;
+                                    }
+                                    break;
+                            }
                         }
                     }
                     break;
@@ -950,19 +955,20 @@ namespace SinglePlayerOffice {
         private static void BossChairOnTick() {
             switch (bossChairInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
-                        if (prop.Model.Hash == -1278649385 && World.GetNearbyProps(prop.Position, 1.5f, -1278649385).Length == 1 && World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length == 0) {
-                            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
-                                SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
-                                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                    bossChair = prop;
-                                    SinglePlayerOffice.IsHudHidden = true;
-                                    bossChairInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
+                            if (prop.Model.Hash == -1278649385 && World.GetNearbyProps(prop.Position, 1.5f, -1278649385).Length == 1 && World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length == 0) {
+                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
+                                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                        bossChair = prop;
+                                        SinglePlayerOffice.IsHudHidden = true;
+                                        bossChairInteractionStatus = 1;
+                                    }
                                 }
+                                else SinglePlayerOffice.DisplayHelpTextThisFrame(BossChairInteractionRejectHelpText);
+                                break;
                             }
-                            else SinglePlayerOffice.DisplayHelpTextThisFrame(BossChairInteractionRejectHelpText);
-                            break;
                         }
                     }
                     break;
@@ -981,7 +987,7 @@ namespace SinglePlayerOffice {
                     break;
                 case 3:
                     SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to talk shit");
-                    if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                         TalkShit();
                     }
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncScene) != 1f) break;
@@ -992,10 +998,10 @@ namespace SinglePlayerOffice {
                     goto case 4;
                 case 4:
                     SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to talk shit~n~Press ~INPUT_AIM~ to stand up");
-                    if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                         TalkShit();
                     }
-                    if (Game.IsControlPressed(2, GTA.Control.Aim)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Aim)) {
                         bossChairInteractionStatus = 5;
                         break;
                     }
@@ -1028,16 +1034,17 @@ namespace SinglePlayerOffice {
         private static void StaffChairOnTick() {
             switch (staffChairInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
-                        if (prop.Model.Hash == -1278649385 && World.GetNearbyProps(prop.Position, 1.5f, -1278649385).Length != 1 && World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length == 0) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
-                            if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                staffChair = prop;
-                                SinglePlayerOffice.IsHudHidden = true;
-                                staffChairInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
+                            if (prop.Model.Hash == -1278649385 && World.GetNearbyProps(prop.Position, 1.5f, -1278649385).Length != 1 && World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length == 0) {
+                                SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
+                                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                    staffChair = prop;
+                                    SinglePlayerOffice.IsHudHidden = true;
+                                    staffChairInteractionStatus = 1;
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                     break;
@@ -1056,7 +1063,7 @@ namespace SinglePlayerOffice {
                     break;
                 case 3:
                     SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to talk shit");
-                    if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                         TalkShit();
                         //ScenesController.BossConversationStatus = 1;
                     }
@@ -1068,11 +1075,11 @@ namespace SinglePlayerOffice {
                     break;
                 case 4:
                     SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to talk shit~n~Press ~INPUT_AIM~ to stand up");
-                    if (Game.IsControlPressed(2, GTA.Control.Context)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                         TalkShit();
                         //ScenesController.BossConversationStatus = 1;
                     }
-                    if (Game.IsControlPressed(2, GTA.Control.Aim)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Aim)) {
                         staffChairInteractionStatus = 5;
                         break;
                     }
@@ -1105,16 +1112,17 @@ namespace SinglePlayerOffice {
         private static void LaptopChairOnTick() {
             switch (laptopChairInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
-                        if (prop.Model.Hash == -1278649385 && World.GetNearbyProps(prop.Position, 1.5f, -1278649385).Length == 1 && World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length != 0) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
-                            if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                laptopChair = prop;
-                                SinglePlayerOffice.IsHudHidden = true;
-                                laptopChairInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
+                            if (prop.Model.Hash == -1278649385 && World.GetNearbyProps(prop.Position, 1.5f, -1278649385).Length == 1 && World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length != 0) {
+                                SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
+                                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                    laptopChair = prop;
+                                    SinglePlayerOffice.IsHudHidden = true;
+                                    laptopChairInteractionStatus = 1;
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                     break;
@@ -1146,7 +1154,7 @@ namespace SinglePlayerOffice {
                     laptopChairInteractionStatus = 5;
                     break;
                 case 5:
-                    if (Game.IsControlPressed(2, GTA.Control.Aim)) {
+                    if (Game.IsControlJustPressed(2, GTA.Control.Aim)) {
                         laptopChairInteractionStatus = 6;
                         break;
                     }
@@ -1182,19 +1190,20 @@ namespace SinglePlayerOffice {
         private void WardrobeOnTick() {
             switch (wardrobeInteractionStatus) {
                 case 0:
-                    if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle()) break;
-                    foreach (Wardrobe wardrobe in wardrobes) {
-                        if (Game.Player.Character.Position.DistanceTo(wardrobe.Position) < 1f) {
-                            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
-                                SinglePlayerOffice.DisplayHelpTextThisFrame(WardrobeInteractionHelpText);
-                                if (Game.IsControlPressed(2, GTA.Control.Context)) {
-                                    InteractionsController.wardrobe = wardrobe;
-                                    SinglePlayerOffice.IsHudHidden = true;
-                                    wardrobeInteractionStatus = 1;
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Wardrobe wardrobe in wardrobes) {
+                            if (Game.Player.Character.Position.DistanceTo(wardrobe.Position) < 1f) {
+                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(WardrobeInteractionHelpText);
+                                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                        InteractionsController.wardrobe = wardrobe;
+                                        SinglePlayerOffice.IsHudHidden = true;
+                                        wardrobeInteractionStatus = 1;
+                                    }
                                 }
+                                else SinglePlayerOffice.DisplayHelpTextThisFrame(WardrobeInteractionRejectHelpText);
+                                break;
                             }
-                            else SinglePlayerOffice.DisplayHelpTextThisFrame(WardrobeInteractionRejectHelpText);
-                            break;
                         }
                     }
                     break;
@@ -1241,14 +1250,12 @@ namespace SinglePlayerOffice {
             WardrobeOnTick();
         }
 
-        protected override void Dispose(bool A_0) {
-            if (A_0) {
-                if (tv != null) tv.Delete();
-                if (remote != null) remote.Delete();
-                if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "tvscreen");
-                if (radioEmitter != null) Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, radioEmitter, false);
-                Game.Player.Character.Task.ClearAll();
-            }
+        private void OnAborted(object sender, EventArgs e) {
+            if (tv != null) tv.Delete();
+            if (remote != null) remote.Delete();
+            if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "tvscreen");
+            if (radioEmitter != null) Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, radioEmitter, false);
+            Game.Player.Character.Task.ClearAll();
         }
     }
 }

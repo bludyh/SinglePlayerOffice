@@ -8,5 +8,16 @@ using GTA.Native;
 using NativeUI;
 
 namespace SinglePlayerOffice {
-    enum Location { None, Entrance, GarageEntrance, Office, GarageOne, GarageTwo, GarageThree, ModShop, HeliPad }
+    abstract class Location {
+
+        protected Building building;
+
+        public Vector3 TriggerPos { get; set; }
+        public Vector3 SpawnPos { get; set; }
+        public float SpawnHeading { get; set; }
+
+        protected abstract void TeleportOnTick();
+        public abstract void OnTick();
+
+    }
 }

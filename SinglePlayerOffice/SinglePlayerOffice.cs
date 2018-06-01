@@ -17,9 +17,12 @@ namespace SinglePlayerOffice {
         public static LomBank LomBank { get; private set; }
         public static MazeBank MazeBank { get; private set; }
         public static MazeBankWest MazeBankWest { get; private set; }
+        public static List<Building> Buildings { get; private set; }
 
         public SinglePlayerOffice() {
             Tick += OnTick;
+            Aborted += OnAborted;
+            Function.Call(Hash.REQUEST_SCRIPT_AUDIO_BANK, "DLC_IMPORTEXPORT/GARAGE_ELEVATOR", false, -1);
             LoadConfigs();
             LoadMPMap();
             MenuPool = new MenuPool();
@@ -28,15 +31,12 @@ namespace SinglePlayerOffice {
             LomBank = new LomBank();
             MazeBank = new MazeBank();
             MazeBankWest = new MazeBankWest();
+            Buildings = new List<Building> { Arcadius, LomBank, MazeBank, MazeBankWest };
         }
 
         private static void LoadConfigs() {
-            try {
-                Configs = ScriptSettings.Load(@"scripts\SinglePlayerOffice.ini");
-            }
-            catch (Exception ex) {
-                Logger.Log(ex.Message);
-            }
+            try { Configs = ScriptSettings.Load(@"scripts\SinglePlayerOffice.ini"); }
+            catch (Exception ex) { Logger.Log(ex.Message); }
         }
 
         private static void LoadMPMap() {
@@ -51,29 +51,23 @@ namespace SinglePlayerOffice {
         }
 
         public static Building GetCurrentBuilding() {
-            int currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
-            if (Game.Player.Character.Position.DistanceTo(Arcadius.Entrance.Trigger) < 10f || Game.Player.Character.Position.DistanceTo(Arcadius.GarageEntrance.Trigger) < 10f || Arcadius.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(Arcadius.HeliPad.Trigger) < 10f) return Arcadius;
-            else if (Game.Player.Character.Position.DistanceTo(LomBank.Entrance.Trigger) < 10f || Game.Player.Character.Position.DistanceTo(LomBank.GarageEntrance.Trigger) < 10f || LomBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(LomBank.HeliPad.Trigger) < 10f) return LomBank;
-            else if (Game.Player.Character.Position.DistanceTo(MazeBank.Entrance.Trigger) < 10f || Game.Player.Character.Position.DistanceTo(MazeBank.GarageEntrance.Trigger) < 10f || MazeBank.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBank.HeliPad.Trigger) < 10f) return MazeBank;
-            else if (Game.Player.Character.Position.DistanceTo(MazeBankWest.Entrance.Trigger) < 10f || Game.Player.Character.Position.DistanceTo(MazeBankWest.GarageEntrance.Trigger) < 10f || MazeBankWest.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(MazeBankWest.HeliPad.Trigger) < 10f) return MazeBankWest;
+            var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
+            foreach (Building building in Buildings) if (Game.Player.Character.Position.DistanceTo(building.Entrance.TriggerPos) < 10f || building.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(building.HeliPad.TriggerPos) < 10f) return building;
             return null;
         }
 
         private void OnTick(object sender, EventArgs e) {
             MenuPool.ProcessMenus();
             if (IsHudHidden) Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
-            if (GetCurrentBuilding() != null) GetCurrentBuilding().OnTick();
+            var currentBuilding = GetCurrentBuilding();
+            if (currentBuilding != null) currentBuilding.OnTick();
         }
 
-        protected override void Dispose(bool A_0) {
-            if (A_0) {
-                Arcadius.Dispose();
-                LomBank.Dispose();
-                MazeBank.Dispose();
-                MazeBankWest.Dispose();
-                World.RenderingCamera = null;
-                World.DestroyAllCameras();
-            }
+        private void OnAborted(object sender, EventArgs e) {
+            foreach (Building building in Buildings) building.Dispose();
+            World.RenderingCamera = null;
+            World.DestroyAllCameras();
+            Function.Call(Hash.RELEASE_NAMED_SCRIPT_AUDIO_BANK, "DLC_IMPORTEXPORT/GARAGE_ELEVATOR");
         }
 
     }

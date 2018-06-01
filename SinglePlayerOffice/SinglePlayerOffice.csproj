@@ -55,7 +55,7 @@
     <Compile Include="Building\Garage.cs" />
     <Compile Include="Building\HeliPad.cs" />
     <Compile Include="Building\GarageEntrance.cs" />
-    <Compile Include="Building\GaragesController.cs" />
+    <Compile Include="Building\IInterior.cs" />
     <Compile Include="Interactions\InteractionsController.cs" />
     <Compile Include="Building\Location.cs" />
     <Compile Include="Building\GarageDecorationStyle.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="Scenes\ScenesController.cs" />
     <Compile Include="Interactions\Sofa.cs" />
     <Compile Include="Interactions\Wardrobe.cs" />
+    <Compile Include="VehicleInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -90,6 +91,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripts"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "D:\Games\Steam\steamapps\common\Grand Theft Auto V\scripts"</PostBuildEvent>
   </PropertyGroup>
 </Project>

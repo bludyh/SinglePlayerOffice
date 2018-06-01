@@ -44,6 +44,7 @@ namespace SinglePlayerOffice {
 
         public ScenesController() {
             Tick += OnTick;
+            Aborted += OnAborted;
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boardroom@boss@male@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@boss@male@");
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boardroom@crew@male@var_b@base@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@crew@male@var_b@base@");
             if (!Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boardroom@crew@female@var_c@base@")) Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@crew@female@var_c@base@");
@@ -392,14 +393,12 @@ namespace SinglePlayerOffice {
             PaSceneOnTick();
         }
 
-        protected override void Dispose(bool A_0) {
-            if (A_0) {
-                if (boss != null) boss.Delete();
-                if (maleStaff != null) maleStaff.Delete();
-                if (femaleStaff != null) femaleStaff.Delete();
-                if (pa != null) pa.Delete();
-                if (paChair != null) paChair.Delete(); 
-            }
+        private void OnAborted(object sender, EventArgs e) {
+            if (boss != null) boss.Delete();
+            if (maleStaff != null) maleStaff.Delete();
+            if (femaleStaff != null) femaleStaff.Delete();
+            if (pa != null) pa.Delete();
+            if (paChair != null) paChair.Delete();
         }
 
     }
