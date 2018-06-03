@@ -660,17 +660,20 @@ namespace SinglePlayerOffice {
                 garageEntrance.GarageEntranceStatus = 0;
                 RemoveIPLs();
                 if (item.Text == "Garage One") {
-                    Game.Player.Character.CurrentVehicle.Position = garageOne.SpawnPos;
+                    Game.Player.Character.CurrentVehicle.Position = garageOne.ElevatorLevelAPos;
+                    Game.Player.Character.CurrentVehicle.Heading = garageOne.SpawnHeading + 30f;
                     garageOne.LoadInterior();
                     garageOne.ElevatorStatus = 1;
                 }
                 else if (item.Text == "Garage Two") {
-                    Game.Player.Character.CurrentVehicle.Position = garageTwo.SpawnPos;
+                    Game.Player.Character.CurrentVehicle.Position = garageTwo.ElevatorLevelAPos;
+                    Game.Player.Character.CurrentVehicle.Heading = garageTwo.SpawnHeading + 30f;
                     garageTwo.LoadInterior();
                     garageTwo.ElevatorStatus = 1;
                 }
                 else if (item.Text == "Garage Three") {
-                    Game.Player.Character.CurrentVehicle.Position = garageThree.SpawnPos;
+                    Game.Player.Character.CurrentVehicle.Position = garageThree.ElevatorLevelAPos;
+                    Game.Player.Character.CurrentVehicle.Heading = garageThree.SpawnHeading + 30f;
                     garageThree.LoadInterior();
                     garageThree.ElevatorStatus = 1;
                 }
@@ -711,17 +714,20 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     RemoveIPLs();
                     if (item.Text == "Garage One") {
-                        Game.Player.Character.CurrentVehicle.Position = garageOne.SpawnPos;
+                        Game.Player.Character.CurrentVehicle.Position = garageOne.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Heading = garageOne.SpawnHeading + 30f;
                         garageOne.LoadInterior();
                         garageOne.ElevatorStatus = 1;
                     }
                     else if (item.Text == "Garage Two") {
-                        Game.Player.Character.CurrentVehicle.Position = garageTwo.SpawnPos;
+                        Game.Player.Character.CurrentVehicle.Position = garageTwo.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Heading = garageTwo.SpawnHeading + 30f;
                         garageTwo.LoadInterior();
                         garageTwo.ElevatorStatus = 1;
                     }
                     else if (item.Text == "Garage Three") {
-                        Game.Player.Character.CurrentVehicle.Position = garageThree.SpawnPos;
+                        Game.Player.Character.CurrentVehicle.Position = garageThree.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Heading = garageThree.SpawnHeading + 30f;
                         garageThree.LoadInterior();
                         garageThree.ElevatorStatus = 1;
                     }

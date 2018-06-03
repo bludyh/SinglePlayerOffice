@@ -185,12 +185,8 @@ namespace SinglePlayerOffice {
         }
 
         private bool MoveElevator(Vector3 pos) {
-            if (elevatorPlatform.Position.Z < pos.Z) {
-                elevatorPlatform.Position = Vector3.Add(elevatorPlatform.Position, new Vector3(0f, 0f, 0.005f));
-            }
-            else {
-                elevatorPlatform.Position = Vector3.Add(elevatorPlatform.Position, new Vector3(0f, 0f, -0.005f));
-            }
+            if (elevatorPlatform.Position.Z < pos.Z) elevatorPlatform.Position = Vector3.Add(elevatorPlatform.Position, new Vector3(0f, 0f, 0.005f));
+            else elevatorPlatform.Position = Vector3.Add(elevatorPlatform.Position, new Vector3(0f, 0f, -0.005f));
             if (elevatorPlatform.Position.DistanceTo(pos) < 0.01f) return false;
             return true;
         }
@@ -328,6 +324,7 @@ namespace SinglePlayerOffice {
         public void Dispose() {
             if (elevator != null) elevator.Delete();
             if (elevatorPlatform != null) elevatorPlatform.Delete();
+            if (vehicleInfoScaleform != null) vehicleInfoScaleform.Dispose();
         }
 
     }

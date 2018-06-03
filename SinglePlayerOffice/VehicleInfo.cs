@@ -8,7 +8,7 @@ using GTA.Native;
 using NativeUI;
 
 namespace SinglePlayerOffice {
-    class VehicleInfo {
+    public class VehicleInfo {
 
         public Vehicle Vehicle { get; private set; }
 
