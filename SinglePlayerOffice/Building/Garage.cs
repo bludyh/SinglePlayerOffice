@@ -10,6 +10,9 @@ using NativeUI;
 namespace SinglePlayerOffice {
     class Garage : Location, IInterior {
 
+        private static VehicleInfo vehicleInfo;
+        private static Scaleform vehicleInfoScaleform;
+
         public static List<GarageDecorationStyle> DecorationStyles { get; set; }
         public static List<GarageLightingStyle> LightingStyles { get; set; }
         public static List<GarageNumberingStyle> NumberingStylesGarageOne { get; set; }
@@ -20,8 +23,6 @@ namespace SinglePlayerOffice {
         private Prop elevatorPlatform;
         private Vector3 elevatorGateInitialPos;
         private Prop elevatorGate;
-        private VehicleInfo vehicleInfo;
-        private Scaleform vehicleInfoScaleform;
 
         public string IPL { get; set; }
         public int InteriorID { get; set; }
@@ -310,6 +311,7 @@ namespace SinglePlayerOffice {
                 Vector3 scale = new Vector3(8f, 4.5f, 1f);
                 vehicleInfoScaleform.Render3D(pos, rot, scale);
             }
+            else vehicleInfo = null;
         }
 
         public override void OnTick() {
