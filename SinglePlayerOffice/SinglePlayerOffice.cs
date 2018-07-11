@@ -22,7 +22,6 @@ namespace SinglePlayerOffice {
         public SinglePlayerOffice() {
             Tick += OnTick;
             Aborted += OnAborted;
-            Function.Call(Hash.REQUEST_SCRIPT_AUDIO_BANK, "DLC_IMPORTEXPORT/GARAGE_ELEVATOR", false, -1);
             LoadConfigs();
             LoadMPMap();
             MenuPool = new MenuPool();
@@ -32,6 +31,7 @@ namespace SinglePlayerOffice {
             MazeBank = new MazeBank();
             MazeBankWest = new MazeBankWest();
             Buildings = new List<Building> { Arcadius, LomBank, MazeBank, MazeBankWest };
+            Function.Call(Hash.REQUEST_SCRIPT_AUDIO_BANK, "DLC_IMPORTEXPORT/GARAGE_ELEVATOR", false, -1);
         }
 
         private static void LoadConfigs() {

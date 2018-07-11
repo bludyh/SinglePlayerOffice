@@ -10,7 +10,7 @@ using NativeUI;
 namespace SinglePlayerOffice {
     class ModShop : Location, IInterior {
 
-        public static List<ModShopFloorStyle> FloorStyles { get; set; }
+        public static List<InteriorStyle> FloorStyles { get; set; }
 
         public string IPL { get; set; }
         public int InteriorID { get; set; }
@@ -18,53 +18,53 @@ namespace SinglePlayerOffice {
         public Vector3 PurchaseCamRot { get; set; }
         public float PurchaseCamFOV { get; set; }
         public Camera PurchaseCam { get; set; }
-        public ModShopFloorStyle FloorStyle { get; set; }
+        public InteriorStyle FloorStyle { get; set; }
 
         static ModShop() {
-            FloorStyles = new List<ModShopFloorStyle> {
-                new ModShopFloorStyle("Floor 1", 0, ""),
-                new ModShopFloorStyle("Floor 2", 120000, "floor_vinyl_18"),
-                new ModShopFloorStyle("Floor 3", 132500, "floor_vinyl_16"),
-                new ModShopFloorStyle("Floor 4", 145000, "floor_vinyl_17"),
-                new ModShopFloorStyle("Floor 5", 157500, "floor_vinyl_19"),
-                new ModShopFloorStyle("Floor 6", 170000, "floor_vinyl_06"),
-                new ModShopFloorStyle("Floor 7", 182500, "floor_vinyl_08"),
-                new ModShopFloorStyle("Floor 8", 195000, "floor_vinyl_07"),
-                new ModShopFloorStyle("Floor 9", 207500, "floor_vinyl_09"),
-                new ModShopFloorStyle("Floor 10", 220000, "floor_vinyl_10"),
-                new ModShopFloorStyle("Floor 11", 245000, "floor_vinyl_14"),
-                new ModShopFloorStyle("Floor 12", 270000, "floor_vinyl_15"),
-                new ModShopFloorStyle("Floor 13", 295000, "floor_vinyl_13"),
-                new ModShopFloorStyle("Floor 14", 320000, "floor_vinyl_12"),
-                new ModShopFloorStyle("Floor 15", 345000, "floor_vinyl_11"),
-                new ModShopFloorStyle("Floor 16", 370000, "floor_vinyl_05"),
-                new ModShopFloorStyle("Floor 17", 395000, "floor_vinyl_04"),
-                new ModShopFloorStyle("Floor 18", 420000, "floor_vinyl_01"),
-                new ModShopFloorStyle("Floor 19", 465000, "floor_vinyl_02"),
-                new ModShopFloorStyle("Floor 20", 500000, "floor_vinyl_03")
+            FloorStyles = new List<InteriorStyle> {
+                new InteriorStyle("Floor 1", 0, ""),
+                new InteriorStyle("Floor 2", 120000, "floor_vinyl_18"),
+                new InteriorStyle("Floor 3", 132500, "floor_vinyl_16"),
+                new InteriorStyle("Floor 4", 145000, "floor_vinyl_17"),
+                new InteriorStyle("Floor 5", 157500, "floor_vinyl_19"),
+                new InteriorStyle("Floor 6", 170000, "floor_vinyl_06"),
+                new InteriorStyle("Floor 7", 182500, "floor_vinyl_08"),
+                new InteriorStyle("Floor 8", 195000, "floor_vinyl_07"),
+                new InteriorStyle("Floor 9", 207500, "floor_vinyl_09"),
+                new InteriorStyle("Floor 10", 220000, "floor_vinyl_10"),
+                new InteriorStyle("Floor 11", 245000, "floor_vinyl_14"),
+                new InteriorStyle("Floor 12", 270000, "floor_vinyl_15"),
+                new InteriorStyle("Floor 13", 295000, "floor_vinyl_13"),
+                new InteriorStyle("Floor 14", 320000, "floor_vinyl_12"),
+                new InteriorStyle("Floor 15", 345000, "floor_vinyl_11"),
+                new InteriorStyle("Floor 16", 370000, "floor_vinyl_05"),
+                new InteriorStyle("Floor 17", 395000, "floor_vinyl_04"),
+                new InteriorStyle("Floor 18", 420000, "floor_vinyl_01"),
+                new InteriorStyle("Floor 19", 465000, "floor_vinyl_02"),
+                new InteriorStyle("Floor 20", 500000, "floor_vinyl_03")
             };
         }
 
         public void LoadInterior() {
             Function.Call(Hash.REQUEST_IPL, IPL);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (ModShopFloorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, FloorStyle.PropName);
+            foreach (InteriorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, FloorStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void LoadInterior(ModShopFloorStyle floorStyle) {
+        public void LoadInterior(InteriorStyle floorStyle) {
             Function.Call(Hash.REQUEST_IPL, IPL);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (ModShopFloorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, floorStyle.PropName);
+            foreach (InteriorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, floorStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void ChangeFloorStyle(ModShopFloorStyle floorStyle) {
+        public void ChangeFloorStyle(InteriorStyle floorStyle) {
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (ModShopFloorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, floorStyle.PropName);
+            foreach (InteriorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, floorStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 

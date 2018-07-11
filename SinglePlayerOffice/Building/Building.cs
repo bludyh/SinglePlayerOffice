@@ -10,12 +10,12 @@ using NativeUI;
 namespace SinglePlayerOffice {
     abstract class Building {
 
-        protected string buildingName;
-        protected string buildingDescription;
+        protected string name;
+        protected string description;
         protected int price;
         protected Owner owner;
-        protected Vector3 buildingBlipPos;
-        protected Blip buildingBlip;
+        protected Vector3 blipPos;
+        protected Blip blip;
         protected List<int> interiorIDs;
         protected List<string> exteriorIPLs;
         protected Entrance entrance;
@@ -27,6 +27,7 @@ namespace SinglePlayerOffice {
         protected ModShop modShop;
         protected HeliPad heliPad;
 
+        public string Name { get { return name; } }
         public Owner Owner { get { return owner; } }
         public List<int> InteriorIDs { get { return interiorIDs; } }
         public Entrance Entrance { get { return entrance; } }
@@ -42,47 +43,47 @@ namespace SinglePlayerOffice {
         public UIMenu GarageEntranceMenu { get; set; }
         public UIMenu VehicleElevatorMenu { get; set; }
 
-        protected OfficeInteriorStyle GetOfficeInteriorStyle(string name) {
-            foreach (OfficeInteriorStyle style in office.InteriorStyles) if (style.Name == name) return style;
+        protected InteriorStyle GetOfficeInteriorStyle(string name) {
+            foreach (InteriorStyle style in office.InteriorStyles) if (style.Name == name) return style;
             return null;
         }
 
-        protected GarageDecorationStyle GetGarageDecorationStyle(string name) {
-            foreach (GarageDecorationStyle style in Garage.DecorationStyles) if (style.Name == name) return style;
+        protected InteriorStyle GetGarageDecorationStyle(string name) {
+            foreach (InteriorStyle style in Garage.DecorationStyles) if (style.Name == name) return style;
             return null;
         }
 
-        protected GarageLightingStyle GetGarageLightingStyle(string name) {
-            foreach (GarageLightingStyle style in Garage.LightingStyles) if (style.Name == name) return style;
+        protected InteriorStyle GetGarageLightingStyle(string name) {
+            foreach (InteriorStyle style in Garage.LightingStyles) if (style.Name == name) return style;
             return null;
         }
 
-        protected GarageNumberingStyle GetGarageOneNumberingStyle(string name) {
-            foreach (GarageNumberingStyle style in Garage.NumberingStylesGarageOne) if (style.Name == name) return style;
+        protected InteriorStyle GetGarageOneNumberingStyle(string name) {
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageOne) if (style.Name == name) return style;
             return null;
         }
 
-        protected GarageNumberingStyle GetGarageTwoNumberingStyle(string name) {
-            foreach (GarageNumberingStyle style in Garage.NumberingStylesGarageTwo) if (style.Name == name) return style;
+        protected InteriorStyle GetGarageTwoNumberingStyle(string name) {
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageTwo) if (style.Name == name) return style;
             return null;
         }
 
-        protected GarageNumberingStyle GetGarageThreeNumberingStyle(string name) {
-            foreach (GarageNumberingStyle style in Garage.NumberingStylesGarageThree) if (style.Name == name) return style;
+        protected InteriorStyle GetGarageThreeNumberingStyle(string name) {
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageThree) if (style.Name == name) return style;
             return null;
         }
 
-        protected ModShopFloorStyle GetModShopFloorStyle(string name) {
-            foreach (ModShopFloorStyle style in ModShop.FloorStyles) if (style.Name == name) return style;
+        protected InteriorStyle GetModShopFloorStyle(string name) {
+            foreach (InteriorStyle style in ModShop.FloorStyles) if (style.Name == name) return style;
             return null;
         }
 
         protected void CreateBuildingBlip() {
-            buildingBlip = World.CreateBlip(buildingBlipPos);
-            if (owner != Owner.None) buildingBlip.Sprite = (BlipSprite)475;
-            else buildingBlip.Sprite = (BlipSprite)476;
-            buildingBlip.Name = buildingName;
-            SetBlipColor(buildingBlip);
+            blip = World.CreateBlip(blipPos);
+            if (owner != Owner.None) blip.Sprite = (BlipSprite)475;
+            else blip.Sprite = (BlipSprite)476;
+            blip.Name = name;
+            SetBlipColor(blip);
         }
 
         private void SetBlipColor(Blip blip) {
@@ -95,7 +96,7 @@ namespace SinglePlayerOffice {
         }
 
         private void RemoveIPLs() {
-            foreach (OfficeInteriorStyle style in office.InteriorStyles) Function.Call(Hash.REMOVE_IPL, style.IPL);
+            foreach (InteriorStyle style in office.InteriorStyles) Function.Call(Hash.REMOVE_IPL, style.Style);
             Function.Call(Hash.REMOVE_IPL, garageOne.IPL);
             Function.Call(Hash.REMOVE_IPL, garageTwo.IPL);
             Function.Call(Hash.REMOVE_IPL, garageThree.IPL);
@@ -103,10 +104,10 @@ namespace SinglePlayerOffice {
         }
 
         protected void CreatePurchaseMenu() {
-            PurchaseMenu = new UIMenu(buildingName, "~b~Purchase Options") { MouseEdgeEnabled = false };
+            PurchaseMenu = new UIMenu(name, "~b~Purchase Options") { MouseEdgeEnabled = false };
             
-            UIMenu officeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Office Interiors", buildingDescription);
-            foreach (OfficeInteriorStyle style in office.InteriorStyles) {
+            UIMenu officeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Office Interiors", description);
+            foreach (InteriorStyle style in office.InteriorStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 officeInteriorsMenu.AddItem(item);
             }
@@ -129,9 +130,9 @@ namespace SinglePlayerOffice {
             var extraDecorsOption = new UIMenuCheckboxItem("Extra Office Decorations", false, String.Format("Price: ~g~${0:n0}", 1650000));
             PurchaseMenu.AddItem(extraDecorsOption);
 
-            UIMenu garageOneInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Garage One Interiors", buildingDescription);
+            UIMenu garageOneInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Garage One Interiors", description);
             UIMenu garageOneDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageOneInteriorsMenu, "Decorations");
-            foreach (GarageDecorationStyle style in Garage.DecorationStyles) {
+            foreach (InteriorStyle style in Garage.DecorationStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageOneDecorationsMenu.AddItem(item);
             }
@@ -152,7 +153,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu garageOneLightingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageOneInteriorsMenu, "Lightings");
-            foreach (GarageLightingStyle style in Garage.LightingStyles) {
+            foreach (InteriorStyle style in Garage.LightingStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageOneLightingsMenu.AddItem(item);
             }
@@ -173,7 +174,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu garageOneNumberingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageOneInteriorsMenu, "Numberings");
-            foreach (GarageNumberingStyle style in Garage.NumberingStylesGarageOne) {
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageOne) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageOneNumberingsMenu.AddItem(item);
             }
@@ -209,9 +210,9 @@ namespace SinglePlayerOffice {
                 }
             };
 
-            UIMenu garageTwoInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Garage Two Interiors", buildingDescription);
+            UIMenu garageTwoInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Garage Two Interiors", description);
             UIMenu garageTwoDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageTwoInteriorsMenu, "Decorations");
-            foreach (GarageDecorationStyle style in Garage.DecorationStyles) {
+            foreach (InteriorStyle style in Garage.DecorationStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageTwoDecorationsMenu.AddItem(item);
             }
@@ -232,7 +233,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu garageTwoLightingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageTwoInteriorsMenu, "Lightings");
-            foreach (GarageLightingStyle style in Garage.LightingStyles) {
+            foreach (InteriorStyle style in Garage.LightingStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageTwoLightingsMenu.AddItem(item);
             }
@@ -253,7 +254,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu garageTwoNumberingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageTwoInteriorsMenu, "Numberings");
-            foreach (GarageNumberingStyle style in Garage.NumberingStylesGarageTwo) {
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageTwo) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageTwoNumberingsMenu.AddItem(item);
             }
@@ -289,9 +290,9 @@ namespace SinglePlayerOffice {
                 }
             };
 
-            UIMenu garageThreeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Garage Three Interiors", buildingDescription);
+            UIMenu garageThreeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Garage Three Interiors", description);
             UIMenu garageThreeDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageThreeInteriorsMenu, "Decorations");
-            foreach (GarageDecorationStyle style in Garage.DecorationStyles) {
+            foreach (InteriorStyle style in Garage.DecorationStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageThreeDecorationsMenu.AddItem(item);
             }
@@ -312,7 +313,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu garageThreeLightingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageThreeInteriorsMenu, "Lightings");
-            foreach (GarageLightingStyle style in Garage.LightingStyles) {
+            foreach (InteriorStyle style in Garage.LightingStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageThreeLightingsMenu.AddItem(item);
             }
@@ -333,7 +334,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu garageThreeNumberingsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageThreeInteriorsMenu, "Numberings");
-            foreach (GarageNumberingStyle style in Garage.NumberingStylesGarageThree) {
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageThree) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 garageThreeNumberingsMenu.AddItem(item);
             }
@@ -369,8 +370,8 @@ namespace SinglePlayerOffice {
                 }
             };
 
-            UIMenu modShopInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Mod Shop Interiors", buildingDescription);
-            foreach (ModShopFloorStyle style in ModShop.FloorStyles) {
+            UIMenu modShopInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(PurchaseMenu, "Mod Shop Interiors", description);
+            foreach (InteriorStyle style in ModShop.FloorStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
                 modShopInteriorsMenu.AddItem(item);
             }
@@ -457,26 +458,26 @@ namespace SinglePlayerOffice {
                     else {
                         owner = (Owner)Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character);
                         try {
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "Owner", (int)owner);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "OfficeInteriorStyle", office.InteriorStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageOneDecorationStyle", garageOne.DecorationStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageOneLightingStyle", garageOne.LightingStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageOneNumberingStyle", garageOne.NumberingStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageTwoDecorationStyle", garageTwo.DecorationStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageTwoLightingStyle", garageTwo.LightingStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageTwoNumberingStyle", garageTwo.NumberingStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageThreeDecorationStyle", garageThree.DecorationStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageThreeLightingStyle", garageThree.LightingStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "GarageThreeNumberingStyle", garageThree.NumberingStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "ModShopFloorStyle", modShop.FloorStyle.Name);
-                            SinglePlayerOffice.Configs.SetValue(buildingName, "HasExtraOfficeDecors", office.HasExtraDecors);
+                            SinglePlayerOffice.Configs.SetValue(name, "Owner", (int)owner);
+                            SinglePlayerOffice.Configs.SetValue(name, "OfficeInteriorStyle", (string)office.InteriorStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageOneDecorationStyle", garageOne.DecorationStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageOneLightingStyle", garageOne.LightingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageOneNumberingStyle", garageOne.NumberingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageTwoDecorationStyle", garageTwo.DecorationStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageTwoLightingStyle", garageTwo.LightingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageTwoNumberingStyle", garageTwo.NumberingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageThreeDecorationStyle", garageThree.DecorationStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageThreeLightingStyle", garageThree.LightingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "GarageThreeNumberingStyle", garageThree.NumberingStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "ModShopFloorStyle", modShop.FloorStyle.Name);
+                            SinglePlayerOffice.Configs.SetValue(name, "HasExtraOfficeDecors", office.HasExtraDecors);
                             SinglePlayerOffice.Configs.Save();
                         }
                         catch (Exception ex) {
                             Logger.Log(ex.ToString());
                         }
-                        buildingBlip.Sprite = (BlipSprite)475;
-                        SetBlipColor(buildingBlip);
+                        blip.Sprite = (BlipSprite)475;
+                        SetBlipColor(blip);
                         SinglePlayerOffice.MenuPool.CloseAllMenus();
                         Game.FadeScreenOut(1000);
                         Script.Wait(1000);
@@ -493,7 +494,7 @@ namespace SinglePlayerOffice {
                         Script.Wait(1000);
                         Game.PlaySound("PROPERTY_PURCHASE", "HUD_AWARDS");
                         Game.Player.Money -= GetToTalPrice();
-                        BigMessageThread.MessageInstance.ShowSimpleShard("Buiding Purchased", buildingName);
+                        BigMessageThread.MessageInstance.ShowSimpleShard("Buiding Purchased", name);
                     }
                 }
             };
@@ -520,14 +521,18 @@ namespace SinglePlayerOffice {
         }
 
         protected void CreateTeleportMenu() {
-            TeleportMenu = new UIMenu(buildingName, "~b~Floor Options");
+            TeleportMenu = new UIMenu(name, "~b~Floor Options");
             TeleportMenu.OnItemSelect += (sender, item, index) => {
                 SinglePlayerOffice.MenuPool.CloseAllMenus();
                 SinglePlayerOffice.IsHudHidden = false;
-                InteractionsController.ResetInterations();
                 Game.FadeScreenOut(1000);
                 Script.Wait(1000);
+                InteractionsController.ResetInterations();
+                var currentLocation = GetCurrentLocation();
                 RemoveIPLs();
+                if (currentLocation is Garage currentGarage) {
+                    currentGarage.SaveVehicleInfoList();
+                }
                 if (item.Text == "Office") {
                     Game.Player.Character.Position = office.SpawnPos;
                     Game.Player.Character.Heading = office.SpawnHeading;
@@ -644,7 +649,7 @@ namespace SinglePlayerOffice {
         }
 
         protected void CreateGarageEntranceMenu() {
-            GarageEntranceMenu = new UIMenu(buildingName, "~b~Garage Options") { MouseEdgeEnabled = false };
+            GarageEntranceMenu = new UIMenu(name, "~b~Garage Options") { MouseEdgeEnabled = false };
             GarageEntranceMenu.AddItem(new UIMenuItem("Garage One"));
             GarageEntranceMenu.AddItem(new UIMenuItem("Garage Two"));
             GarageEntranceMenu.AddItem(new UIMenuItem("Garage Three"));
@@ -696,7 +701,7 @@ namespace SinglePlayerOffice {
         }
 
         protected void CreateVehicleElevatorMenu() {
-            VehicleElevatorMenu = new UIMenu(buildingName, "~b~Elevator Options");
+            VehicleElevatorMenu = new UIMenu(name, "~b~Elevator Options");
             VehicleElevatorMenu.OnItemSelect += (sender, item, index) => {
                 SinglePlayerOffice.MenuPool.CloseAllMenus();
                 SinglePlayerOffice.IsHudHidden = false;
@@ -712,7 +717,12 @@ namespace SinglePlayerOffice {
                     Game.Player.Character.Task.StandStill(-1);
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
+                    InteractionsController.ResetInterations();
                     RemoveIPLs();
+                    if (currentLocation is Garage currentGarage) {
+                        currentGarage.RemoveVehicleInfo(Game.Player.Character.CurrentVehicle);
+                        currentGarage.SaveVehicleInfoList();
+                    }
                     if (item.Text == "Garage One") {
                         Game.Player.Character.CurrentVehicle.Position = garageOne.ElevatorLevelAPos;
                         Game.Player.Character.CurrentVehicle.Heading = garageOne.SpawnHeading + 30f;
@@ -848,26 +858,11 @@ namespace SinglePlayerOffice {
 
         public void OnTick() {
             var currentLocation = GetCurrentLocation();
-            if (currentLocation == garageOne && !garageOne.IsElevatorCreated) {
-                garageOne.CreateElevator();
-                garageTwo.DeleteElevator();
-                garageThree.DeleteElevator();
-            }
-            else if (currentLocation == garageTwo && !garageTwo.IsElevatorCreated) {
-                garageTwo.CreateElevator();
-                garageOne.DeleteElevator();
-                garageThree.DeleteElevator();
-            }
-            else if (currentLocation == garageThree && !garageThree.IsElevatorCreated) {
-                garageThree.CreateElevator();
-                garageOne.DeleteElevator();
-                garageTwo.DeleteElevator();
-            }
             currentLocation.OnTick();
         }
 
         public void Dispose() {
-            buildingBlip.Remove();
+            blip.Remove();
             garageOne.Dispose();
             garageTwo.Dispose();
             garageThree.Dispose();

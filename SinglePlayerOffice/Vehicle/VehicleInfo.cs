@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using GTA;
 using GTA.Math;
 using GTA.Native;
@@ -10,10 +11,83 @@ using NativeUI;
 namespace SinglePlayerOffice {
     public class VehicleInfo {
 
+        [XmlIgnore]
         public Vehicle Vehicle { get; private set; }
+        public int VehicleHash { get; set; }
+        public string VehicleName { get; set; }
+        public Vector3 Position { get; set; }
+        public Vector3 Rotation { get; set; }
+        public int PrimaryColor { get; set; }
+        public int SecondaryColor { get; set; }
+        public int DashboardColor { get; set; }
+        public int PearlescentColor { get; set; }
+        public int RimColor { get; set; }
+        public int TrimColor { get; set; }
+        public int TireSmokeColorR { get; set; }
+        public int TireSmokeColorG { get; set; }
+        public int TireSmokeColorB { get; set; }
+        public int TireSmokeColorA { get; set; }
+        public int NeonLightsColorR { get; set; }
+        public int NeonLightsColorG { get; set; }
+        public int NeonLightsColorB { get; set; }
+        public int NeonLightsColorA { get; set; }
+        public int Livery { get; set; }
+        public int WindowTint { get; set; }
+        public int WheelType { get; set; }
+        public int RoofState { get; set; }
+        public int LockStatus { get; set; }
+        public int NumberPlateType { get; set; }
+        public string NumberPlate { get; set; }
+        public bool RightHeadLightBroken { get; set; }
+        public bool LeftHeadLightBroken { get; set; }
+        public bool CanTiresBurst { get; set; }
+        public float PetrolTankHealth { get; set; }
+        public float BodyHealth { get; set; }
+        public float DirtLevel { get; set; }
+        public float EngineHealth { get; set; }
+        public float FuelLevel { get; set; }
+        public List<NeonLight> NeonLights { get; set; }
+        public List<VehicleMod> VehicleMods { get; set; }
+        public List<VehicleToggleMod> VehicleToggleMods { get; set; }
+
+        public VehicleInfo() { }
 
         public VehicleInfo(Vehicle vehicle) {
             Vehicle = vehicle;
+            VehicleHash = vehicle.Model.Hash;
+            VehicleName = vehicle.DisplayName;
+            PrimaryColor = (int)vehicle.PrimaryColor;
+            SecondaryColor = (int)vehicle.SecondaryColor;
+            DashboardColor = (int)vehicle.DashboardColor;
+            PearlescentColor = (int)vehicle.PearlescentColor;
+            RimColor = (int)vehicle.RimColor;
+            TrimColor = (int)vehicle.TrimColor;
+            TireSmokeColorR = vehicle.TireSmokeColor.R;
+            TireSmokeColorG = vehicle.TireSmokeColor.G;
+            TireSmokeColorB = vehicle.TireSmokeColor.B;
+            TireSmokeColorA = vehicle.TireSmokeColor.A;
+            NeonLightsColorR = vehicle.NeonLightsColor.R;
+            NeonLightsColorG = vehicle.NeonLightsColor.G;
+            NeonLightsColorB = vehicle.NeonLightsColor.B;
+            NeonLightsColorA = vehicle.NeonLightsColor.A;
+            Livery = vehicle.Livery;
+            WindowTint = (int)vehicle.WindowTint;
+            WheelType = (int)vehicle.WheelType;
+            RoofState = (int)vehicle.RoofState;
+            LockStatus = (int)vehicle.LockStatus;
+            NumberPlateType = (int)vehicle.NumberPlateType;
+            NumberPlate = vehicle.NumberPlate;
+            RightHeadLightBroken = vehicle.RightHeadLightBroken;
+            LeftHeadLightBroken = vehicle.LeftHeadLightBroken;
+            CanTiresBurst = vehicle.CanTiresBurst;
+            PetrolTankHealth = vehicle.PetrolTankHealth;
+            BodyHealth = vehicle.BodyHealth;
+            DirtLevel = vehicle.DirtLevel;
+            EngineHealth = vehicle.EngineHealth;
+            FuelLevel = vehicle.FuelLevel;
+            NeonLights = GetNeonLights();
+            VehicleMods = GetMods();
+            VehicleToggleMods = GetToggleMods();
         }
 
         public string GetBrandName(bool p2) {
@@ -815,6 +889,77 @@ namespace SinglePlayerOffice {
             float percentage = (maxTraction / 3.30864197531f) * 100f;
             if (percentage > 100f) return 100f;
             return percentage;
+        }
+
+        public List<NeonLight> GetNeonLights() {
+            var neonLights = new List<NeonLight>();
+            foreach (VehicleNeonLight light in Enum.GetValues(typeof(VehicleNeonLight))) {
+                var neonLight = new NeonLight(light, Vehicle.IsNeonLightsOn(light));
+                neonLights.Add(neonLight);
+            }
+            return neonLights;
+        }
+
+        public List<VehicleMod> GetMods() {
+            var mods = new List<VehicleMod>();
+            foreach (GTA.VehicleMod vehicleMod in Enum.GetValues(typeof(GTA.VehicleMod))) {
+                var mod = new VehicleMod(vehicleMod, Vehicle.GetMod(vehicleMod));
+                mods.Add(mod);
+            }
+            return mods;
+        }
+
+        public List<VehicleToggleMod> GetToggleMods() {
+            var toggleMods = new List<VehicleToggleMod>();
+            foreach (GTA.VehicleToggleMod vehicleToggleMod in Enum.GetValues(typeof(GTA.VehicleToggleMod))) {
+                var toggleMod = new VehicleToggleMod(vehicleToggleMod, Vehicle.IsToggleModOn(vehicleToggleMod));
+                toggleMods.Add(toggleMod);
+            }
+            return toggleMods;
+        }
+
+        public void CreateVehicle() {
+            var vehicle = World.CreateVehicle((VehicleHash)VehicleHash, Position);
+            vehicle.Rotation = Rotation;
+            vehicle.PrimaryColor = (VehicleColor)PrimaryColor;
+            vehicle.SecondaryColor = (VehicleColor)SecondaryColor;
+            vehicle.DashboardColor = (VehicleColor)DashboardColor;
+            vehicle.PearlescentColor = (VehicleColor)PearlescentColor;
+            vehicle.RimColor = (VehicleColor)RimColor;
+            vehicle.TrimColor = (VehicleColor)TrimColor;
+            vehicle.TireSmokeColor = Color.FromArgb(TireSmokeColorA, TireSmokeColorR, TireSmokeColorG, TireSmokeColorB);
+            vehicle.NeonLightsColor = Color.FromArgb(NeonLightsColorA, NeonLightsColorR, NeonLightsColorG, NeonLightsColorB);
+            vehicle.Livery = Livery;
+            vehicle.WindowTint = (VehicleWindowTint)WindowTint;
+            vehicle.WheelType = (VehicleWheelType)WheelType;
+            vehicle.RoofState = (VehicleRoofState)RoofState;
+            vehicle.LockStatus = (VehicleLockStatus)LockStatus;
+            vehicle.NumberPlateType = (NumberPlateType)NumberPlateType;
+            vehicle.NumberPlate = NumberPlate;
+            vehicle.RightHeadLightBroken = RightHeadLightBroken;
+            vehicle.LeftHeadLightBroken = LeftHeadLightBroken;
+            vehicle.CanTiresBurst = CanTiresBurst;
+            vehicle.PetrolTankHealth = PetrolTankHealth;
+            vehicle.BodyHealth = BodyHealth;
+            vehicle.DirtLevel = DirtLevel;
+            vehicle.EngineHealth = EngineHealth;
+            vehicle.FuelLevel = FuelLevel;
+            foreach (var neonLight in NeonLights) {
+                vehicle.SetNeonLightsOn(neonLight.Light, neonLight.IsOn);
+            }
+            foreach (var vehicleMod in VehicleMods) {
+                vehicle.InstallModKit();
+                vehicle.SetMod(vehicleMod.Mod, vehicleMod.ModIndex, true);
+            }
+            foreach (var vehicleToggleMod in VehicleToggleMods) {
+                vehicle.InstallModKit();
+                vehicle.ToggleMod(vehicleToggleMod.Mod, vehicleToggleMod.IsOn);
+            }
+            Vehicle = vehicle;
+        }
+
+        public void DeleteVehicle() {
+            if (Vehicle != null) Vehicle.Delete();
         }
 
     }

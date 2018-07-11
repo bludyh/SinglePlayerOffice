@@ -58,18 +58,15 @@
     <Compile Include="Building\IInterior.cs" />
     <Compile Include="Interactions\InteractionsController.cs" />
     <Compile Include="Building\Location.cs" />
-    <Compile Include="Building\GarageDecorationStyle.cs" />
-    <Compile Include="Building\GarageLightingStyle.cs" />
-    <Compile Include="Building\GarageNumberingStyle.cs" />
+    <Compile Include="Building\InteriorStyle.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Buildings\LomBank.cs" />
     <Compile Include="Building\ModShop.cs" />
     <Compile Include="Building\Office.cs" />
+    <Compile Include="Vehicle\NeonLight.cs" />
     <Compile Include="SinglePlayerOffice.cs" />
     <Compile Include="Buildings\MazeBank.cs" />
     <Compile Include="Buildings\MazeBankWest.cs" />
-    <Compile Include="Building\ModShopFloorStyle.cs" />
-    <Compile Include="Building\OfficeInteriorStyle.cs" />
     <Compile Include="Building\Owner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -81,7 +78,9 @@
     <Compile Include="Scenes\ScenesController.cs" />
     <Compile Include="Interactions\Sofa.cs" />
     <Compile Include="Interactions\Wardrobe.cs" />
-    <Compile Include="VehicleInfo.cs" />
+    <Compile Include="Vehicle\VehicleMod.cs" />
+    <Compile Include="Vehicle\VehicleToggleMod.cs" />
+    <Compile Include="Vehicle\VehicleInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -91,6 +90,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "D:\Games\Steam\steamapps\common\Grand Theft Auto V\scripts"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripts"</PostBuildEvent>
   </PropertyGroup>
 </Project>

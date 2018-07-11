@@ -17,8 +17,8 @@ namespace SinglePlayerOffice {
         public Vector3 PurchaseCamRot { get; set; }
         public float PurchaseCamFOV { get; set; }
         public Camera PurchaseCam { get; set; }
-        public List<OfficeInteriorStyle> InteriorStyles { get; set; }
-        public OfficeInteriorStyle InteriorStyle { get; set; }
+        public List<InteriorStyle> InteriorStyles { get; set; }
+        public InteriorStyle InteriorStyle { get; set; }
         public bool HasExtraDecors { get; set; }
         public int ExtraDecorsPrice { get; set; }
 
@@ -45,7 +45,7 @@ namespace SinglePlayerOffice {
         }
 
         public void LoadInterior() {
-            Function.Call(Hash.REQUEST_IPL, InteriorStyle.IPL);
+            Function.Call(Hash.REQUEST_IPL, InteriorStyle.Style);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
             if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
             if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_booze");
@@ -54,8 +54,8 @@ namespace SinglePlayerOffice {
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void LoadInterior(OfficeInteriorStyle interiorStyle) {
-            Function.Call(Hash.REQUEST_IPL, interiorStyle.IPL);
+        public void LoadInterior(InteriorStyle interiorStyle) {
+            Function.Call(Hash.REQUEST_IPL, interiorStyle.Style);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
             if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
             if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_booze");
@@ -64,9 +64,9 @@ namespace SinglePlayerOffice {
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void ChangeInteriorStyle(OfficeInteriorStyle interiorStyle) {
-            foreach (OfficeInteriorStyle style in InteriorStyles) Function.Call(Hash.REMOVE_IPL, style.IPL);
-            Function.Call(Hash.REQUEST_IPL, interiorStyle.IPL);
+        public void ChangeInteriorStyle(InteriorStyle interiorStyle) {
+            foreach (InteriorStyle style in InteriorStyles) Function.Call(Hash.REMOVE_IPL, style.Style);
+            Function.Call(Hash.REQUEST_IPL, interiorStyle.Style);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
             if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
             if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_booze")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_booze");

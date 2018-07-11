@@ -2,27 +2,46 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
+using System.Xml.Serialization;
 using GTA;
 using GTA.Math;
 using GTA.Native;
 using NativeUI;
 
 namespace SinglePlayerOffice {
+    class Elevator {
+
+        public Prop Base { get; set; }
+        public Prop Platform { get; set; }
+
+    }
+    class ElevatorGate {
+
+        public Prop Prop { get; set; }
+        public Vector3 InitialPos { get; set; }
+
+        public ElevatorGate(Prop prop, Vector3 pos) {
+            Prop = prop;
+            InitialPos = pos;
+        }
+
+    }
     class Garage : Location, IInterior {
 
         private static VehicleInfo vehicleInfo;
         private static Scaleform vehicleInfoScaleform;
 
-        public static List<GarageDecorationStyle> DecorationStyles { get; set; }
-        public static List<GarageLightingStyle> LightingStyles { get; set; }
-        public static List<GarageNumberingStyle> NumberingStylesGarageOne { get; set; }
-        public static List<GarageNumberingStyle> NumberingStylesGarageTwo { get; set; }
-        public static List<GarageNumberingStyle> NumberingStylesGarageThree { get; set; }
+        public static List<InteriorStyle> DecorationStyles { get; set; }
+        public static List<InteriorStyle> LightingStyles { get; set; }
+        public static List<InteriorStyle> NumberingStylesGarageOne { get; set; }
+        public static List<InteriorStyle> NumberingStylesGarageTwo { get; set; }
+        public static List<InteriorStyle> NumberingStylesGarageThree { get; set; }
 
-        private Prop elevator;
-        private Prop elevatorPlatform;
-        private Vector3 elevatorGateInitialPos;
-        private Prop elevatorGate;
+        private Elevator elevator;
+        private List<ElevatorGate> elevatorGates;
+        private List<VehicleInfo> vehicleInfoList;
+        private bool isVehiclesCreated;
 
         public string IPL { get; set; }
         public int InteriorID { get; set; }
@@ -34,169 +53,179 @@ namespace SinglePlayerOffice {
         public Vector3 DecorationCamRot { get; set; }
         public float DecorationCamFOV { get; set; }
         public Camera DecorationCam { get; set; }
-        public GarageDecorationStyle DecorationStyle { get; set; }
+        public InteriorStyle DecorationStyle { get; set; }
         public Vector3 LightingCamPos { get; set; }
         public Vector3 LightingCamRot { get; set; }
         public float LightingCamFOV { get; set; }
         public Camera LightingCam { get; set; }
-        public GarageLightingStyle LightingStyle { get; set; }
+        public InteriorStyle LightingStyle { get; set; }
         public Vector3 NumberingCamPos { get; set; }
         public Vector3 NumberingCamRot { get; set; }
         public float NumberingCamFOV { get; set; }
         public Camera NumberingCam { get; set; }
-        public GarageNumberingStyle NumberingStyle { get; set; }
+        public InteriorStyle NumberingStyle { get; set; }
         public Vector3 ElevatorLevelAPos { get; set; }
         public Vector3 ElevatorLevelBPos { get; set; }
         public Vector3 ElevatorLevelCPos { get; set; }
         public Vector3 ElevatorPos { get; set; }
         public Vector3 ElevatorRot { get; set; }
-        public bool IsElevatorCreated { get; set; }
         public int ElevatorStatus { get; set; }
 
         static Garage() {
-            DecorationStyles = new List<GarageDecorationStyle> {
-                new GarageDecorationStyle("Decoration 1", 0, "garage_decor_01"),
-                new GarageDecorationStyle("Decoration 2", 285000, "garage_decor_02"),
-                new GarageDecorationStyle("Decoration 3", 415000, "garage_decor_04"),
-                new GarageDecorationStyle("Decoration 4", 500000, "garage_decor_03")
+            DecorationStyles = new List<InteriorStyle> {
+                new InteriorStyle("Decoration 1", 0, "garage_decor_01"),
+                new InteriorStyle("Decoration 2", 285000, "garage_decor_02"),
+                new InteriorStyle("Decoration 3", 415000, "garage_decor_04"),
+                new InteriorStyle("Decoration 4", 500000, "garage_decor_03")
             };
-            LightingStyles = new List<GarageLightingStyle> {
-                new GarageLightingStyle("Lighting 1", 0, "lighting_option01"),
-                new GarageLightingStyle("Lighting 2", 81500, "lighting_option04"),
-                new GarageLightingStyle("Lighting 3", 85000, "lighting_option03"),
-                new GarageLightingStyle("Lighting 4", 87500, "lighting_option07"),
-                new GarageLightingStyle("Lighting 5", 92500, "lighting_option06"),
-                new GarageLightingStyle("Lighting 6", 99500, "lighting_option05"),
-                new GarageLightingStyle("Lighting 7", 105000, "lighting_option08"),
-                new GarageLightingStyle("Lighting 8", 127500, "lighting_option02"),
-                new GarageLightingStyle("Lighting 9", 150000, "lighting_option09")
+            LightingStyles = new List<InteriorStyle> {
+                new InteriorStyle("Lighting 1", 0, "lighting_option01"),
+                new InteriorStyle("Lighting 2", 81500, "lighting_option04"),
+                new InteriorStyle("Lighting 3", 85000, "lighting_option03"),
+                new InteriorStyle("Lighting 4", 87500, "lighting_option07"),
+                new InteriorStyle("Lighting 5", 92500, "lighting_option06"),
+                new InteriorStyle("Lighting 6", 99500, "lighting_option05"),
+                new InteriorStyle("Lighting 7", 105000, "lighting_option08"),
+                new InteriorStyle("Lighting 8", 127500, "lighting_option02"),
+                new InteriorStyle("Lighting 9", 150000, "lighting_option09")
             };
-            NumberingStylesGarageOne = new List<GarageNumberingStyle> {
-                new GarageNumberingStyle("Signage 1", 0, "numbering_style07_n1"),
-                new GarageNumberingStyle("Signage 2", 62500, "numbering_style08_n1"),
-                new GarageNumberingStyle("Signage 3", 75000, "numbering_style09_n1"),
-                new GarageNumberingStyle("Signage 4", 87500, "numbering_style02_n1"),
-                new GarageNumberingStyle("Signage 5", 100000, "numbering_style03_n1"),
-                new GarageNumberingStyle("Signage 6", 132500, "numbering_style01_n1"),
-                new GarageNumberingStyle("Signage 7", 165000, "numbering_style06_n1"),
-                new GarageNumberingStyle("Signage 8", 197500, "numbering_style05_n1"),
-                new GarageNumberingStyle("Signage 9", 250000, "numbering_style04_n1"),
+            NumberingStylesGarageOne = new List<InteriorStyle> {
+                new InteriorStyle("Signage 1", 0, "numbering_style07_n1"),
+                new InteriorStyle("Signage 2", 62500, "numbering_style08_n1"),
+                new InteriorStyle("Signage 3", 75000, "numbering_style09_n1"),
+                new InteriorStyle("Signage 4", 87500, "numbering_style02_n1"),
+                new InteriorStyle("Signage 5", 100000, "numbering_style03_n1"),
+                new InteriorStyle("Signage 6", 132500, "numbering_style01_n1"),
+                new InteriorStyle("Signage 7", 165000, "numbering_style06_n1"),
+                new InteriorStyle("Signage 8", 197500, "numbering_style05_n1"),
+                new InteriorStyle("Signage 9", 250000, "numbering_style04_n1"),
             };
-            NumberingStylesGarageTwo = new List<GarageNumberingStyle> {
-                new GarageNumberingStyle("Signage 1", 0, "numbering_style07_n2"),
-                new GarageNumberingStyle("Signage 2", 62500, "numbering_style08_n2"),
-                new GarageNumberingStyle("Signage 3", 75000, "numbering_style09_n2"),
-                new GarageNumberingStyle("Signage 4", 87500, "numbering_style02_n2"),
-                new GarageNumberingStyle("Signage 5", 100000, "numbering_style03_n2"),
-                new GarageNumberingStyle("Signage 6", 132500, "numbering_style01_n2"),
-                new GarageNumberingStyle("Signage 7", 165000, "numbering_style06_n2"),
-                new GarageNumberingStyle("Signage 8", 197500, "numbering_style05_n2"),
-                new GarageNumberingStyle("Signage 9", 250000, "numbering_style04_n2"),
+            NumberingStylesGarageTwo = new List<InteriorStyle> {
+                new InteriorStyle("Signage 1", 0, "numbering_style07_n2"),
+                new InteriorStyle("Signage 2", 62500, "numbering_style08_n2"),
+                new InteriorStyle("Signage 3", 75000, "numbering_style09_n2"),
+                new InteriorStyle("Signage 4", 87500, "numbering_style02_n2"),
+                new InteriorStyle("Signage 5", 100000, "numbering_style03_n2"),
+                new InteriorStyle("Signage 6", 132500, "numbering_style01_n2"),
+                new InteriorStyle("Signage 7", 165000, "numbering_style06_n2"),
+                new InteriorStyle("Signage 8", 197500, "numbering_style05_n2"),
+                new InteriorStyle("Signage 9", 250000, "numbering_style04_n2"),
             };
-            NumberingStylesGarageThree = new List<GarageNumberingStyle> {
-                new GarageNumberingStyle("Signage 1", 0, "numbering_style07_n3"),
-                new GarageNumberingStyle("Signage 2", 62500, "numbering_style08_n3"),
-                new GarageNumberingStyle("Signage 3", 75000, "numbering_style09_n3"),
-                new GarageNumberingStyle("Signage 4", 87500, "numbering_style02_n3"),
-                new GarageNumberingStyle("Signage 5", 100000, "numbering_style03_n3"),
-                new GarageNumberingStyle("Signage 6", 132500, "numbering_style01_n3"),
-                new GarageNumberingStyle("Signage 7", 165000, "numbering_style06_n3"),
-                new GarageNumberingStyle("Signage 8", 197500, "numbering_style05_n3"),
-                new GarageNumberingStyle("Signage 9", 250000, "numbering_style04_n3"),
+            NumberingStylesGarageThree = new List<InteriorStyle> {
+                new InteriorStyle("Signage 1", 0, "numbering_style07_n3"),
+                new InteriorStyle("Signage 2", 62500, "numbering_style08_n3"),
+                new InteriorStyle("Signage 3", 75000, "numbering_style09_n3"),
+                new InteriorStyle("Signage 4", 87500, "numbering_style02_n3"),
+                new InteriorStyle("Signage 5", 100000, "numbering_style03_n3"),
+                new InteriorStyle("Signage 6", 132500, "numbering_style01_n3"),
+                new InteriorStyle("Signage 7", 165000, "numbering_style06_n3"),
+                new InteriorStyle("Signage 8", 197500, "numbering_style05_n3"),
+                new InteriorStyle("Signage 9", 250000, "numbering_style04_n3"),
             };
+        }
+
+        public Garage() {
+            elevatorGates = new List<ElevatorGate>();
+            vehicleInfoList = new List<VehicleInfo>();
         }
 
         public void LoadInterior() {
             Function.Call(Hash.REQUEST_IPL, IPL);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (GarageDecorationStyle style in DecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageLightingStyle style in LightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageOne) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageTwo) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageThree) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, DecorationStyle.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, LightingStyle.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, NumberingStyle.PropName);
+            foreach (InteriorStyle style in DecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in LightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in NumberingStylesGarageOne) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in NumberingStylesGarageTwo) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in NumberingStylesGarageThree) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, DecorationStyle.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, LightingStyle.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, NumberingStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void LoadInterior(GarageDecorationStyle decorationStyle, GarageLightingStyle lightingStyle, GarageNumberingStyle numberingStyle) {
+        public void LoadInterior(InteriorStyle decorationStyle, InteriorStyle lightingStyle, InteriorStyle numberingStyle) {
             Function.Call(Hash.REQUEST_IPL, IPL);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (GarageDecorationStyle style in DecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageLightingStyle style in LightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageOne) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageTwo) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageThree) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decorationStyle.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, lightingStyle.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, numberingStyle.PropName);
+            foreach (InteriorStyle style in DecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in LightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in NumberingStylesGarageOne) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in NumberingStylesGarageTwo) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in NumberingStylesGarageThree) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decorationStyle.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, lightingStyle.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, numberingStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void ChangeDecorationStyle(GarageDecorationStyle decorationStyle) {
+        public void ChangeDecorationStyle(InteriorStyle decorationStyle) {
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (GarageDecorationStyle style in DecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decorationStyle.PropName);
+            foreach (InteriorStyle style in DecorationStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decorationStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void ChangeLightingStyle(GarageLightingStyle lightingStyle) {
+        public void ChangeLightingStyle(InteriorStyle lightingStyle) {
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (GarageLightingStyle style in LightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, lightingStyle.PropName);
+            foreach (InteriorStyle style in LightingStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, lightingStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void ChangeNumberingStyle(GarageNumberingStyle numberingStyle) {
+        public void ChangeNumberingStyle(InteriorStyle numberingStyle) {
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageOne) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageTwo) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            foreach (GarageNumberingStyle style in NumberingStylesGarageThree) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.PropName);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, numberingStyle.PropName);
+            foreach (InteriorStyle style in NumberingStylesGarageOne) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in NumberingStylesGarageTwo) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            foreach (InteriorStyle style in NumberingStylesGarageThree) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, numberingStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
         public void CreateElevator() {
+            elevator = new Elevator();
             var model = new Model("imp_prop_ie_carelev01");
             model.Request(250);
             if (model.IsInCdImage && model.IsValid) {
                 while (!model.IsLoaded) Script.Wait(50);
-                elevator = World.CreateProp(model, Vector3.Zero, Vector3.Zero, false, false);
+                elevator.Base = World.CreateProp(model, Vector3.Zero, Vector3.Zero, false, false);
             }
             model.MarkAsNoLongerNeeded();
             model = new Model("imp_prop_ie_carelev02");
             model.Request(250);
             if (model.IsInCdImage && model.IsValid) {
                 while (!model.IsLoaded) Script.Wait(50);
-                elevatorPlatform = World.CreateProp(model, Vector3.Zero, Vector3.Zero, false, false);
-                elevatorPlatform.Position = ElevatorLevelAPos;
-                elevatorPlatform.Rotation = ElevatorRot;
-                elevatorPlatform.FreezePosition = true;
+                elevator.Platform = World.CreateProp(model, Vector3.Zero, Vector3.Zero, false, false);
+                elevator.Platform.Position = ElevatorLevelAPos;
+                elevator.Platform.Rotation = ElevatorRot;
+                elevator.Platform.FreezePosition = true;
             }
             model.MarkAsNoLongerNeeded();
-            elevator.AttachTo(elevatorPlatform, 0);
-            IsElevatorCreated = true;
+            elevator.Base.AttachTo(elevator.Platform, 0);
         }
 
         public void DeleteElevator() {
-            if (elevator != null) elevator.Delete();
-            if (elevatorPlatform != null) elevatorPlatform.Delete();
-            IsElevatorCreated = false;
+            if (elevator != null) {
+                elevator.Base.Delete();
+                elevator.Platform.Delete();
+                elevator = null;
+            }
         }
 
         private bool MoveElevator(Vector3 pos) {
-            if (elevatorPlatform.Position.Z < pos.Z) elevatorPlatform.Position = Vector3.Add(elevatorPlatform.Position, new Vector3(0f, 0f, 0.005f));
-            else elevatorPlatform.Position = Vector3.Add(elevatorPlatform.Position, new Vector3(0f, 0f, -0.005f));
-            if (elevatorPlatform.Position.DistanceTo(pos) < 0.01f) return false;
-            return true;
+            if (elevator.Platform.Position.DistanceTo(pos) > 0.01f) {
+                if (elevator.Platform.Position.Z < pos.Z) elevator.Platform.Position = Vector3.Add(elevator.Platform.Position, new Vector3(0f, 0f, 0.005f));
+                else elevator.Platform.Position = Vector3.Add(elevator.Platform.Position, new Vector3(0f, 0f, -0.005f));
+                return true;
+            }
+            else return false;
         }
 
-        private bool MoveElevatorGate(Vector3 pos) {
-            if (elevatorGate.Position.Z < pos.Z) elevatorGate.Position = Vector3.Add(elevatorGate.Position, new Vector3(0f, 0f, 0.01f));
-            else elevatorGate.Position = Vector3.Add(elevatorGate.Position, new Vector3(0f, 0f, -0.01f));
-            if (elevatorGate.Position.DistanceTo(pos) < 0.01f) return false;
-            return true;
+        private bool MoveElevatorGate(Prop gate, Vector3 pos) {
+            if (gate.Position.DistanceTo(pos) > 0.01f) {
+                if (gate.Position.Z < pos.Z) gate.Position = Vector3.Add(gate.Position, new Vector3(0f, 0f, 0.01f));
+                else gate.Position = Vector3.Add(gate.Position, new Vector3(0f, 0f, -0.01f));
+                return true;
+            }
+            else return false;
         }
 
         public Vector3 GetCurrentLevelElevatorPos() {
@@ -204,6 +233,62 @@ namespace SinglePlayerOffice {
             else if (Game.Player.Character.Position.Z > ElevatorLevelBPos.Z && Game.Player.Character.Position.Z < ElevatorLevelCPos.Z) return ElevatorLevelBPos;
             else if (Game.Player.Character.Position.Z > ElevatorLevelCPos.Z) return ElevatorLevelCPos;
             return Vector3.Zero;
+        }
+
+        public void AddVehicleInfo(Vehicle vehicle) {
+            vehicle.IsPersistent = true;
+            var info = new VehicleInfo(vehicle);
+            vehicleInfoList.Add(info);
+        }
+
+        public void RemoveVehicleInfo(Vehicle vehicle) {
+            foreach (var vehicleInfo in vehicleInfoList) {
+                if (vehicleInfo.Vehicle == vehicle) {
+                    vehicleInfoList.Remove(vehicleInfo);
+                    break;
+                }
+            }
+        }
+
+        public void SaveVehicleInfoList() {
+            foreach (var vehicleInfo in vehicleInfoList) {
+                vehicleInfo.Position = vehicleInfo.Vehicle.Position;
+                vehicleInfo.Rotation = vehicleInfo.Vehicle.Rotation;
+            }
+            var fileName = "";
+            if (this == building.GarageOne) fileName = "GarageOne.xml";
+            else if (this == building.GarageTwo) fileName = "GarageTwo.xml";
+            else if (this == building.GarageThree) fileName = "GarageThree.xml";
+            var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
+            var writer = new StreamWriter(String.Format(@"scripts\SinglePlayerOffice\{0}\{1}", building.Name, fileName));
+            serializer.Serialize(writer, vehicleInfoList);
+            writer.Close();
+        }
+
+        public void LoadVehicleInfoList() {
+            var fileName = "";
+            if (this == building.GarageOne) fileName = "GarageOne.xml";
+            else if (this == building.GarageTwo) fileName = "GarageTwo.xml";
+            else if (this == building.GarageThree) fileName = "GarageThree.xml";
+            var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
+            var reader = new StreamReader(String.Format(@"scripts\SinglePlayerOffice\{0}\{1}", building.Name, fileName));
+            vehicleInfoList = (List<VehicleInfo>)serializer.Deserialize(reader);
+            reader.Close();
+        }
+
+        public void CreateVehicles() {
+            LoadVehicleInfoList();
+            foreach (var vehicleInfo in vehicleInfoList) {
+                vehicleInfo.CreateVehicle();
+            }
+            isVehiclesCreated = true;
+        }
+
+        public void DeleteVehicles() {
+            foreach (var vehicleInfo in vehicleInfoList) {
+                vehicleInfo.DeleteVehicle();
+            }
+            isVehiclesCreated = false;
         }
 
         protected override void TeleportOnTick() {
@@ -230,13 +315,13 @@ namespace SinglePlayerOffice {
                     }
                     break;
                 case 1:
-                    Game.Player.Character.CurrentVehicle.IsPersistent = true;
-                    elevatorPlatform.Position = elevatorPlatform.GetOffsetInWorldCoords(new Vector3(0f, 0f, -1f));
+                    AddVehicleInfo(Game.Player.Character.CurrentVehicle);
+                    elevator.Platform.Position = elevator.Platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, -1f));
                     ElevatorStatus = 2;
                     break;
                 case 2:
                     if (MoveElevator(ElevatorLevelAPos)) {
-                        Game.Player.Character.CurrentVehicle.Position = elevatorPlatform.GetOffsetInWorldCoords(new Vector3(0f, 0f, 1.3f));
+                        Game.Player.Character.CurrentVehicle.Position = elevator.Platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, 1.3f));
                         Game.Player.Character.CurrentVehicle.Rotation = Vector3.Add(Game.Player.Character.CurrentVehicle.Rotation, new Vector3(0f, 0f, 0.2f));
                     }
                     else {
@@ -250,18 +335,20 @@ namespace SinglePlayerOffice {
                     }
                     break;
                 case 3:
-                    if (elevatorGate != null) MoveElevatorGate(elevatorGateInitialPos);
+                    foreach (var gate in elevatorGates) MoveElevatorGate(gate.Prop, gate.InitialPos);
                     if (!MoveElevator(ElevatorPos)) {
-                        var prop = Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, elevatorPlatform.Position.X, elevatorPlatform.Position.Y, elevatorPlatform.Position.Z, 2f, -2088725999, 0, 0, 0);
-                        if (prop.Model.Hash == -2088725999) {
-                            elevatorGate = prop;
-                            elevatorGateInitialPos = elevatorGate.Position;
+                        var gates = new List<ElevatorGate>();
+                        foreach (var prop in World.GetNearbyProps(elevator.Platform.Position, 5f)) {
+                            if (prop.Model.Hash == -2088725999 || prop.Model.Hash == -1238206604 || (prop.Model.Hash == 1593297148 && elevator.Platform.Position.DistanceTo(ElevatorLevelAPos) < 1f)) {
+                                gates.Add(new ElevatorGate(prop, prop.Position));
+                                elevatorGates = gates;
+                            }
                         }
                         ElevatorStatus = 4;
                     }
                     break;
                 case 4:
-                    if (!MoveElevatorGate(Vector3.Add(elevatorGateInitialPos, new Vector3(0f, 0f, 3f)))) {
+                    if (!elevatorGates.TrueForAll(gate => MoveElevatorGate(gate.Prop, Vector3.Add(gate.InitialPos, new Vector3(0f, 0f, 3f))))) {
                         building.UpdateVehicleElevatorMenuButtons();
                         SinglePlayerOffice.IsHudHidden = true;
                         building.VehicleElevatorMenu.Visible = true;
@@ -317,6 +404,18 @@ namespace SinglePlayerOffice {
         public override void OnTick() {
             Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
             if (building == null) building = SinglePlayerOffice.GetCurrentBuilding();
+            if (elevator == null) {
+                building.GarageOne.DeleteElevator();
+                building.GarageTwo.DeleteElevator();
+                building.GarageThree.DeleteElevator();
+                CreateElevator();
+            }
+            if (!isVehiclesCreated) {
+                building.GarageOne.DeleteVehicles();
+                building.GarageTwo.DeleteVehicles();
+                building.GarageThree.DeleteVehicles();
+                CreateVehicles();
+            }
             building.HideBuildingExteriors();
             TeleportOnTick();
             ElevatorOnTick();
@@ -324,9 +423,9 @@ namespace SinglePlayerOffice {
         }
 
         public void Dispose() {
-            if (elevator != null) elevator.Delete();
-            if (elevatorPlatform != null) elevatorPlatform.Delete();
             if (vehicleInfoScaleform != null) vehicleInfoScaleform.Dispose();
+            DeleteElevator();
+            DeleteVehicles();
         }
 
     }
