@@ -15,15 +15,15 @@ namespace SinglePlayerOffice {
                 SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the stairs");
                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                     Game.Player.Character.Task.StandStill(-1);
-                    building.UpdateTeleportMenuButtons();
+                    Building.UpdateTeleportMenuButtons();
                     SinglePlayerOffice.IsHudHidden = true;
-                    building.TeleportMenu.Visible = true;
+                    Building.TeleportMenu.Visible = true;
                 }
             }
         }
 
         public override void OnTick() {
-            if (building == null) building = SinglePlayerOffice.GetCurrentBuilding();
+            if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
             TeleportOnTick();
         }
 

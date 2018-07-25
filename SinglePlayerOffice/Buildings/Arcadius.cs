@@ -55,7 +55,20 @@ namespace SinglePlayerOffice {
                         new InteriorStyle("Power Broker Polished", 910000, "ex_dt1_02_office_03c"),
                         new InteriorStyle("Power Broker Ice", 1000000, "ex_dt1_02_office_03a")
                     },
-                    HasExtraDecors = SinglePlayerOffice.Configs.GetValue(name, "HasExtraOfficeDecors", false)
+                    HasExtraDecors = SinglePlayerOffice.Configs.GetValue(name, "HasExtraOfficeDecors", false),
+                    Scene = new OfficeScene {
+                        BossChairPos = new Vector3(-146.516f, -645.987f, 168.417f),
+                        StaffChairPosList = new List<Vector3> {
+                            new Vector3(-145.602f, -644.751f, 168.417f),
+                            new Vector3(-145.729f, -643.541f, 168.417f),
+                            new Vector3(-145.851f, -642.375f, 168.417f),
+                            new Vector3(-147.741f, -644.944f, 168.417f),
+                            new Vector3(-147.866f, -643.760f, 168.417f),
+                            new Vector3(-147.991f, -642.567f, 168.417f)
+                        },
+                        PaChairPos = new Vector3(-138.994f, -634.089f, 168.423f),
+                        PaChairRot = new Vector3(0f, 0f, -174f)
+                    }
                 };
                 office.InteriorStyle = GetOfficeInteriorStyle(SinglePlayerOffice.Configs.GetValue(name, "OfficeInteriorStyle"));
                 garageOne = new Garage {
@@ -152,47 +165,6 @@ namespace SinglePlayerOffice {
                     SpawnPos = new Vector3(-156.460f, -603.294f, 201.735f),
                     SpawnHeading = 128.035f
                 };
-
-                //officeSofaPos = new Vector3(-137.806f, -644.631f, 167.820f);
-                //officeSofaRot = new Vector3(0f, 0f, 186f);
-                //officeSofaStartPos = new Vector3(-137.859f, -644.034f, 168.820f);
-                //officeSofaStartHeading = 6f;
-                //officeTVTrigger = new Vector3(-138.406f, -639.809f, 169.235f);
-                //officeComputerChairPos = new Vector3(-125.645f, -641.945f, 168.441f);
-                //officeComputerChairRot = new Vector3(0f, 0f, -129f);
-                //officeLeftSafeTrigger = new Vector3(-124.192f, -639.577f, 168.821f);
-                //officeLeftSafeStartPos = new Vector3(-125.492f, -639.708f, 168.820f);
-                //officeLeftSafeStartHeading = 276f;
-                //officeRightSafeTrigger = new Vector3(-123.742f, -643.171f, 168.821f);
-                //officeRightSafeStartPos = new Vector3(-125.272f, -643.433f, 168.820f);
-                //officeRightSafeStartHeading = 276f;
-                //officeRadioTrigger = new Vector3(-128.186f, -638.605f, 168.821f);
-                //officeRadioHeading = 5.807f;
-                //officeBossChairTrigger = new Vector3(-146.374f, -646.895f, 168.821f);
-                //officeBossChairHeading = 6.006f;
-                //officeStaffChairTriggers = new List<Vector3>() {
-                //    new Vector3(-148.771f, -645.045f, 168.820f),
-                //    new Vector3(-148.799f, -643.852f, 168.821f),
-                //    new Vector3(-148.961f, -642.664f, 168.821f),
-                //    new Vector3(-144.661f, -644.588f, 168.821f),
-                //    new Vector3(-144.785f, -643.439f, 168.821f),
-                //    new Vector3(-144.888f, -642.273f, 168.821f)
-                    
-                //};
-                //officeStaffChairHeadings = new List<float>() { 276.992f, 277.038f, 276.835f, 94.423f, 95.754f, 98.838f };
-                //officeLaptopChairTriggers = new List<Vector3>() {
-                //    new Vector3(-146.074f, -638.172f, 168.820f),
-                //    new Vector3(-146.187f, -636.645f, 168.820f),
-                //    new Vector3(-146.405f, -635.169f, 168.820f)
-                //};
-                //officeLaptopChairHeadings = new List<float>() { 278.144f, 275.984f, 275.789f };
-                //officeWardrobeTrigger = new Vector3(-132.303f, -632.859f, 168.820f);
-                //officeWardrobeHeading = 276.090f;
-                //officeWardrobeCamPos = new Vector3(-130.797f, -632.694f, 168.820f);
-                //officeWardrobeCamRot = new Vector3(0f, 0f, 96.009f);
-                //officeWardrobeCamFOV = 75f;
-                //officePaChairPos = new Vector3(-138.994f, -634.089f, 168.423f);
-                //officePaChairRot = new Vector3(0f, 0f, -174f);
 
                 CreateBuildingBlip();
                 CreatePurchaseMenu();

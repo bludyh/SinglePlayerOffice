@@ -19,13 +19,13 @@ namespace SinglePlayerOffice {
 
         protected override void TeleportOnTick() {
             if (!Game.Player.Character.IsDead && Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 10f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-                if (building.Owner != Owner.None) {
-                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)building.Owner) {
+                if (Building.Owner != Owner.None) {
+                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Building.Owner) {
                         SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the vehicle elevator");
                         if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                             GarageEntranceStatus = 1;
                             SinglePlayerOffice.IsHudHidden = true;
-                            building.GarageEntranceMenu.Visible = true;
+                            Building.GarageEntranceMenu.Visible = true;
                         }
                     }
                     else SinglePlayerOffice.DisplayHelpTextThisFrame("Only the owner can use the vehicle elevator");
@@ -53,7 +53,7 @@ namespace SinglePlayerOffice {
         }
 
         public override void OnTick() {
-            if (building == null) building = SinglePlayerOffice.GetCurrentBuilding();
+            if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
             TeleportOnTick();
             ElevatorEnterOnTick();
         }

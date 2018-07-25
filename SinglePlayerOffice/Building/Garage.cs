@@ -250,28 +250,29 @@ namespace SinglePlayerOffice {
             }
         }
 
+        private string GetGarageFileName() {
+            if (this == Building.GarageOne) return "GarageOne.xml";
+            else if (this == Building.GarageTwo) return "GarageTwo.xml";
+            else if (this == Building.GarageThree) return "GarageThree.xml";
+            return null;
+        }
+
         public void SaveVehicleInfoList() {
             foreach (var vehicleInfo in vehicleInfoList) {
                 vehicleInfo.Position = vehicleInfo.Vehicle.Position;
                 vehicleInfo.Rotation = vehicleInfo.Vehicle.Rotation;
             }
-            var fileName = "";
-            if (this == building.GarageOne) fileName = "GarageOne.xml";
-            else if (this == building.GarageTwo) fileName = "GarageTwo.xml";
-            else if (this == building.GarageThree) fileName = "GarageThree.xml";
             var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
-            var writer = new StreamWriter(String.Format(@"scripts\SinglePlayerOffice\{0}\{1}", building.Name, fileName));
+            var fileName = GetGarageFileName();
+            var writer = new StreamWriter(String.Format(@"scripts\SinglePlayerOffice\{0}\{1}", Building.Name, fileName));
             serializer.Serialize(writer, vehicleInfoList);
             writer.Close();
         }
 
         public void LoadVehicleInfoList() {
-            var fileName = "";
-            if (this == building.GarageOne) fileName = "GarageOne.xml";
-            else if (this == building.GarageTwo) fileName = "GarageTwo.xml";
-            else if (this == building.GarageThree) fileName = "GarageThree.xml";
             var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
-            var reader = new StreamReader(String.Format(@"scripts\SinglePlayerOffice\{0}\{1}", building.Name, fileName));
+            var fileName = GetGarageFileName();
+            var reader = new StreamReader(String.Format(@"scripts\SinglePlayerOffice\{0}\{1}", Building.Name, fileName));
             vehicleInfoList = (List<VehicleInfo>)serializer.Deserialize(reader);
             reader.Close();
         }
@@ -296,9 +297,9 @@ namespace SinglePlayerOffice {
                 SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                     Game.Player.Character.Task.StandStill(-1);
-                    building.UpdateTeleportMenuButtons();
+                    Building.UpdateTeleportMenuButtons();
                     SinglePlayerOffice.IsHudHidden = true;
-                    building.TeleportMenu.Visible = true;
+                    Building.TeleportMenu.Visible = true;
                 }
             }
         }
@@ -328,9 +329,9 @@ namespace SinglePlayerOffice {
                         ElevatorPos = GetCurrentLevelElevatorPos();
                         SinglePlayerOffice.IsHudHidden = false;
                         Game.Player.Character.Task.ClearAll();
-                        if (this == building.GarageOne) Audio.PlaySoundFrontend("Speech_Floor_1", "DLC_IE_Garage_Elevator_Sounds");
-                        else if (this == building.GarageTwo) Audio.PlaySoundFrontend("Speech_Floor_2", "DLC_IE_Garage_Elevator_Sounds");
-                        else if (this == building.GarageThree) Audio.PlaySoundFrontend("Speech_Floor_3", "DLC_IE_Garage_Elevator_Sounds");
+                        if (this == Building.GarageOne) Audio.PlaySoundFrontend("Speech_Floor_1", "DLC_IE_Garage_Elevator_Sounds");
+                        else if (this == Building.GarageTwo) Audio.PlaySoundFrontend("Speech_Floor_2", "DLC_IE_Garage_Elevator_Sounds");
+                        else if (this == Building.GarageThree) Audio.PlaySoundFrontend("Speech_Floor_3", "DLC_IE_Garage_Elevator_Sounds");
                         ElevatorStatus = 3;
                     }
                     break;
@@ -338,7 +339,7 @@ namespace SinglePlayerOffice {
                     foreach (var gate in elevatorGates) MoveElevatorGate(gate.Prop, gate.InitialPos);
                     if (!MoveElevator(ElevatorPos)) {
                         var gates = new List<ElevatorGate>();
-                        foreach (var prop in World.GetNearbyProps(elevator.Platform.Position, 5f)) {
+                        foreach (var prop in World.GetNearbyProps(elevator.Platform.Position, 4.5f)) {
                             if (prop.Model.Hash == -2088725999 || prop.Model.Hash == -1238206604 || (prop.Model.Hash == 1593297148 && elevator.Platform.Position.DistanceTo(ElevatorLevelAPos) < 1f)) {
                                 gates.Add(new ElevatorGate(prop, prop.Position));
                                 elevatorGates = gates;
@@ -349,9 +350,9 @@ namespace SinglePlayerOffice {
                     break;
                 case 4:
                     if (!elevatorGates.TrueForAll(gate => MoveElevatorGate(gate.Prop, Vector3.Add(gate.InitialPos, new Vector3(0f, 0f, 3f))))) {
-                        building.UpdateVehicleElevatorMenuButtons();
+                        Building.UpdateVehicleElevatorMenuButtons();
                         SinglePlayerOffice.IsHudHidden = true;
-                        building.VehicleElevatorMenu.Visible = true;
+                        Building.VehicleElevatorMenu.Visible = true;
                         ElevatorStatus = 0;
                     }
                     break;
@@ -403,20 +404,20 @@ namespace SinglePlayerOffice {
 
         public override void OnTick() {
             Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
-            if (building == null) building = SinglePlayerOffice.GetCurrentBuilding();
+            if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
             if (elevator == null) {
-                building.GarageOne.DeleteElevator();
-                building.GarageTwo.DeleteElevator();
-                building.GarageThree.DeleteElevator();
+                Building.GarageOne.DeleteElevator();
+                Building.GarageTwo.DeleteElevator();
+                Building.GarageThree.DeleteElevator();
                 CreateElevator();
             }
             if (!isVehiclesCreated) {
-                building.GarageOne.DeleteVehicles();
-                building.GarageTwo.DeleteVehicles();
-                building.GarageThree.DeleteVehicles();
+                Building.GarageOne.DeleteVehicles();
+                Building.GarageTwo.DeleteVehicles();
+                Building.GarageThree.DeleteVehicles();
                 CreateVehicles();
             }
-            building.HideBuildingExteriors();
+            Building.HideBuildingExteriors();
             TeleportOnTick();
             ElevatorOnTick();
             VehicleInfoOnTick();

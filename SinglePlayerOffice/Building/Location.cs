@@ -10,8 +10,7 @@ using NativeUI;
 namespace SinglePlayerOffice {
     abstract class Location {
 
-        protected Building building;
-
+        public Building Building { get; set; }
         public Vector3 TriggerPos { get; set; }
         public Vector3 SpawnPos { get; set; }
         public float SpawnHeading { get; set; }

@@ -823,25 +823,6 @@ namespace SinglePlayerOffice {
             return "MPCarHUD";
         }
 
-        public bool IsBike() {
-            if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "bmx")) {
-                return true;
-            }
-            if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "cruiser")) {
-                return true;
-            }
-            if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "scorcher")) {
-                return true;
-            }
-            if ((Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "tribike") || Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "tribike2")) || Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "tribike3")) {
-                return true;
-            }
-            if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "fixter")) {
-                return true;
-            }
-            return false;
-        }
-
         public float GetMaxSpeedInPercentage() {
             float maxSpeed = Function.Call<float>(Hash._0x53AF99BAA671CA47, Vehicle);
             float percentage = (maxSpeed / 52.0588235294f) * 100f;
@@ -851,7 +832,7 @@ namespace SinglePlayerOffice {
 
         public float GetMaxAccelerationInPercentage() {
             float maxAcceleration = Function.Call<float>(Hash._0x5DD35C8D074E57AE, Vehicle);
-            if (IsBike()) {
+            if (Vehicle.Model.IsBicycle) {
                 maxAcceleration *= 0.5f;
             }
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "voltic")) {
@@ -873,7 +854,7 @@ namespace SinglePlayerOffice {
 
         public float GetMaxBrakingInPercentage() {
             float maxBraking = Function.Call<float>(Hash._0xAD7E85FC227197C4, Vehicle);
-            if (IsBike()) {
+            if (Vehicle.Model.IsBicycle) {
                 maxBraking *= 0.5f;
             }
             float percentage = (maxBraking / 2.97297297297f) * 100f;
@@ -883,7 +864,7 @@ namespace SinglePlayerOffice {
 
         public float GetMaxTractionInPercentage() {
             float maxTraction = Function.Call<float>(Hash._0xA132FB5370554DB0, Vehicle);
-            if (IsBike()) {
+            if (Vehicle.Model.IsBicycle) {
                 maxTraction *= 0.5f;
             }
             float percentage = (maxTraction / 3.30864197531f) * 100f;
@@ -944,15 +925,14 @@ namespace SinglePlayerOffice {
             vehicle.DirtLevel = DirtLevel;
             vehicle.EngineHealth = EngineHealth;
             vehicle.FuelLevel = FuelLevel;
+            vehicle.InstallModKit();
             foreach (var neonLight in NeonLights) {
                 vehicle.SetNeonLightsOn(neonLight.Light, neonLight.IsOn);
             }
             foreach (var vehicleMod in VehicleMods) {
-                vehicle.InstallModKit();
                 vehicle.SetMod(vehicleMod.Mod, vehicleMod.ModIndex, true);
             }
             foreach (var vehicleToggleMod in VehicleToggleMods) {
-                vehicle.InstallModKit();
                 vehicle.ToggleMod(vehicleToggleMod.Mod, vehicleToggleMod.IsOn);
             }
             Vehicle = vehicle;

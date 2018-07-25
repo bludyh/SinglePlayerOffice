@@ -527,7 +527,7 @@ namespace SinglePlayerOffice {
                 SinglePlayerOffice.IsHudHidden = false;
                 Game.FadeScreenOut(1000);
                 Script.Wait(1000);
-                InteractionsController.ResetInterations();
+                Interactions.Reset();
                 var currentLocation = GetCurrentLocation();
                 RemoveIPLs();
                 if (currentLocation is Garage currentGarage) {
@@ -537,6 +537,7 @@ namespace SinglePlayerOffice {
                     Game.Player.Character.Position = office.SpawnPos;
                     Game.Player.Character.Heading = office.SpawnHeading;
                     office.LoadInterior();
+                    office.Scene.Reset();
                 }
                 else if (item.Text == "Garage One") {
                     Game.Player.Character.Position = garageOne.SpawnPos;
@@ -717,7 +718,7 @@ namespace SinglePlayerOffice {
                     Game.Player.Character.Task.StandStill(-1);
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
-                    InteractionsController.ResetInterations();
+                    Interactions.Reset();
                     RemoveIPLs();
                     if (currentLocation is Garage currentGarage) {
                         currentGarage.RemoveVehicleInfo(Game.Player.Character.CurrentVehicle);
@@ -857,12 +858,19 @@ namespace SinglePlayerOffice {
         }
 
         public void OnTick() {
+            var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
             var currentLocation = GetCurrentLocation();
+            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)owner && (hours < 9 || hours > 16) && currentLocation is IInterior) {
+                UpdateTeleportMenuButtons();
+                TeleportMenu.GoUp();
+                TeleportMenu.SelectItem();
+            }
             currentLocation.OnTick();
         }
 
         public void Dispose() {
             blip.Remove();
+            office.Dispose();
             garageOne.Dispose();
             garageTwo.Dispose();
             garageThree.Dispose();

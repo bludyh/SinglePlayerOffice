@@ -21,6 +21,7 @@ namespace SinglePlayerOffice {
         public InteriorStyle InteriorStyle { get; set; }
         public bool HasExtraDecors { get; set; }
         public int ExtraDecorsPrice { get; set; }
+        public OfficeScene Scene { get; set; }
 
         static Office() {
             ExtraDecors = new List<string> {
@@ -80,18 +81,33 @@ namespace SinglePlayerOffice {
                 SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                     Game.Player.Character.Task.StandStill(-1);
-                    building.UpdateTeleportMenuButtons();
+                    Building.UpdateTeleportMenuButtons();
                     SinglePlayerOffice.IsHudHidden = true;
-                    building.TeleportMenu.Visible = true;
+                    Building.TeleportMenu.Visible = true;
                 }
             }
         }
 
         public override void OnTick() {
             Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
-            if (building == null) building = SinglePlayerOffice.GetCurrentBuilding();
-            building.HideBuildingExteriors();
+            if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
+            Building.HideBuildingExteriors();
             TeleportOnTick();
+            Scene.OnTick();
+            Interactions.SofaOnTick();
+            Interactions.TVOnTick();
+            Interactions.ComputerOnTick();
+            Interactions.LeftSafeOnTick();
+            Interactions.RightSafeOnTick();
+            Interactions.RadioOnTick();
+            Interactions.BossChairOnTick();
+            Interactions.StaffChairOnTick();
+            Interactions.LaptopChairOnTick();
+            Interactions.WardrobeOnTick();
+        }
+
+        public void Dispose() {
+            Scene.Dispose();
         }
 
     }
