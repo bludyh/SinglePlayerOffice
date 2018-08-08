@@ -17,6 +17,10 @@ namespace SinglePlayerOffice {
         public Camera ElevatorCam { get; set; }
         public int GarageEntranceStatus { get; set; }
 
+        public GarageEntrance() {
+            ActiveInteractions.AddRange(new List<Action> { TeleportOnTick, ElevatorEnterOnTick });
+        }
+
         protected override void TeleportOnTick() {
             if (!Game.Player.Character.IsDead && Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 10f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                 if (Building.Owner != Owner.None) {
@@ -54,8 +58,7 @@ namespace SinglePlayerOffice {
 
         public override void OnTick() {
             if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
-            TeleportOnTick();
-            ElevatorEnterOnTick();
+            base.OnTick();
         }
 
     }

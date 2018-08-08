@@ -56,6 +56,7 @@
     <Compile Include="Building\HeliPad.cs" />
     <Compile Include="Building\GarageEntrance.cs" />
     <Compile Include="Building\IInterior.cs" />
+    <Compile Include="Scenes\GarageScene.cs" />
     <Compile Include="Interactions\Interactions.cs" />
     <Compile Include="Building\Location.cs" />
     <Compile Include="Building\InteriorStyle.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Buildings\LomBank.cs" />
     <Compile Include="Building\ModShop.cs" />
     <Compile Include="Building\Office.cs" />
+    <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Scenes\OfficeScene.cs" />
     <Compile Include="Vehicle\NeonLight.cs" />
     <Compile Include="SinglePlayerOffice.cs" />
@@ -87,6 +89,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\dynasty8_executive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\no_banner.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

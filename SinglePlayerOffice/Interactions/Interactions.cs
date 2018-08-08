@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using GTA;
 using GTA.Math;
@@ -10,11 +11,14 @@ using NativeUI;
 namespace SinglePlayerOffice {
     static class Interactions {
 
+        private static List<Sofa> sofas;
+        private static List<Sofa> sofaTVs;
         private static Vector3 sofaInitialPos;
         private static Vector3 sofaInitialRot;
-        private static List<Sofa> sofas;
         private static Sofa sofa;
+        private static List<string> sofaPlayerAnimDicts;
         private static List<string> sofaPlayerIdleAnims;
+        private static string sofaPlayerAnimDict;
         private static Prop tv;
         private static Prop remote;
         private static int tvRenderTargetHandle;
@@ -26,14 +30,10 @@ namespace SinglePlayerOffice {
         private static int computerRenderTargetHandle;
         private static List<string> computerPlayerIdleAnims;
         private static List<string> computerChairIdleAnims;
-        private static Vector3 leftSafeDoorPos;
-        private static Vector3 leftSafeDoorRot;
         private static Vector3 leftSafeInitialPos;
         private static Vector3 leftSafeInitialRot;
         private static Prop leftSafeDoor;
         private static bool isLeftSafeOpened;
-        private static Vector3 rightSafeDoorPos;
-        private static Vector3 rightSafeDoorRot;
         private static Vector3 rightSafeInitialPos;
         private static Vector3 rightSafeInitialRot;
         private static Prop rightSafeDoor;
@@ -60,6 +60,11 @@ namespace SinglePlayerOffice {
         private static Prop laptopChair;
         private static List<string> laptopPlayerIdleAnims;
         private static List<string> laptopChairIdleAnims;
+        private static Vector3 showerInitialPos;
+        private static Vector3 showerInitialRot;
+        private static Prop showerDoor;
+        private static List<string> showerPlayerIdleAnims;
+        private static List<string> showerDoorIdleAnims;
         private static List<Wardrobe> wardrobes;
         private static Wardrobe wardrobe;
         private static Vector3 wardrobeCamPos;
@@ -72,6 +77,7 @@ namespace SinglePlayerOffice {
 
         private static string SofaInteractionHelpText { get { return "Press ~INPUT_CONTEXT~ to sit on the couch"; } }
         public static int SofaInteractionStatus { get; set; }
+        public static int SofaTVInteractionStatus { get; set; }
         private static string TVInteractionHelpText { get { if (!isTVOn) return "Press ~INPUT_CONTEXT~ to turn on the TV"; return "Press ~INPUT_CONTEXT~ to turn off the TV"; } }
         public static int TvInteractionStatus { get; set; }
         private static string ComputerInteractionRejectHelpText { get { return "You do not have access to this computer"; } }
@@ -88,17 +94,71 @@ namespace SinglePlayerOffice {
         public static int BossChairInteractionStatus { get; set; }
         public static int StaffChairInteractionStatus { get; set; }
         public static int LaptopChairInteractionStatus { get; set; }
+        private static string ShowerInteractionHelpText { get { return "Press ~INPUT_CONTEXT~ to take a shower"; } }
+        private static string ShowerInteractionRejectHelpText { get { return "You cannot take a shower here"; } }
+        public static int ShowerInteractionStatus { get; set; }
         private static string WardrobeInteractionHelpText { get { return "Press ~INPUT_CONTEXT~ to change outfit"; } }
         private static string WardrobeInteractionRejectHelpText { get { return "You cannot change outfit here"; } }
         public static int WardrobeInteractionStatus { get; set; }
 
         static Interactions() {
-            sofas = new List<Sofa>() {
-                new Sofa(new Vector3(-137.806f, -644.631f, 167.820f), new Vector3(0f, 0f, -174f)),
-                new Sofa(new Vector3(-1564.563f, -583.634f, 107.523f), new Vector3(0f, 0f, -144f)),
-                new Sofa(new Vector3(-68.486f, -804.237f, 242.386f), new Vector3(0f, 0f, -20f)),
-                new Sofa(new Vector3(-1369.017f, -476.016f, 71.05f), new Vector3(0f, 0f, -82f))
+            sofas = new List<Sofa> {
+                new Sofa(new Vector3(-136.210f, -640.910f, 167.83f), new Vector3(0f, 0f, -44f)),
+                new Sofa(new Vector3(-140.388f, -641.317f, 167.83f), new Vector3(0f, 0f, 50f)),
+                new Sofa(new Vector3(-148.038f, -629.249f, 167.83f), new Vector3(0f, 0f, 6f)),
+                new Sofa(new Vector3(-150.244f, -630.662f, 167.83f), new Vector3(0f, 0f, 97f)),
+                new Sofa(new Vector3(-150.090f, -632.143f, 167.83f), new Vector3(0f, 0f, 97f)),
+                new Sofa(new Vector3(-192.444f, -587.386f, 135.02f), new Vector3(0f, 0f, 96f)),
+                new Sofa(new Vector3(-189.793f, -589.582f, 135.02f), new Vector3(0f, 0f, 187f)),
+                new Sofa(new Vector3(-116.744f, -576.420f, 135.02f), new Vector3(0f, 0f, 111f)),
+                new Sofa(new Vector3(-113.662f, -577.868f, 135.02f), new Vector3(0f, 0f, -159f)),
+                new Sofa(new Vector3(-143.683f, -626.663f, 135.02f), new Vector3(0f, 0f, -9f)),
+                new Sofa(new Vector3(-146.439f, -628.631f, 135.02f), new Vector3(0f, 0f, 83f)),
+                new Sofa(new Vector3(-1565.078f, -579.629f, 107.547f), new Vector3(0f, 0f, -15f)),
+                new Sofa(new Vector3(-1568.516f, -581.993f, 107.547f), new Vector3(0f, 0f, 80f)),
+                new Sofa(new Vector3(-1581.158f, -575.387f, 107.547f), new Vector3(0f, 0f, 38f)),
+                new Sofa(new Vector3(-1582.231f, -577.760f, 107.547f), new Vector3(0f, 0f, 128f)),
+                new Sofa(new Vector3(-1581.452f, -578.836f, 107.547f), new Vector3(0f, 0f, 128f)),
+                new Sofa(new Vector3(-1589.006f, -570.107f, 85.52f), new Vector3(0f, 0f, 37f)),
+                new Sofa(new Vector3(-1589.547f, -573.458f, 85.52f), new Vector3(0f, 0f, 126f)),
+                new Sofa(new Vector3(-1571.601f, -554.174f, 85.52f), new Vector3(0f, 0f, -54f)),
+                new Sofa(new Vector3(-1574.998f, -553.604f, 85.52f), new Vector3(0f, 0f, 37f)),
+                new Sofa(new Vector3(-1555.685f, -571.607f, 85.52f), new Vector3(0f, 0f, -145f)),
+                new Sofa(new Vector3(-1555.123f, -568.174f, 85.52f), new Vector3(0f, 0f, -54f)),
+                new Sofa(new Vector3(-71.572f, -806.881f, 242.395f), new Vector3(0f, 0f, 110f)),
+                new Sofa(new Vector3(-67.666f, -808.398f, 242.395f), new Vector3(0f, 0f, -155f)),
+                new Sofa(new Vector3(-66.094f, -822.530f, 242.395f), new Vector3(0f, 0f, 160f)),
+                new Sofa(new Vector3(-63.468f, -822.204f, 242.395f), new Vector3(0f, 0f, -110f)),
+                new Sofa(new Vector3(-62.976f, -820.828f, 242.395f), new Vector3(0f, 0f, -110f)),
+                new Sofa(new Vector3(-89.163f, -829.880f, 221.02f), new Vector3(0f, 0f, 70f)),
+                new Sofa(new Vector3(-87.723f, -832.991f, 221.02f), new Vector3(0f, 0f, 159f)),
+                new Sofa(new Vector3(-63.093f, -829.658f, 221.02f), new Vector3(0f, 0f, 161f)),
+                new Sofa(new Vector3(-59.932f, -828.260f, 221.02f), new Vector3(0f, 0f, -110f)),
+                new Sofa(new Vector3(-87.225f, -808.333f, 221.02f), new Vector3(0f, 0f, -20f)),
+                new Sofa(new Vector3(-90.331f, -809.733f, 221.02f), new Vector3(0f, 0f, 67f)),
+                new Sofa(new Vector3(-1372.839f, -474.535f, 71.05f), new Vector3(0f, 0f, 48f)),
+                new Sofa(new Vector3(-1372.322f, -478.740f, 71.05f), new Vector3(0f, 0f, 142f)),
+                new Sofa(new Vector3(-1384.105f, -486.700f, 71.05f), new Vector3(0f, 0f, 98f)),
+                new Sofa(new Vector3(-1382.594f, -488.915f, 71.05f), new Vector3(0f, 0f, 188f)),
+                new Sofa(new Vector3(-1381.133f, -488.716f, 71.05f), new Vector3(0f, 0f, 188f)),
+                new Sofa(new Vector3(-1389.950f, -487.038f, 56.12f), new Vector3(0f, 0f, 100f)),
+                new Sofa(new Vector3(-1387.157f, -489.082f, 56.12f), new Vector3(0f, 0f, 190f)),
+                new Sofa(new Vector3(-1389.920f, -487.057f, 48.12f), new Vector3(0f, 0f, 99f)),
+                new Sofa(new Vector3(-1387.182f, -489.103f, 48.12f), new Vector3(0f, 0f, -171f)),
+                new Sofa(new Vector3(-1373.640f, -466.054f, 56.12f), new Vector3(0f, 0f, -81f)),
+                new Sofa(new Vector3(-1376.365f, -463.999f, 56.12f), new Vector3(0f, 0f, 8f))
             };
+            sofaTVs = new List<Sofa>() {
+                new Sofa(new Vector3(-137.806f, -644.631f, 167.820f), new Vector3(0f, 0f, -174f)),
+                new Sofa(new Vector3(-137.396f, -600.697f, 166.65f), new Vector3(0f, 0f, -50f)),
+                new Sofa(new Vector3(-1564.563f, -583.634f, 107.523f), new Vector3(0f, 0f, -144f)),
+                new Sofa(new Vector3(-1569.119f, -581.097f, 104.845f), new Vector3(0f, 0f, -54f)),
+                new Sofa(new Vector3(-68.486f, -804.237f, 242.386f), new Vector3(0f, 0f, -20f)),
+                new Sofa(new Vector3(-63.968f, -820.524f, 284.645f), new Vector3(0f, 0f, -21f)),
+                new Sofa(new Vector3(-1369.017f, -476.016f, 71.05f), new Vector3(0f, 0f, -82f)),
+                new Sofa(new Vector3(-1399.425f, -479.745f, 77.85f), new Vector3(0f, 0f, 189f))
+            };
+            sofaPlayerAnimDicts = new List<string> { "anim@amb@office@seating@male@var_a@base@", "anim@amb@office@seating@male@var_d@base@", "anim@amb@office@seating@male@var_e@base@" };
             sofaPlayerIdleAnims = new List<string>() { "idle_a", "idle_b", "idle_c" };
             isTVOn = false;
             computerPlayerIdleAnims = new List<string>() { "idle_a", "idle_b", "idle_c", "idle_d", "idle_e" };
@@ -132,6 +192,8 @@ namespace SinglePlayerOffice {
             staffChairIdleAnims = new List<string>() { "idle_a_chair", "idle_d_chair", "idle_e_chair" };
             laptopPlayerIdleAnims = new List<string>() { "idle_a", "idle_b", "idle_c" };
             laptopChairIdleAnims = new List<string>() { "idle_a_chair", "idle_b_chair", "idle_c_chair" };
+            showerPlayerIdleAnims = new List<string> { "male_shower_idle_a", "male_shower_idle_b", "male_shower_idle_c", "male_shower_idle_d" };
+            showerDoorIdleAnims = new List<string> { "male_shower_idle_a_door", "male_shower_idle_b_door", "male_shower_idle_c_door", "male_shower_idle_d_door" };
             wardrobes = new List<Wardrobe>() {
                 new Wardrobe(new Vector3(-132.303f, -632.859f, 168.820f), new Vector3(0f, 0f, -84f)),
                 new Wardrobe(new Vector3(-1565.723f, -570.756f, 108.523f), new Vector3(0f, 0f, -54f)),
@@ -141,7 +203,8 @@ namespace SinglePlayerOffice {
         }
 
         public static void CreateRadioMenu() {
-            radioMenu = new UIMenu("Radio", "~b~Radio Stations");
+            radioMenu = new UIMenu("", "~b~Radio Stations", new Point(0, -107));
+            radioMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.no_banner.png"));
             foreach (RadioStation station in radioStations) {
                 UIMenuItem radioStationBtn = new UIMenuItem(station.Name, station.Description);
                 radioMenu.AddItem(radioStationBtn);
@@ -153,15 +216,18 @@ namespace SinglePlayerOffice {
                 RadioInteractionStatus = 3;
             };
             radioMenu.OnMenuClose += (sender) => {
+                SinglePlayerOffice.IsHudHidden = false;
                 Game.Player.Character.Task.ClearAll();
             };
             SinglePlayerOffice.MenuPool.Add(radioMenu);
         }
 
         public static void CreateWardrobeMenu() {
-            wardrobeMenu = new UIMenu("Wardrobe", "~b~Outfit Options") { MouseEdgeEnabled = false };
+            wardrobeMenu = new UIMenu("", "~b~Outfit Options") { MouseEdgeEnabled = false };
+            wardrobeMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
 
             UIMenu torsoMenu = SinglePlayerOffice.MenuPool.AddSubMenu(wardrobeMenu, "Torso");
+            torsoMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             torsoMenu.MouseEdgeEnabled = false;
             int currentTorsoType = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, Game.Player.Character, 3);
             List<dynamic> torsoTypes = new List<dynamic>();
@@ -185,6 +251,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu torsoExtraMenu = SinglePlayerOffice.MenuPool.AddSubMenu(wardrobeMenu, "Torso Extra");
+            torsoExtraMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             torsoExtraMenu.MouseEdgeEnabled = false;
             int currentTorsoExtraType = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, Game.Player.Character, 11);
             List<dynamic> torsoExtraTypes = new List<dynamic>();
@@ -208,6 +275,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu legsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(wardrobeMenu, "Legs");
+            legsMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             legsMenu.MouseEdgeEnabled = false;
             int currentLegsType = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, Game.Player.Character, 4);
             List<dynamic> legsTypes = new List<dynamic>();
@@ -231,6 +299,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu handsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(wardrobeMenu, "Hands");
+            handsMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             handsMenu.MouseEdgeEnabled = false;
             int currentHandsType = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, Game.Player.Character, 5);
             List<dynamic> handsTypes = new List<dynamic>();
@@ -254,6 +323,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu feetMenu = SinglePlayerOffice.MenuPool.AddSubMenu(wardrobeMenu, "Feet");
+            feetMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             feetMenu.MouseEdgeEnabled = false;
             int currentFeetType = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, Game.Player.Character, 6);
             List<dynamic> feetTypes = new List<dynamic>();
@@ -277,9 +347,11 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu accessoriesMenu = SinglePlayerOffice.MenuPool.AddSubMenu(wardrobeMenu, "Accessories");
+            accessoriesMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             accessoriesMenu.MouseEdgeEnabled = false;
 
             UIMenu hatsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(accessoriesMenu, "Hats");
+            hatsMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             hatsMenu.MouseEdgeEnabled = false;
             int currentHatsType = Function.Call<int>(Hash.GET_PED_PROP_INDEX, Game.Player.Character, 0);
             List<dynamic> hatsTypes = new List<dynamic>();
@@ -309,6 +381,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu glassesMenu = SinglePlayerOffice.MenuPool.AddSubMenu(accessoriesMenu, "Glasses");
+            glassesMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             glassesMenu.MouseEdgeEnabled = false;
             int currentGlassesType = Function.Call<int>(Hash.GET_PED_PROP_INDEX, Game.Player.Character, 1);
             List<dynamic> glassesTypes = new List<dynamic>();
@@ -337,6 +410,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu earsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(accessoriesMenu, "Ears");
+            earsMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             earsMenu.MouseEdgeEnabled = false;
             int currentEarsType = Function.Call<int>(Hash.GET_PED_PROP_INDEX, Game.Player.Character, 2);
             List<dynamic> earsTypes = new List<dynamic>();
@@ -365,6 +439,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu misc1Menu = SinglePlayerOffice.MenuPool.AddSubMenu(accessoriesMenu, "Miscellaneous 1");
+            misc1Menu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             misc1Menu.MouseEdgeEnabled = false;
             int currentMisc1Type = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, Game.Player.Character, 8);
             List<dynamic> misc1Types = new List<dynamic>();
@@ -388,6 +463,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu misc2Menu = SinglePlayerOffice.MenuPool.AddSubMenu(accessoriesMenu, "Miscellaneous 2");
+            misc2Menu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             misc2Menu.MouseEdgeEnabled = false;
             int currentMisc2Type = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, Game.Player.Character, 9);
             List<dynamic> misc2Types = new List<dynamic>();
@@ -411,6 +487,7 @@ namespace SinglePlayerOffice {
             };
 
             UIMenu misc3Menu = SinglePlayerOffice.MenuPool.AddSubMenu(accessoriesMenu, "Miscellaneous 3");
+            misc3Menu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion", new Point(0, 0), new Size(0, 0)));
             misc3Menu.MouseEdgeEnabled = false;
             int currentMisc3Type = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, Game.Player.Character, 10);
             List<dynamic> misc3Types = new List<dynamic>();
@@ -451,7 +528,7 @@ namespace SinglePlayerOffice {
                 case 0:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
                         foreach (Sofa sofa in sofas) {
-                            if (Game.Player.Character.Position.DistanceTo(sofa.Position) < 1.5f) {
+                            if (Game.Player.Character.Position.DistanceTo(sofa.Position) < 1.5f && World.GetNearbyPeds(sofa.Position, 0.5f).Length == 0) {
                                 SinglePlayerOffice.DisplayHelpTextThisFrame(SofaInteractionHelpText);
                                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                                     Interactions.sofa = sofa;
@@ -464,37 +541,98 @@ namespace SinglePlayerOffice {
                     }
                     break;
                 case 1:
-                    sofaInitialPos = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, "anim@amb@office@seating@male@var_a@base@", "enter", sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 0, 2);
-                    sofaInitialRot = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_ROTATION, "anim@amb@office@seating@male@var_a@base@", "enter", sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 0, 2);
+                    sofaPlayerAnimDict = sofaPlayerAnimDicts[Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3)];
+                    sofaInitialPos = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, sofaPlayerAnimDict, "enter", sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 0, 2);
+                    sofaInitialRot = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_ROTATION, sofaPlayerAnimDict, "enter", sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 0, 2);
                     Function.Call(Hash.TASK_GO_STRAIGHT_TO_COORD, Game.Player.Character, sofaInitialPos.X, sofaInitialPos.Y, sofaInitialPos.Z, 1f, 1000, sofaInitialRot.Z, 0f);
                     SofaInteractionStatus = 2;
                     break;
                 case 2:
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
-                    Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@seating@male@var_a@base@", "enter", 1.5f, -1.5f, 13, 16, 1.5f, 0);
+                    Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, sofaPlayerAnimDict, "enter", 1.5f, -1.5f, 13, 16, 1.5f, 0);
                     SofaInteractionStatus = 3;
                     break;
                 case 3:
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
-                    Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@seating@male@var_a@base@", "base", 4f, -1.5f, 13, 16, 1148846080, 0);
+                    Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, sofaPlayerAnimDict, "base", 4f, -1.5f, 13, 16, 1148846080, 0);
                     SofaInteractionStatus = 4;
+                    break;
+                case 4:
+                    SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_AIM~ to stand up");
+                    if (Game.IsControlJustPressed(2, GTA.Control.Aim)) {
+                        SofaInteractionStatus = 5;
+                        break;
+                    }
+                    if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
+                    syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
+                    Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, sofaPlayerAnimDict, sofaPlayerIdleAnims[Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3)], 4f, -1.5f, 13, 16, 1148846080, 0);
+                    SofaInteractionStatus = 3;
+                    break;
+                case 5:
+                    syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
+                    Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, sofaPlayerAnimDict, "exit", 4f, -4f, 13, 16, 1000f, 0);
+                    SofaInteractionStatus = 6;
+                    break;
+                case 6:
+                    if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
+                    SinglePlayerOffice.IsHudHidden = false;
+                    Game.Player.Character.Task.ClearAll();
+                    SofaInteractionStatus = 0;
+                    break;
+            }
+        }
+
+        public static void SofaTVOnTick() {
+            switch (SofaTVInteractionStatus) {
+                case 0:
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Sofa sofa in sofaTVs) {
+                            if (Game.Player.Character.Position.DistanceTo(sofa.Position) < 1.5f && World.GetNearbyPeds(sofa.Position, 0.5f).Length == 0) {
+                                SinglePlayerOffice.DisplayHelpTextThisFrame(SofaInteractionHelpText);
+                                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                    Interactions.sofa = sofa;
+                                    SinglePlayerOffice.IsHudHidden = true;
+                                    SofaTVInteractionStatus = 1;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case 1:
+                    sofaInitialPos = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, "anim@amb@office@seating@male@var_a@base@", "enter", sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 0, 2);
+                    sofaInitialRot = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_ROTATION, "anim@amb@office@seating@male@var_a@base@", "enter", sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 0, 2);
+                    Function.Call(Hash.TASK_GO_STRAIGHT_TO_COORD, Game.Player.Character, sofaInitialPos.X, sofaInitialPos.Y, sofaInitialPos.Z, 1f, 1000, sofaInitialRot.Z, 0f);
+                    SofaTVInteractionStatus = 2;
+                    break;
+                case 2:
+                    if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
+                    syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
+                    Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@seating@male@var_a@base@", "enter", 1.5f, -1.5f, 13, 16, 1.5f, 0);
+                    SofaTVInteractionStatus = 3;
+                    break;
+                case 3:
+                    if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
+                    syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
+                    Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@seating@male@var_a@base@", "base", 4f, -1.5f, 13, 16, 1148846080, 0);
+                    SofaTVInteractionStatus = 4;
                     break;
                 case 4:
                     SinglePlayerOffice.DisplayHelpTextThisFrame(TVInteractionHelpText + "~n~Press ~INPUT_AIM~ to stand up");
                     if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                        SofaInteractionStatus = 5;
+                        SofaTVInteractionStatus = 5;
                         break;
                     }
                     if (Game.IsControlJustPressed(2, GTA.Control.Aim)) {
-                        SofaInteractionStatus = 8;
+                        SofaTVInteractionStatus = 8;
                         break;
                     }
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@seating@male@var_a@base@", sofaPlayerIdleAnims[Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3)], 4f, -1.5f, 13, 16, 1148846080, 0);
-                    SofaInteractionStatus = 3;
+                    SofaTVInteractionStatus = 3;
                     break;
                 case 5:
                     foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 10f)) {
@@ -514,30 +652,30 @@ namespace SinglePlayerOffice {
                     if (isTVOn && Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2) == 1) Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "TV_BORED", "SPEECH_PARAMS_FORCE");
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@game@seated@male@var_c@base@", "enter_a", 4f, -4f, 13, 16, 1000f, 0);
-                    SofaInteractionStatus = 6;
+                    SofaTVInteractionStatus = 6;
                     break;
                 case 6:
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
                     TvInteractionStatus = 1;
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@game@seated@male@var_c@base@", "exit_a", 4f, -4f, 13, 16, 1000f, 0);
-                    SofaInteractionStatus = 7;
+                    SofaTVInteractionStatus = 7;
                     break;
                 case 7:
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
                     remote.Delete();
-                    SofaInteractionStatus = 3;
+                    SofaTVInteractionStatus = 3;
                     break;
                 case 8:
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@seating@male@var_a@base@", "exit", 4f, -4f, 13, 16, 1000f, 0);
-                    SofaInteractionStatus = 9;
+                    SofaTVInteractionStatus = 9;
                     break;
                 case 9:
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
                     SinglePlayerOffice.IsHudHidden = false;
                     Game.Player.Character.Task.ClearAll();
-                    SofaInteractionStatus = 0;
+                    SofaTVInteractionStatus = 0;
                     break;
             }
         }
@@ -610,7 +748,7 @@ namespace SinglePlayerOffice {
                 case 0:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
                         foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1.2f)) {
-                            if (prop.Model.Hash == -1626066319 || prop.Model.Hash == 1339364336) {
+                            if ((prop.Model.Hash == -1626066319 || prop.Model.Hash == 1339364336) && World.GetNearbyPeds(prop.Position, 0.5f).Length == 0) {
                                 if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
                                     SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
                                     if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
@@ -763,13 +901,13 @@ namespace SinglePlayerOffice {
                 case 2:
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
                     if (!isLeftSafeOpened) {
-                        leftSafeDoorPos = leftSafeDoor.Position;
-                        leftSafeDoorRot = leftSafeDoor.Rotation;
+                        SinglePlayerOffice.SavedPos = leftSafeDoor.Position;
+                        SinglePlayerOffice.SavedRot = leftSafeDoor.Rotation;
                     }
                     LeftSafeInteractionStatus = 3;
                     break;
                 case 3:
-                    syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, leftSafeDoorPos.X, leftSafeDoorPos.Y, leftSafeDoorPos.Z, 0f, 0f, leftSafeDoorRot.Z, 2);
+                    syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, SinglePlayerOffice.SavedPos.X, SinglePlayerOffice.SavedPos.Y, SinglePlayerOffice.SavedPos.Z, 0f, 0f, SinglePlayerOffice.SavedRot.Z, 2);
                     if (!isLeftSafeOpened) {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@boss@vault@left@male@", "open", 1.5f, -1.5f, 13, 16, 1.5f, 0);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, leftSafeDoor, syncSceneHandle, "open_door", "anim@amb@office@boss@vault@left@male@", 4f, -4f, 32781, 1000f);
@@ -828,13 +966,13 @@ namespace SinglePlayerOffice {
                 case 2:
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
                     if (!isRightSafeOpened) {
-                        rightSafeDoorPos = rightSafeDoor.Position;
-                        rightSafeDoorRot = rightSafeDoor.Rotation;
+                        SinglePlayerOffice.SavedPos = rightSafeDoor.Position;
+                        SinglePlayerOffice.SavedRot = rightSafeDoor.Rotation;
                     }
                     RightSafeInteractionStatus = 3;
                     break;
                 case 3:
-                    syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, rightSafeDoorPos.X, rightSafeDoorPos.Y, rightSafeDoorPos.Z, 0f, 0f, rightSafeDoorRot.Z, 2);
+                    syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, SinglePlayerOffice.SavedPos.X, SinglePlayerOffice.SavedPos.Y, SinglePlayerOffice.SavedPos.Z, 0f, 0f, SinglePlayerOffice.SavedRot.Z, 2);
                     if (!isRightSafeOpened) {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@boss@vault@right@male@", "open", 1.5f, -1.5f, 13, 16, 1.5f, 0);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, rightSafeDoor, syncSceneHandle, "open_door", "anim@amb@office@boss@vault@right@male@", 4f, -4f, 32781, 1000f);
@@ -859,7 +997,7 @@ namespace SinglePlayerOffice {
         public static void RadioOnTick() {
             switch (RadioInteractionStatus) {
                 case 0:
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
                             switch (prop.Model.Hash) {
                                 case -364924791:
@@ -897,7 +1035,7 @@ namespace SinglePlayerOffice {
                     break;
                 case 4:
                     if (Function.Call<float>(Hash.GET_ENTITY_ANIM_CURRENT_TIME, Game.Player.Character, "anim@mp_radio@high_apment", "action_a_bedroom") > 0.5f) {
-                        radioEmitter = SinglePlayerOffice.GetCurrentBuilding().GetRadioEmitter();
+                        radioEmitter = SinglePlayerOffice.GetCurrentBuilding().Office.GetRadioEmitter();
                         if (!isRadioOn) {
                             Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, radioEmitter, true);
                             Function.Call(Hash._0x0E0CD610D5EB6C85, radioEmitter, radio);
@@ -1095,7 +1233,7 @@ namespace SinglePlayerOffice {
                 case 0:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
                         foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
-                            if (prop.Model.Hash == -1278649385 && World.GetNearbyProps(prop.Position, 1.5f, -1278649385).Length == 1 && World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length != 0) {
+                            if (prop.Model.Hash == -1278649385 && World.GetNearbyProps(prop.Position, 1.5f, -1278649385).Length == 1 && World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length != 0 && World.GetNearbyPeds(prop.Position, 0.5f).Length == 0) {
                                 SinglePlayerOffice.DisplayHelpTextThisFrame(ChairInteractionHelpText);
                                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                                     laptopChair = prop;
@@ -1168,10 +1306,35 @@ namespace SinglePlayerOffice {
             }
         }
 
+        public static void ShowerOnTick() {
+            switch (ShowerInteractionStatus) {
+                case 0:
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                        foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 1f)) {
+                            if (prop.Model.Hash == 879181614) {
+                                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {
+                                    SinglePlayerOffice.DisplayHelpTextThisFrame(ShowerInteractionHelpText);
+                                    if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                        showerDoor = prop;
+                                        SinglePlayerOffice.IsHudHidden = true;
+                                        ShowerInteractionStatus = 1;
+                                    }
+                                }
+                                else SinglePlayerOffice.DisplayHelpTextThisFrame(ShowerInteractionRejectHelpText);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case 1:
+                    break;
+            }
+        }
+
         public static void WardrobeOnTick() {
             switch (WardrobeInteractionStatus) {
                 case 0:
-                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle()) {
+                    if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         foreach (Wardrobe wardrobe in wardrobes) {
                             if (Game.Player.Character.Position.DistanceTo(wardrobe.Position) < 1f) {
                                 if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)SinglePlayerOffice.GetCurrentBuilding().Owner) {

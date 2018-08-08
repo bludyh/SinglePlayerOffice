@@ -914,7 +914,8 @@ namespace SinglePlayerOffice {
             vehicle.WindowTint = (VehicleWindowTint)WindowTint;
             vehicle.WheelType = (VehicleWheelType)WheelType;
             vehicle.RoofState = (VehicleRoofState)RoofState;
-            vehicle.LockStatus = (VehicleLockStatus)LockStatus;
+            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)SinglePlayerOffice.GetCurrentBuilding().Owner) vehicle.LockStatus = VehicleLockStatus.Locked;
+            else vehicle.LockStatus = (VehicleLockStatus)LockStatus;
             vehicle.NumberPlateType = (NumberPlateType)NumberPlateType;
             vehicle.NumberPlate = NumberPlate;
             vehicle.RightHeadLightBroken = RightHeadLightBroken;

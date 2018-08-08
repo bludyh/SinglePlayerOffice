@@ -15,6 +15,10 @@ namespace SinglePlayerOffice {
         public float PurchaseCamFOV { get; set; }
         public Camera PurchaseCam { get; set; }
 
+        public Entrance() {
+            ActiveInteractions.Add(TeleportOnTick);
+        }
+
         protected override void TeleportOnTick() {
             if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                 if (Building.Owner != Owner.None) {
@@ -59,7 +63,7 @@ namespace SinglePlayerOffice {
 
         public override void OnTick() {
             if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
-            TeleportOnTick();
+            base.OnTick();
         }
 
     }

@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 namespace SinglePlayerOffice {
     interface IInterior {
 
+        List<string> ExteriorIPLs { get; set; }
+
         void LoadInterior();
+        void UnloadInterior();
+        void LoadExterior();
+        void UnloadExterior();
 
     }
 }

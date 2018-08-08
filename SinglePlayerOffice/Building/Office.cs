@@ -12,6 +12,7 @@ namespace SinglePlayerOffice {
 
         public static List<string> ExtraDecors { get; set; }
 
+        public List<string> ExteriorIPLs { get; set; }
         public List<int> InteriorIDs { get; set; }
         public Vector3 PurchaseCamPos { get; set; }
         public Vector3 PurchaseCamRot { get; set; }
@@ -45,6 +46,24 @@ namespace SinglePlayerOffice {
             };
         }
 
+        public Office() {
+            ActiveInteractions.AddRange(new List<Action> {
+                TeleportOnTick,
+                Interactions.SofaOnTick,
+                Interactions.SofaTVOnTick,
+                Interactions.TVOnTick,
+                Interactions.ComputerOnTick,
+                Interactions.LeftSafeOnTick,
+                Interactions.RightSafeOnTick,
+                Interactions.RadioOnTick,
+                Interactions.BossChairOnTick,
+                Interactions.StaffChairOnTick,
+                Interactions.LaptopChairOnTick,
+                Interactions.ShowerOnTick,
+                Interactions.WardrobeOnTick
+            });
+        }
+
         public void LoadInterior() {
             Function.Call(Hash.REQUEST_IPL, InteriorStyle.Style);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
@@ -65,8 +84,20 @@ namespace SinglePlayerOffice {
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public void ChangeInteriorStyle(InteriorStyle interiorStyle) {
+        public void UnloadInterior() {
             foreach (InteriorStyle style in InteriorStyles) Function.Call(Hash.REMOVE_IPL, style.Style);
+        }
+
+        public void LoadExterior() {
+            foreach (var ipl in ExteriorIPLs) Function.Call(Hash.REQUEST_IPL, ipl);
+        }
+
+        public void UnloadExterior() {
+            foreach (var ipl in ExteriorIPLs) Function.Call(Hash.REMOVE_IPL, ipl);
+        }
+
+        public void ChangeInteriorStyle(InteriorStyle interiorStyle) {
+            UnloadInterior();
             Function.Call(Hash.REQUEST_IPL, interiorStyle.Style);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
             if (!Function.Call<bool>(Hash._IS_INTERIOR_PROP_ENABLED, currentInteriorID, "office_chairs")) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, "office_chairs");
@@ -74,6 +105,21 @@ namespace SinglePlayerOffice {
             foreach (string decor in ExtraDecors) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, decor);
             if (HasExtraDecors) foreach (string decor in ExtraDecors) Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, decor);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+        }
+
+        public string GetRadioEmitter() {
+            switch (InteriorStyle.Name) {
+                case "Old Spice Warms": return "SE_ex_int_office_01a_Radio_01";
+                case "Old Spice Classical": return "SE_ex_int_office_01b_Radio_01";
+                case "Old Spice Vintage": return "SE_ex_int_office_01c_Radio_01";
+                case "Executive Contrast": return "SE_ex_int_office_02a_Radio_01";
+                case "Executive Rich": return "SE_ex_int_office_02b_Radio_01";
+                case "Executive Cool": return "SE_ex_int_office_02c_Radio_01";
+                case "Power Broker Ice": return "SE_ex_int_office_03a_Radio_01";
+                case "Power Broker Conservative": return "SE_ex_int_office_03b_Radio_01";
+                case "Power Broker Polished": return "SE_ex_int_office_03c_Radio_01";
+            }
+            return null;
         }
 
         protected override void TeleportOnTick() {
@@ -92,18 +138,7 @@ namespace SinglePlayerOffice {
             Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
             if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
             Building.HideBuildingExteriors();
-            TeleportOnTick();
-            Scene.OnTick();
-            Interactions.SofaOnTick();
-            Interactions.TVOnTick();
-            Interactions.ComputerOnTick();
-            Interactions.LeftSafeOnTick();
-            Interactions.RightSafeOnTick();
-            Interactions.RadioOnTick();
-            Interactions.BossChairOnTick();
-            Interactions.StaffChairOnTick();
-            Interactions.LaptopChairOnTick();
-            Interactions.WardrobeOnTick();
+            base.OnTick();
         }
 
         public void Dispose() {

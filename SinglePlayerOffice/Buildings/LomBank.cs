@@ -18,7 +18,7 @@ namespace SinglePlayerOffice {
                 owner = (Owner)SinglePlayerOffice.Configs.GetValue(name, "Owner", -1);
                 blipPos = new Vector3(-1581.127f, -558.608f, 34.953f);
                 interiorIDs = new List<int>() { 257793, 241921, 242177, 241665, 240897, 241153, 241409, 242433, 242689, 242945, 255489, 255745, 256001, 256257 };
-                exteriorIPLs = new List<string>() { "sm_13_emissive", "sm_13_bld1", "sm_13_bld1_LOD" };
+                exteriorMapObjects = new List<string>() { "sm_13_emissive", "sm_13_bld1", "sm_13_bld1_LOD" };
                 entrance = new Entrance {
                     TriggerPos = new Vector3(-1581.127f, -558.608f, 34.953f),
                     SpawnPos = new Vector3(-1582.192f, -556.967f, 34.954f),
@@ -40,6 +40,7 @@ namespace SinglePlayerOffice {
                     TriggerPos = new Vector3(-1579.750f, -565.049f, 108.523f),
                     SpawnPos = new Vector3(-1578.013f, -565.397f, 108.523f),
                     SpawnHeading = 214.074f,
+                    ExteriorIPLs = new List<string> { "hei_sm_13_exshadowmesh" },
                     InteriorIDs = new List<int>() { 241921, 242177, 241665, 240897, 241153, 241409, 242433, 242689, 242945 },
                     PurchaseCamPos = new Vector3(-1567.370f, -587.616f, 109.5f),
                     PurchaseCamRot = new Vector3(-5f, 0f, -12f),
@@ -71,11 +72,14 @@ namespace SinglePlayerOffice {
                     }
                 };
                 office.InteriorStyle = GetOfficeInteriorStyle(SinglePlayerOffice.Configs.GetValue(name, "OfficeInteriorStyle"));
+                office.ExtraDecorsPrice = (office.HasExtraDecors) ? 1650000 : 0;
+                office.ActiveScenes.Add(office.Scene);
                 garageOne = new Garage {
                     TriggerPos = new Vector3(-1586.341f, -561.390f, 86.501f),
                     SpawnPos = new Vector3(-1585.244f, -562.935f, 86.501f),
                     SpawnHeading = -144f,
                     IPL = "imp_sm_13_cargarage_a",
+                    ExteriorIPLs = new List<string> { "hei_sm_13_impexpproxy_a" },
                     InteriorID = 255489,
                     PurchaseCamPos = new Vector3(-1585.244f, -562.935f, 88.501f),
                     PurchaseCamRot = new Vector3(-5f, -1f, -144f),
@@ -92,16 +96,20 @@ namespace SinglePlayerOffice {
                     NumberingCamRot = new Vector3(12f, 0f, -54f),
                     NumberingCamFOV = 60f,
                     NumberingStyle = GetGarageOneNumberingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageOneNumberingStyle")),
-                    ElevatorLevelAPos = new Vector3(-1578.596f, -576.434f, 84.613f),
-                    ElevatorLevelBPos = new Vector3(-1578.596f, -576.434f, 89.963f),
-                    ElevatorLevelCPos = new Vector3(-1578.596f, -576.434f, 95.313f),
-                    ElevatorRot = new Vector3(0f, 0f, 36.061f)
+                    Scene = new GarageScene {
+                        ElevatorLevelAPos = new Vector3(-1578.596f, -576.434f, 84.613f),
+                        ElevatorLevelBPos = new Vector3(-1578.596f, -576.434f, 89.963f),
+                        ElevatorLevelCPos = new Vector3(-1578.596f, -576.434f, 95.313f),
+                        ElevatorRot = new Vector3(0f, 0f, 36.061f)
+                    }
                 };
+                garageOne.ActiveScenes.Add(garageOne.Scene);
                 garageTwo = new Garage {
                     TriggerPos = new Vector3(-1562.919f, -556.852f, 86.501f),
                     SpawnPos = new Vector3(-1564.414f, -557.834f, 86.501f),
                     SpawnHeading = 126f,
                     IPL = "imp_sm_13_cargarage_b",
+                    ExteriorIPLs = new List<string> { "hei_sm_13_impexpproxy_b" },
                     InteriorID = 255745,
                     PurchaseCamPos = new Vector3(-1564.414f, -557.834f, 88.501f),
                     PurchaseCamRot = new Vector3(-5f, -1f, 126f),
@@ -118,16 +126,20 @@ namespace SinglePlayerOffice {
                     NumberingCamRot = new Vector3(12f, 0f, -142f),
                     NumberingCamFOV = 60f,
                     NumberingStyle = GetGarageTwoNumberingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageTwoNumberingStyle")),
-                    ElevatorLevelAPos = new Vector3(-1577.924f, -564.567f, 84.613f),
-                    ElevatorLevelBPos = new Vector3(-1577.924f, -564.567f, 89.963f),
-                    ElevatorLevelCPos = new Vector3(-1577.924f, -564.567f, 95.313f),
-                    ElevatorRot = new Vector3(0f, 0f, -53.872f)
+                    Scene = new GarageScene {
+                        ElevatorLevelAPos = new Vector3(-1577.924f, -564.567f, 84.613f),
+                        ElevatorLevelBPos = new Vector3(-1577.924f, -564.567f, 89.963f),
+                        ElevatorLevelCPos = new Vector3(-1577.924f, -564.567f, 95.313f),
+                        ElevatorRot = new Vector3(0f, 0f, -53.872f)
+                    }
                 };
+                garageTwo.ActiveScenes.Add(garageTwo.Scene);
                 garageThree = new Garage {
                     TriggerPos = new Vector3(-1558.330f, -580.248f, 86.501f),
                     SpawnPos = new Vector3(-1559.331f, -578.897f, 86.501f),
                     SpawnHeading = 36f,
                     IPL = "imp_sm_13_cargarage_c",
+                    ExteriorIPLs = new List<string> { "hei_sm_13_impexpproxy_c" },
                     InteriorID = 256001,
                     PurchaseCamPos = new Vector3(-1559.331f, -578.897f, 88.501f),
                     PurchaseCamRot = new Vector3(-5f, -1f, 36f),
@@ -144,16 +156,20 @@ namespace SinglePlayerOffice {
                     NumberingCamRot = new Vector3(12f, 0f, 128f),
                     NumberingCamFOV = 60f,
                     NumberingStyle = GetGarageThreeNumberingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageThreeNumberingStyle")),
-                    ElevatorLevelAPos = new Vector3(-1566.078f, -565.253f, 84.613f),
-                    ElevatorLevelBPos = new Vector3(-1566.078f, -565.253f, 89.963f),
-                    ElevatorLevelCPos = new Vector3(-1566.078f, -565.253f, 95.313f),
-                    ElevatorRot = new Vector3(0f, 0f, -143.848f)
+                    Scene = new GarageScene {
+                        ElevatorLevelAPos = new Vector3(-1566.078f, -565.253f, 84.613f),
+                        ElevatorLevelBPos = new Vector3(-1566.078f, -565.253f, 89.963f),
+                        ElevatorLevelCPos = new Vector3(-1566.078f, -565.253f, 95.313f),
+                        ElevatorRot = new Vector3(0f, 0f, -143.848f)
+                    }
                 };
+                garageThree.ActiveScenes.Add(garageThree.Scene);
                 modShop = new ModShop {
                     TriggerPos = new Vector3(-1569.469f, -573.342f, 105.200f),
                     SpawnPos = new Vector3(-1570.438f, -571.884f, 105.200f),
                     SpawnHeading = 30.991f,
                     IPL = "imp_sm_13_modgarage",
+                    ExteriorIPLs = new List<string> { "hei_sm_13_impexpproxy_modshop" },
                     InteriorID = 256257,
                     PurchaseCamPos = new Vector3(-1573.166f, -571.276f, 107.2f),
                     PurchaseCamRot = new Vector3(-20f, 0f, 126f),
@@ -171,6 +187,7 @@ namespace SinglePlayerOffice {
                 CreateTeleportMenu();
                 CreateGarageEntranceMenu();
                 CreateVehicleElevatorMenu();
+                CreatePAMenu();
             }
             catch (Exception ex) {
                 Logger.Log(ex.ToString());

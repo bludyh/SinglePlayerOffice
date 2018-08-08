@@ -8,7 +8,7 @@ using GTA.Native;
 using NativeUI;
 
 namespace SinglePlayerOffice {
-    class OfficeScene {
+    class OfficeScene : Scene {
 
         private Ped boss;
         private Prop bossChair;
@@ -28,22 +28,22 @@ namespace SinglePlayerOffice {
         private int paSceneHandle;
         private bool isPaGreeted;
 
-        public Office Office { get; set; }
         public Vector3 BossChairPos { get; set; }
-        public int BossSceneStatus { get; set; }
+        public int BossStatus { get; set; }
         public int BossConversationStatus { get; set; }
         public List<Vector3> StaffChairPosList { get; set; }
-        public int MaleStaffSceneStatus { get; set; }
+        public int MaleStaffStatus { get; set; }
         public int MaleStaffConversationStatus { get; set; }
-        public int FemaleStaffSceneStatus { get; set; }
+        public int FemaleStaffStatus { get; set; }
         public int FemaleStaffConversationStatus { get; set; }
         public Vector3 PaChairPos { get; set; }
         public Vector3 PaChairRot { get; set; }
-        public int PaSceneStatus { get; set; }
+        public int PaStatus { get; set; }
         public int PaConversationStatus { get; set; }
 
         public OfficeScene() {
             seatedStaffChairs = new List<int>();
+            ActiveInteractions.AddRange(new List<Action> { BossOnTick, MaleStaffOnTick, FemaleStaffOnTick, PaOnTick });
         }
 
         private void CreatePaChair() {
@@ -59,7 +59,7 @@ namespace SinglePlayerOffice {
         }
 
         private void CreateBossPed() {
-            switch (Office.Building.Owner) {
+            switch (Location.Building.Owner) {
                 case Owner.Michael:
                     boss = World.CreatePed(PedHash.Michael, BossChairPos);
                     Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 0, 0, 4, 2);
@@ -132,11 +132,11 @@ namespace SinglePlayerOffice {
         }
 
         private void BossOnTick() {
-            switch (BossSceneStatus) {
+            switch (BossStatus) {
                 case 0:
                     if (!Function.Call<bool>(Hash.IS_INTERIOR_READY, Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z)) || !Function.Call<bool>(Hash.IS_PED_STILL, boss)) break;
                     bossChair = Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, boss.Position.X, boss.Position.Y, boss.Position.Z, 1f, -1278649385, 0, 0, 0);
-                    BossSceneStatus = 1;
+                    BossStatus = 1;
                     break;
                 case 1:
                     if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, bossChair, "anim@amb@office@boardroom@boss@male@", "enter_b_chair", 2)) {
@@ -144,7 +144,7 @@ namespace SinglePlayerOffice {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, boss, bossSceneHandle, "anim@amb@office@boardroom@boss@male@", "enter_b", 1.5f, -1.5f, 13, 16, 1.5f, 4);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, bossChair, bossSceneHandle, "enter_b_chair", "anim@amb@office@boardroom@boss@male@", 4f, -4f, 32781, 1000f);
                     }
-                    else BossSceneStatus = 2;
+                    else BossStatus = 2;
                     break;
                 case 2:
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, bossSceneHandle) != 1f) break;
@@ -152,7 +152,7 @@ namespace SinglePlayerOffice {
                     Function.Call(Hash.SET_SYNCHRONIZED_SCENE_LOOPED, bossSceneHandle, true);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, boss, bossSceneHandle, "anim@amb@office@boardroom@boss@male@", "base", 4f, -1.5f, 13, 16, 1148846080, 0);
                     Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, bossChair, bossSceneHandle, "base_chair", "anim@amb@office@boardroom@boss@male@", 4f, -4f, 32781, 1000f);
-                    BossSceneStatus = -1;
+                    BossStatus = -1;
                     break;
             }
             switch (BossConversationStatus) {
@@ -180,11 +180,11 @@ namespace SinglePlayerOffice {
         }
 
         private void MaleStaffOnTick() {
-            switch (MaleStaffSceneStatus) {
+            switch (MaleStaffStatus) {
                 case 0:
                     if (!Function.Call<bool>(Hash.IS_INTERIOR_READY, Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z)) || !Function.Call<bool>(Hash.IS_PED_STILL, maleStaff)) break;
                     maleStaffChair = Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, maleStaff.Position.X, maleStaff.Position.Y, maleStaff.Position.Z, 1f, -1278649385, 0, 0, 0);
-                    MaleStaffSceneStatus = 1;
+                    MaleStaffStatus = 1;
                     break;
                 case 1:
                     if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, maleStaffChair, "anim@amb@office@boardroom@crew@male@var_b@base@", "enter_chair", 2)) {
@@ -192,7 +192,7 @@ namespace SinglePlayerOffice {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, maleStaff, maleStaffSceneHandle, "anim@amb@office@boardroom@crew@male@var_b@base@", "enter", 1.5f, -1.5f, 13, 16, 1.5f, 4);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, maleStaffChair, maleStaffSceneHandle, "enter_chair", "anim@amb@office@boardroom@crew@male@var_b@base@", 4f, -4f, 32781, 1000f);
                     }
-                    else MaleStaffSceneStatus = 2;
+                    else MaleStaffStatus = 2;
                     break;
                 case 2:
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, maleStaffSceneHandle) != 1f) break;
@@ -200,7 +200,7 @@ namespace SinglePlayerOffice {
                     Function.Call(Hash.SET_SYNCHRONIZED_SCENE_LOOPED, maleStaffSceneHandle, true);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, maleStaff, maleStaffSceneHandle, "anim@amb@office@boardroom@crew@male@var_b@base@", "base", 4f, -1.5f, 13, 16, 1148846080, 0);
                     Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, maleStaffChair, maleStaffSceneHandle, "base_chair", "anim@amb@office@boardroom@crew@male@var_b@base@", 4f, -4f, 32781, 1000f);
-                    MaleStaffSceneStatus = -1;
+                    MaleStaffStatus = -1;
                     break;
             }
             switch (MaleStaffConversationStatus) {
@@ -229,11 +229,11 @@ namespace SinglePlayerOffice {
         }
 
         private void FemaleStaffOnTick() {
-            switch (FemaleStaffSceneStatus) {
+            switch (FemaleStaffStatus) {
                 case 0:
                     if (!Function.Call<bool>(Hash.IS_INTERIOR_READY, Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z)) || !Function.Call<bool>(Hash.IS_PED_STILL, femaleStaff)) break;
                     femaleStaffChair = Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, femaleStaff.Position.X, femaleStaff.Position.Y, femaleStaff.Position.Z, 1f, -1278649385, 0, 0, 0);
-                    FemaleStaffSceneStatus = 1;
+                    FemaleStaffStatus = 1;
                     break;
                 case 1:
                     if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, femaleStaffChair, "anim@amb@office@boardroom@crew@female@var_c@base@", "enter_chair", 2)) {
@@ -241,7 +241,7 @@ namespace SinglePlayerOffice {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, femaleStaff, femaleStaffSceneHandle, "anim@amb@office@boardroom@crew@female@var_c@base@", "enter", 1.5f, -1.5f, 13, 16, 1.5f, 4);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, femaleStaffChair, femaleStaffSceneHandle, "enter_chair", "anim@amb@office@boardroom@crew@female@var_c@base@", 4f, -4f, 32781, 1000f);
                     }
-                    else FemaleStaffSceneStatus = 2;
+                    else FemaleStaffStatus = 2;
                     break;
                 case 2:
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, femaleStaffSceneHandle) != 1f) break;
@@ -249,7 +249,7 @@ namespace SinglePlayerOffice {
                     Function.Call(Hash.SET_SYNCHRONIZED_SCENE_LOOPED, femaleStaffSceneHandle, true);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, femaleStaff, femaleStaffSceneHandle, "anim@amb@office@boardroom@crew@female@var_c@base@", "base", 4f, -1.5f, 13, 16, 1148846080, 0);
                     Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, femaleStaffChair, femaleStaffSceneHandle, "base_chair", "anim@amb@office@boardroom@crew@female@var_c@base@", 4f, -4f, 32781, 1000f);
-                    FemaleStaffSceneStatus = -1;
+                    FemaleStaffStatus = -1;
                     break;
             }
             switch (FemaleStaffConversationStatus) {
@@ -278,20 +278,20 @@ namespace SinglePlayerOffice {
         }
 
         private void PaOnTick() {
-            switch (PaSceneStatus) {
+            switch (PaStatus) {
                 case 0:
-                    paSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, paChair.Position.X, paChair.Position.Y, paChair.Position.Z, 0f, 0f, paChair.Heading, 2);
+                    paSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, PaChairPos.X, PaChairPos.Y, PaChairPos.Z, 0f, 0f, PaChairRot.Z, 2);
                     Function.Call(Hash.SET_SYNCHRONIZED_SCENE_LOOPED, paSceneHandle, true);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, pa, paSceneHandle, "anim@amb@office@pa@female@", "pa_base", 1000f, -2f, 260, 0, 1148846080, 0);
                     Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, paChair, paSceneHandle, "base_chair", "anim@amb@office@pa@female@", 1000f, -2f, 4 | 256, 1148846080);
-                    PaSceneStatus = -1;
+                    PaStatus = -1;
                     break;
             }
             switch (PaConversationStatus) {
                 case 1:
                     if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, pa)) break;
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "GREET_ATTRACTIVE_F", "SPEECH_PARAMS_FORCE");
-                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Office.Building.Owner) PaConversationStatus = 2;
+                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Location.Building.Owner) PaConversationStatus = 2;
                     else PaConversationStatus = 0;
                     isPaGreeted = true;
                     break;
@@ -319,65 +319,73 @@ namespace SinglePlayerOffice {
                     break;
             }
             if (pa != null && Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 0.5f, 220394186, 0, 0, 0).Model == 220394186 && PaConversationStatus == 0) {
-                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Office.Building.Owner && !isPaGreeted) {
+                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Location.Building.Owner && !isPaGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, pa, "EXECPA_GREET", "SPEECH_PARAMS_FORCE");
                     PaConversationStatus = 1;
                 }
-                else if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Office.Building.Owner && !isPaGreeted) {
+                else if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Location.Building.Owner && !isPaGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, pa, "GENERIC_HI", "SPEECH_PARAMS_FORCE");
                     PaConversationStatus = 1;
                 }
-                else if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Office.Building.Owner && isPaGreeted) {
+                else if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Location.Building.Owner && isPaGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, pa, "EXECPA_FAREWELL", "SPEECH_PARAMS_FORCE");
                     PaConversationStatus = 3;
                 }
-                else if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Office.Building.Owner && isPaGreeted) {
+                else if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Location.Building.Owner && isPaGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, pa, "GENERIC_BYE", "SPEECH_PARAMS_FORCE");
                     PaConversationStatus = 3;
                 }
             }
-            if (pa != null && Game.Player.Character.Position.DistanceTo(pa.Position) < 2f) {
-                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Office.Building.Owner) {
+            if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && pa != null && Game.Player.Character.Position.DistanceTo(pa.Position) < 2f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Location.Building.Owner) {
                     SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to chat with your PA~n~Press ~INPUT_CONTEXT_SECONDARY~ for executive options");
-                    if (Game.IsControlJustPressed(2, GTA.Control.ContextSecondary) && !Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, Game.Player.Character) && !Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, pa)) Function.Call(Hash._PLAY_AMBIENT_SPEECH1, pa, "GENERIC_AGREE", "SPEECH_PARAMS_FORCE");
+                    if (Game.IsControlJustPressed(2, GTA.Control.ContextSecondary)) {
+                        SinglePlayerOffice.SavedPos = Game.Player.Character.Position;
+                        SinglePlayerOffice.SavedRot = Game.Player.Character.Rotation;
+                        SinglePlayerOffice.IsHudHidden = true;
+                        Location.Building.PAMenu.Visible = true;
+                    }
                 }
                 if (Game.IsControlJustPressed(2, GTA.Control.Context) && !Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, Game.Player.Character) && !Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, pa)) {
-                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Office.Building.Owner) Function.Call(Hash._PLAY_AMBIENT_SPEECH1, pa, "EXECPA_CHATVIP", "SPEECH_PARAMS_FORCE");
+                    if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Location.Building.Owner) Function.Call(Hash._PLAY_AMBIENT_SPEECH1, pa, "EXECPA_CHATVIP", "SPEECH_PARAMS_FORCE");
                     else Function.Call(Hash._PLAY_AMBIENT_SPEECH1, pa, "EXECPA_CHATOTHERS", "SPEECH_PARAMS_FORCE");
                     PaConversationStatus = 4;
                 }
             }
         }
 
-        public void Reset() {
+        public void Reset(bool resetGreetings = true) {
             DeletePed(ref boss);
-            BossSceneStatus = 0;
-            isBossGreeted = false;
-            DeletePed(ref maleStaff);
-            MaleStaffSceneStatus = 0;
-            isMaleStaffGreeted = false;
-            DeletePed(ref femaleStaff);
-            FemaleStaffSceneStatus = 0;
-            isFemaleStaffGreeted = false;
-            isPaGreeted = false;
+            BossStatus = 0;
+            MaleStaffStatus = 0;
+            FemaleStaffStatus = 0;
+            PaStatus = 0;
+            if (resetGreetings) {
+                isBossGreeted = false;
+                isMaleStaffGreeted = false;
+                isFemaleStaffGreeted = false;
+                isPaGreeted = false;
+            }
         }
 
-        public void OnTick() {
-            if (Office == null) Office = (Office)SinglePlayerOffice.GetCurrentBuilding().GetCurrentLocation();
-            if (paChair == null) CreatePaChair(); 
-            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Office.Building.Owner && boss == null && maleStaff == null && femaleStaff == null) {
-                CreateBossPed();
+        public override void OnTick() {
+            if (Location == null) Location = SinglePlayerOffice.GetCurrentBuilding().GetCurrentLocation();
+            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Location.Building.Owner && boss == null) CreateBossPed();
+            var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
+            if ((hours > 8 && hours < 17) && (maleStaff == null && femaleStaff == null)) {
                 CreateMaleStaffPed();
                 CreateFemaleStaffPed();
             }
+            else if ((hours < 9 || hours > 16) && (maleStaff != null && femaleStaff != null)) {
+                DeletePed(ref maleStaff);
+                DeletePed(ref femaleStaff);
+            }
+            if (paChair == null) CreatePaChair();
             if (pa == null) CreatePaPed();
-            BossOnTick();
-            MaleStaffOnTick();
-            FemaleStaffOnTick();
-            PaOnTick();
+            base.OnTick();
         }
 
-        public void Dispose() {
+        public override void Dispose() {
             if (paChair != null) paChair.Delete();
             DeletePed(ref boss);
             DeletePed(ref maleStaff);

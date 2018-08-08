@@ -13,6 +13,7 @@ namespace SinglePlayerOffice {
         public static List<InteriorStyle> FloorStyles { get; set; }
 
         public string IPL { get; set; }
+        public List<string> ExteriorIPLs { get; set; }
         public int InteriorID { get; set; }
         public Vector3 PurchaseCamPos { get; set; }
         public Vector3 PurchaseCamRot { get; set; }
@@ -45,6 +46,10 @@ namespace SinglePlayerOffice {
             };
         }
 
+        public ModShop() {
+            ActiveInteractions.AddRange(new List<Action> { TeleportOnTick, Interactions.SofaTVOnTick, Interactions.TVOnTick });
+        }
+
         public void LoadInterior() {
             Function.Call(Hash.REQUEST_IPL, IPL);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
@@ -59,6 +64,18 @@ namespace SinglePlayerOffice {
             foreach (InteriorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
             Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, floorStyle.Style);
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+        }
+
+        public void UnloadInterior() {
+            Function.Call(Hash.REMOVE_IPL, IPL);
+        }
+
+        public void LoadExterior() {
+            foreach (var ipl in ExteriorIPLs) Function.Call(Hash.REQUEST_IPL, ipl);
+        }
+
+        public void UnloadExterior() {
+            foreach (var ipl in ExteriorIPLs) Function.Call(Hash.REMOVE_IPL, ipl);
         }
 
         public void ChangeFloorStyle(InteriorStyle floorStyle) {
@@ -84,8 +101,7 @@ namespace SinglePlayerOffice {
             Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
             if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
             Building.HideBuildingExteriors();
-            TeleportOnTick();
-            Interactions.TVOnTick();
+            base.OnTick();
         }
 
     }
