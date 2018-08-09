@@ -99,9 +99,20 @@ namespace SinglePlayerOffice {
         }
 
         public static void DisplayHelpTextThisFrame(string text) {
-            Function.Call(Hash._SET_TEXT_COMPONENT_FORMAT, "STRING");
-            Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, text);
+            Function.Call(Hash._SET_TEXT_COMPONENT_FORMAT, "CELL_EMAIL_BCON");
+            for (int i = 0; i < text.Length; i += 99) {
+                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, text.Substring(i, Math.Min(99, text.Length - i)));
+            }
             Function.Call(Hash._0x238FFE5C7B0498A6, 0, 0, 1, -1);
+        }
+
+        public static int DisplayNotification(string message, string picName, int iconType, string sender, string subject) {
+            Function.Call(Hash._SET_NOTIFICATION_TEXT_ENTRY, "CELL_EMAIL_BCON");
+            for (int i = 0; i < message.Length; i += 99) {
+                Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, message.Substring(i, Math.Min(99, message.Length - i)));
+            }
+            Function.Call<int>(Hash._0x1E6611149DB3DB6B, picName, picName, 1, iconType, sender, subject, 1f);
+            return Function.Call<int>(Hash._DRAW_NOTIFICATION, 1, 1);
         }
 
         public static Building GetCurrentBuilding() {
@@ -115,6 +126,12 @@ namespace SinglePlayerOffice {
             if (IsHudHidden) Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
             var currentBuilding = GetCurrentBuilding();
             if (currentBuilding != null) currentBuilding.OnTick();
+            foreach (var building in Buildings) {
+                if (building.ConstructionTime != null && World.CurrentDate.CompareTo(building.ConstructionTime) > 0) {
+                    DisplayNotification("Boss, ~b~" + building.Name + "~w~ is ready! Come by to check out the building.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "");
+                    building.ConstructionTime = null;
+                }
+            }
         }
 
         private void OnAborted(object sender, EventArgs e) {

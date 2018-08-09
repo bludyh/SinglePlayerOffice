@@ -44,6 +44,7 @@ namespace SinglePlayerOffice {
         public UIMenu GarageEntranceMenu { get; set; }
         public UIMenu VehicleElevatorMenu { get; set; }
         public UIMenu PAMenu { get; set; }
+        public DateTime? ConstructionTime { get; set; }
 
         protected InteriorStyle GetOfficeInteriorStyle(string name) {
             foreach (InteriorStyle style in office.InteriorStyles) if (style.Name == name) return style;
@@ -441,15 +442,16 @@ namespace SinglePlayerOffice {
             };
             baseMenu.OnCheckboxChange += (sender, item, isChecked) => {
                 office.HasExtraDecors = isChecked;
+                office.ExtraDecorsPrice = (office.HasExtraDecors) ? 1650000 : 0;
                 Game.FadeScreenOut(500);
                 Script.Wait(500);
                 UnloadAllInteriors();
                 Game.Player.Character.Position = office.SpawnPos;
                 Game.Player.Character.Task.StandStill(-1);
+                officeInteriorsMenu.CurrentSelection = office.InteriorStyles.IndexOf(office.InteriorStyle);
                 office.LoadInterior(office.InteriorStyles[officeInteriorsMenu.CurrentSelection]);
                 office.PurchaseCam = World.CreateCamera(office.PurchaseCamPos, office.PurchaseCamRot, office.PurchaseCamFOV);
                 World.RenderingCamera = office.PurchaseCam;
-                office.ExtraDecorsPrice = (office.HasExtraDecors) ? 1650000 : 0;
                 Script.Wait(500);
                 Game.FadeScreenIn(500);
             };
@@ -504,6 +506,7 @@ namespace SinglePlayerOffice {
                         }
                         blip.Sprite = (BlipSprite)475;
                         SetBlipColor(blip);
+                        ConstructionTime = World.CurrentDate.AddDays(2);
                         SinglePlayerOffice.MenuPool.CloseAllMenus();
                         SinglePlayerOffice.IsHudHidden = false;
                         Game.FadeScreenOut(1000);
@@ -521,6 +524,9 @@ namespace SinglePlayerOffice {
                         Game.PlaySound("PROPERTY_PURCHASE", "HUD_AWARDS");
                         Game.Player.Money -= price;
                         BigMessageThread.MessageInstance.ShowSimpleShard("Buiding Purchased", name);
+                        SinglePlayerOffice.DisplayNotification("Hi boss! I'm your new Personal Assistant, who will help you with businesses at ~b~" + name + "~w~.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
+                        SinglePlayerOffice.DisplayNotification("Currently, your newly owned building is still undergoing final construction phase. It will take 2 more days before all the facilities become available.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
+                        SinglePlayerOffice.DisplayNotification("I'll give you further notice in the future.~n~Have a nice day!", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
                     }
                 }
             };
@@ -890,12 +896,14 @@ namespace SinglePlayerOffice {
                         catch (Exception ex) {
                             Logger.Log(ex.ToString());
                         }
+                        ConstructionTime = World.CurrentDate.AddDays(1);
                         SinglePlayerOffice.MenuPool.CloseAllMenus();
                         SinglePlayerOffice.IsHudHidden = false;
                         Game.FadeScreenOut(1000);
                         Script.Wait(1000);
                         World.RenderingCamera = null;
                         World.DestroyAllCameras();
+                        UnloadAllExteriors();
                         Game.Player.Character.Position = entrance.SpawnPos;
                         Game.Player.Character.Heading = entrance.SpawnHeading;
                         Game.Player.Character.Task.ClearAll();
@@ -905,6 +913,7 @@ namespace SinglePlayerOffice {
                         Game.FadeScreenIn(1000);
                         Script.Wait(1000);
                         Game.Player.Money -= price;
+                        SinglePlayerOffice.DisplayNotification("Boss, ~b~" + name + "~w~ is undergoing interior refurbishment. Come back after a day to see the result!", "CHAR_PA_FEMALE", 1, "Personal Assistant", "");
                     }
                 }
             };

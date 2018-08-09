@@ -900,8 +900,7 @@ namespace SinglePlayerOffice {
         }
 
         public void CreateVehicle() {
-            var vehicle = World.CreateVehicle((VehicleHash)VehicleHash, Position);
-            vehicle.Rotation = Rotation;
+            var vehicle = World.CreateVehicle((VehicleHash)VehicleHash, Position, Rotation.Z);
             vehicle.PrimaryColor = (VehicleColor)PrimaryColor;
             vehicle.SecondaryColor = (VehicleColor)SecondaryColor;
             vehicle.DashboardColor = (VehicleColor)DashboardColor;

@@ -25,12 +25,15 @@ namespace SinglePlayerOffice {
             if (!Game.Player.Character.IsDead && Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 10f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                 if (Building.Owner != Owner.None) {
                     if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Building.Owner) {
-                        SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the vehicle elevator");
-                        if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                            GarageEntranceStatus = 1;
-                            SinglePlayerOffice.IsHudHidden = true;
-                            Building.GarageEntranceMenu.Visible = true;
+                        if (Building.ConstructionTime == null || World.CurrentDate.CompareTo(Building.ConstructionTime) > 0) {
+                            SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the vehicle elevator");
+                            if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                                GarageEntranceStatus = 1;
+                                SinglePlayerOffice.IsHudHidden = true;
+                                Building.GarageEntranceMenu.Visible = true;
+                            }
                         }
+                        else SinglePlayerOffice.DisplayHelpTextThisFrame("Building is under construction. Come back later");
                     }
                     else SinglePlayerOffice.DisplayHelpTextThisFrame("Only the owner can use the vehicle elevator");
                 }
