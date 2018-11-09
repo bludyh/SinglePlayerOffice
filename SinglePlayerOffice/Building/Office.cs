@@ -137,7 +137,7 @@ namespace SinglePlayerOffice {
         public override void OnTick() {
             Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
             if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
-            Building.HideBuildingExteriors();
+            Building.HideExteriorMapObjects();
             base.OnTick();
         }
 

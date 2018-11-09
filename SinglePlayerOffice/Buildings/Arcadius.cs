@@ -15,10 +15,12 @@ namespace SinglePlayerOffice {
                 name = "Arcadius Business Center";
                 description = "The City within the City, the Arcadius Business Center boats more AAA hedge funds, smoothie bars and executive suicides per square foot of office space than any other building in the business district. Welcome to Cutting edge.";
                 price = 2250000;
-                owner = (Owner)SinglePlayerOffice.Configs.GetValue(name, "Owner", -1);
-                blipPos = new Vector3(-118.791f, -608.376f, 36.281f);
+                entranceBlipPos = new Vector3(-118.791f, -608.376f, 36.281f);
+                garageEntranceBlipPos = new Vector3(-143.998f, -576.076f, 32.060f);
                 interiorIDs = new List<int>() { 134657, 237313, 237569, 237057, 236289, 236545, 236801, 237825, 238081, 238337, 253441, 253697, 253953, 254209 };
                 exteriorMapObjects = new List<string>() { "hei_dt1_02_w01", "dt1_02_helipad_01", "dt1_02_dt1_emissive_dt1_02" };
+                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", name));
+                owner = (Owner)data.GetValue("Owner", "Owner", -1);
                 entrance = new Entrance {
                     TriggerPos = new Vector3(-118.791f, -608.376f, 36.281f),
                     SpawnPos = new Vector3(-117.505f, -608.885f, 36.281f),
@@ -56,7 +58,7 @@ namespace SinglePlayerOffice {
                         new InteriorStyle("Power Broker Polished", 910000, "ex_dt1_02_office_03c"),
                         new InteriorStyle("Power Broker Ice", 1000000, "ex_dt1_02_office_03a")
                     },
-                    HasExtraDecors = SinglePlayerOffice.Configs.GetValue(name, "HasExtraOfficeDecors", false),
+                    HasExtraDecors = data.GetValue("Interiors", "HasExtraOfficeDecors", false),
                     Scene = new OfficeScene {
                         BossChairPos = new Vector3(-146.516f, -645.987f, 168.417f),
                         StaffChairPosList = new List<Vector3> {
@@ -71,7 +73,7 @@ namespace SinglePlayerOffice {
                         PaChairRot = new Vector3(0f, 0f, -174f)
                     }
                 };
-                office.InteriorStyle = GetOfficeInteriorStyle(SinglePlayerOffice.Configs.GetValue(name, "OfficeInteriorStyle"));
+                office.InteriorStyle = GetOfficeInteriorStyle(data.GetValue("Interiors", "OfficeInteriorStyle", "Executive Rich"));
                 office.ExtraDecorsPrice = (office.HasExtraDecors) ? 1650000 : 0;
                 office.ActiveScenes.Add(office.Scene);
                 garageOne = new Garage {
@@ -87,15 +89,15 @@ namespace SinglePlayerOffice {
                     DecorationCamPos = new Vector3(-191.550f, -588.963f, 136.000f),
                     DecorationCamRot = new Vector3(5f, 0f, -34f),
                     DecorationCamFOV = 60f,
-                    DecorationStyle = GetGarageDecorationStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageOneDecorationStyle")),
+                    DecorationStyle = GetGarageDecorationStyle(data.GetValue("Interiors", "GarageOneDecorationStyle", "Decoration 1")),
                     LightingCamPos = new Vector3(-192.656f, -585.665f, 136.000f),
                     LightingCamRot = new Vector3(55f, 0f, -135f),
                     LightingCamFOV = 70f,
-                    LightingStyle = GetGarageLightingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageOneLightingStyle")),
+                    LightingStyle = GetGarageLightingStyle(data.GetValue("Interiors", "GarageOneLightingStyle", "Lighting 1")),
                     NumberingCamPos = new Vector3(-191.463f, -573.653f, 136.001f),
                     NumberingCamRot = new Vector3(12f, 0f, 6.520f),
                     NumberingCamFOV = 60f,
-                    NumberingStyle = GetGarageOneNumberingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageOneNumberingStyle")),
+                    NumberingStyle = GetGarageOneNumberingStyle(data.GetValue("Interiors", "GarageOneNumberingStyle", "Signage 1")),
                     Scene = new GarageScene {
                         ElevatorLevelAPos = new Vector3(-181.798f, -581.548f, 134.116f),
                         ElevatorLevelBPos = new Vector3(-181.798f, -581.548f, 139.466f),
@@ -117,15 +119,15 @@ namespace SinglePlayerOffice {
                     DecorationCamPos = new Vector3(-115.602f, -577.715f, 136.001f),
                     DecorationCamRot = new Vector3(5f, 0f, -19f),
                     DecorationCamFOV = 60f,
-                    DecorationStyle = GetGarageDecorationStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageTwoDecorationStyle")),
+                    DecorationStyle = GetGarageDecorationStyle(data.GetValue("Interiors", "GarageTwoDecorationStyle", "Decoration 1")),
                     LightingCamPos = new Vector3(-117.451f, -574.830f, 136.000f),
                     LightingCamRot = new Vector3(55f, 0f, -120f),
                     LightingCamFOV = 70f,
-                    LightingStyle = GetGarageLightingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageTwoLightingStyle")),
+                    LightingStyle = GetGarageLightingStyle(data.GetValue("Interiors", "GarageTwoLightingStyle", "Lighting 1")),
                     NumberingCamPos = new Vector3(-119.268f, -563.180f, 136.000f),
                     NumberingCamRot = new Vector3(12f, 0f, 21f),
                     NumberingCamFOV = 60f,
-                    NumberingStyle = GetGarageTwoNumberingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageTwoNumberingStyle")),
+                    NumberingStyle = GetGarageTwoNumberingStyle(data.GetValue("Interiors", "GarageTwoNumberingStyle", "Signage 1")),
                     Scene = new GarageScene {
                         ElevatorLevelAPos = new Vector3(-107.975f, -568.080f, 134.116f),
                         ElevatorLevelBPos = new Vector3(-107.975f, -568.080f, 139.466f),
@@ -147,15 +149,15 @@ namespace SinglePlayerOffice {
                     DecorationCamPos = new Vector3(-145.349f, -627.036f, 136.001f),
                     DecorationCamRot = new Vector3(5f, 0f, -139f),
                     DecorationCamFOV = 60f,
-                    DecorationStyle = GetGarageDecorationStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageThreeDecorationStyle")),
+                    DecorationStyle = GetGarageDecorationStyle(data.GetValue("Interiors", "GarageThreeDecorationStyle", "Decoration 1")),
                     LightingCamPos = new Vector3(-141.992f, -626.889f, 136.000f),
                     LightingCamRot = new Vector3(55f, 0f, 120f),
                     LightingCamFOV = 70f,
-                    LightingStyle = GetGarageLightingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageThreeLightingStyle")),
+                    LightingStyle = GetGarageLightingStyle(data.GetValue("Interiors", "GarageThreeLightingStyle", "Lighting 1")),
                     NumberingCamPos = new Vector3(-130.550f, -631.243f, 136.000f),
                     NumberingCamRot = new Vector3(12f, 0f, -98f),
                     NumberingCamFOV = 60f,
-                    NumberingStyle = GetGarageThreeNumberingStyle(SinglePlayerOffice.Configs.GetValue(name, "GarageThreeNumberingStyle")),
+                    NumberingStyle = GetGarageThreeNumberingStyle(data.GetValue("Interiors", "GarageThreeNumberingStyle", "Signage 1")),
                     Scene = new GarageScene {
                         ElevatorLevelAPos = new Vector3(-140.817f, -638.450f, 134.116f),
                         ElevatorLevelBPos = new Vector3(-140.817f, -638.450f, 139.466f),
@@ -174,7 +176,7 @@ namespace SinglePlayerOffice {
                     PurchaseCamPos = new Vector3(-142.051f, -591.137f, 169f),
                     PurchaseCamRot = new Vector3(-20f, 0f, 130f),
                     PurchaseCamFOV = 70f,
-                    FloorStyle = GetModShopFloorStyle(SinglePlayerOffice.Configs.GetValue(name, "ModShopFloorStyle"))
+                    FloorStyle = GetModShopFloorStyle(data.GetValue("Interiors", "ModShopFloorStyle", "Floor 1"))
                 };
                 heliPad = new HeliPad {
                     TriggerPos = new Vector3(-155.139f, -602.231f, 201.735f),
@@ -182,7 +184,8 @@ namespace SinglePlayerOffice {
                     SpawnHeading = 128.035f
                 };
 
-                CreateBuildingBlip();
+                CreateEntranceBlip();
+                if (owner != Owner.None) CreateGarageEntranceBlip();
                 CreatePurchaseMenu();
                 CreateTeleportMenu();
                 CreateGarageEntranceMenu();

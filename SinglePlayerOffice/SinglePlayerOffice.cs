@@ -10,7 +10,6 @@ using NativeUI;
 namespace SinglePlayerOffice {
     class SinglePlayerOffice : Script {
 
-        public static ScriptSettings Configs { get; private set; }
         public static MenuPool MenuPool { get; private set; }
         public static bool IsHudHidden { get; set; }
         public static Arcadius Arcadius { get; private set; }
@@ -24,7 +23,6 @@ namespace SinglePlayerOffice {
         public SinglePlayerOffice() {
             Tick += OnTick;
             Aborted += OnAborted;
-            LoadConfigs();
             LoadMPMap();
             RequestGameResources();
             MenuPool = new MenuPool();
@@ -36,11 +34,6 @@ namespace SinglePlayerOffice {
             Buildings = new List<Building> { Arcadius, LomBank, MazeBank, MazeBankWest };
             Interactions.CreateRadioMenu();
             Interactions.CreateWardrobeMenu();
-        }
-
-        private static void LoadConfigs() {
-            try { Configs = ScriptSettings.Load(@"scripts\SinglePlayerOffice.ini"); }
-            catch (Exception ex) { Logger.Log(ex.Message); }
         }
 
         private static void LoadMPMap() {
@@ -111,7 +104,7 @@ namespace SinglePlayerOffice {
             for (int i = 0; i < message.Length; i += 99) {
                 Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, message.Substring(i, Math.Min(99, message.Length - i)));
             }
-            Function.Call<int>(Hash._0x1E6611149DB3DB6B, picName, picName, 1, iconType, sender, subject, 1f);
+            Function.Call(Hash._0x1E6611149DB3DB6B, picName, picName, 1, iconType, sender, subject, 1f);
             return Function.Call<int>(Hash._DRAW_NOTIFICATION, 1, 1);
         }
 
@@ -128,7 +121,7 @@ namespace SinglePlayerOffice {
             if (currentBuilding != null) currentBuilding.OnTick();
             foreach (var building in Buildings) {
                 if (building.ConstructionTime != null && World.CurrentDate.CompareTo(building.ConstructionTime) > 0) {
-                    DisplayNotification("Boss, ~b~" + building.Name + "~w~ is ready! Come by to check out the building.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "");
+                    DisplayNotification("Boss, ~b~" + building.Name + "~w~ is ready! Drop by sometime to check out the building.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "");
                     building.ConstructionTime = null;
                 }
             }
