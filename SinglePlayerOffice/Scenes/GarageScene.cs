@@ -167,7 +167,7 @@ namespace SinglePlayerOffice {
             switch (ElevatorStatus) {
                 case 0:
                     if (!Game.Player.Character.IsDead && (Game.Player.Character.Position.DistanceTo(ElevatorLevelAPos) < 8f || Game.Player.Character.Position.DistanceTo(ElevatorLevelBPos) < 8f || Game.Player.Character.Position.DistanceTo(ElevatorLevelCPos) < 8f) && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-                        SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the vehicle elevator");
+                        Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the vehicle elevator");
                         if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                             ElevatorPos = GetCurrentLevelElevatorPos();
                             ElevatorStatus = 3;

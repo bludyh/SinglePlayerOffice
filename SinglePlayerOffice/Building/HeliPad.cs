@@ -16,7 +16,7 @@ namespace SinglePlayerOffice {
 
         protected override void TeleportOnTick() {
             if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-                SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the stairs");
+                Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the stairs");
                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                     Game.Player.Character.Task.StandStill(-1);
                     Building.UpdateTeleportMenuButtons();

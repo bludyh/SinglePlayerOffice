@@ -24,7 +24,7 @@ namespace SinglePlayerOffice {
                 if (Building.Owner != Owner.None) {
                     if (Building.ConstructionTime == null || World.CurrentDate.CompareTo(Building.ConstructionTime) > 0) {
                         if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Building.Owner) {
-                            SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to enter the building");
+                            Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to enter the building");
                             if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                                 Game.Player.Character.Task.StandStill(-1);
                                 Building.UpdateTeleportMenuButtons();
@@ -34,7 +34,7 @@ namespace SinglePlayerOffice {
                         }
                         else {
                             if (Function.Call<int>(Hash.GET_CLOCK_HOURS) > 8 && Function.Call<int>(Hash.GET_CLOCK_HOURS) < 17) {
-                                SinglePlayerOffice.DisplayHelpTextThisFrame(String.Format("Press ~INPUT_CONTEXT~ to visit {0}'s building", Building.Owner));
+                                Utilities.DisplayHelpTextThisFrame(String.Format("Press ~INPUT_CONTEXT~ to visit {0}'s building", Building.Owner));
                                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                                     Game.Player.Character.Task.StandStill(-1);
                                     Building.UpdateTeleportMenuButtons();
@@ -42,13 +42,13 @@ namespace SinglePlayerOffice {
                                     Building.TeleportMenu.Visible = true;
                                 }
                             }
-                            else SinglePlayerOffice.DisplayHelpTextThisFrame("Building is closed. You can come back between 9:00 and 17:00");
+                            else Utilities.DisplayHelpTextThisFrame("Building is closed. You can come back between 9:00 and 17:00");
                         }
                     }
-                    else SinglePlayerOffice.DisplayHelpTextThisFrame("Building is under construction. Come back later");
+                    else Utilities.DisplayHelpTextThisFrame("Building is under construction. Come back later");
                 }
                 else {
-                    SinglePlayerOffice.DisplayHelpTextThisFrame("You do not own this building~n~Press ~INPUT_CONTEXT~ to purchase");
+                    Utilities.DisplayHelpTextThisFrame("You do not own this building~n~Press ~INPUT_CONTEXT~ to purchase");
                     if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                         Game.Player.Character.Task.StandStill(-1);
                         Game.FadeScreenOut(1000);

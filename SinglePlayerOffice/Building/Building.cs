@@ -544,9 +544,9 @@ namespace SinglePlayerOffice {
                         Game.PlaySound("PROPERTY_PURCHASE", "HUD_AWARDS");
                         Game.Player.Money -= price;
                         BigMessageThread.MessageInstance.ShowSimpleShard("Buiding Purchased", name);
-                        SinglePlayerOffice.DisplayNotification("Hi boss! I'm your new Personal Assistant, who will help you with businesses at ~b~" + name + "~w~.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
-                        SinglePlayerOffice.DisplayNotification("Currently, your newly owned building is still undergoing final construction phase. It will take 2 more days before all the facilities become available.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
-                        SinglePlayerOffice.DisplayNotification("I'll give you further notice in the future.~n~Have a nice day!", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
+                        Utilities.DisplayNotification("Hi boss! I'm your new Personal Assistant, who will help you with businesses at ~b~" + name + "~w~.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
+                        Utilities.DisplayNotification("Currently, your newly owned building is still undergoing final construction phase. It will take 2 more days before all the facilities become available.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
+                        Utilities.DisplayNotification("I'll give you further notice in the future.~n~Have a nice day!", "CHAR_PA_FEMALE", 1, "Personal Assistant", "Greetings");
                     }
                 }
             };
@@ -584,45 +584,48 @@ namespace SinglePlayerOffice {
                 }
                 UnloadAllInteriors();
                 UnloadAllExteriors();
-                if (item.Text == "Office") {
-                    Game.Player.Character.Position = office.SpawnPos;
-                    Game.Player.Character.Heading = office.SpawnHeading;
-                    office.LoadInterior();
-                    office.LoadExterior();
-                    office.Scene.Reset();
+                switch (item.Text) {
+                    case "Office":
+                        Game.Player.Character.Position = office.SpawnPos;
+                        Game.Player.Character.Heading = office.SpawnHeading;
+                        office.LoadInterior();
+                        office.LoadExterior();
+                        office.Scene.Reset();
+                        break;
+                    case "Garage One":
+                        Game.Player.Character.Position = garageOne.SpawnPos;
+                        Game.Player.Character.Heading = garageOne.SpawnHeading;
+                        garageOne.LoadInterior();
+                        garageOne.LoadExterior();
+                        break;
+                    case "Garage Two":
+                        Game.Player.Character.Position = garageTwo.SpawnPos;
+                        Game.Player.Character.Heading = garageTwo.SpawnHeading;
+                        garageTwo.LoadInterior();
+                        garageTwo.LoadExterior();
+                        break;
+                    case "Garage Three":
+                        Game.Player.Character.Position = garageThree.SpawnPos;
+                        Game.Player.Character.Heading = garageThree.SpawnHeading;
+                        garageThree.LoadInterior();
+                        garageThree.LoadExterior();
+                        break;
+                    case "Mod Shop":
+                        Game.Player.Character.Position = modShop.SpawnPos;
+                        Game.Player.Character.Heading = modShop.SpawnHeading;
+                        modShop.LoadInterior();
+                        modShop.LoadExterior();
+                        break;
+                    case "Heli Pad":
+                        Game.Player.Character.Position = heliPad.SpawnPos;
+                        Game.Player.Character.Heading = heliPad.SpawnHeading;
+                        break;
+                    case "Exit the building":
+                        Game.Player.Character.Position = entrance.SpawnPos;
+                        Game.Player.Character.Heading = entrance.SpawnHeading;
+                        break;
                 }
-                else if (item.Text == "Garage One") {
-                    Game.Player.Character.Position = garageOne.SpawnPos;
-                    Game.Player.Character.Heading = garageOne.SpawnHeading;
-                    garageOne.LoadInterior();
-                    garageOne.LoadExterior();
-                }
-                else if (item.Text == "Garage Two") {
-                    Game.Player.Character.Position = garageTwo.SpawnPos;
-                    Game.Player.Character.Heading = garageTwo.SpawnHeading;
-                    garageTwo.LoadInterior();
-                    garageTwo.LoadExterior();
-                }
-                else if (item.Text == "Garage Three") {
-                    Game.Player.Character.Position = garageThree.SpawnPos;
-                    Game.Player.Character.Heading = garageThree.SpawnHeading;
-                    garageThree.LoadInterior();
-                    garageThree.LoadExterior();
-                }
-                else if (item.Text == "Mod Shop") {
-                    Game.Player.Character.Position = modShop.SpawnPos;
-                    Game.Player.Character.Heading = modShop.SpawnHeading;
-                    modShop.LoadInterior();
-                    modShop.LoadExterior();
-                }
-                else if (item.Text == "Heli Pad") {
-                    Game.Player.Character.Position = heliPad.SpawnPos;
-                    Game.Player.Character.Heading = heliPad.SpawnHeading;
-                }
-                else if (item.Text == "Exit the building") {
-                    Game.Player.Character.Position = entrance.SpawnPos;
-                    Game.Player.Character.Heading = entrance.SpawnHeading;
-                }
+
                 Game.Player.Character.Task.ClearAll();
                 Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
                 Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
@@ -723,30 +726,32 @@ namespace SinglePlayerOffice {
                 garageEntrance.GarageEntranceStatus = 0;
                 UnloadAllInteriors();
                 UnloadAllExteriors();
-                if (item.Text == "Garage One") {
-                    Game.Player.Character.CurrentVehicle.Position = garageOne.Scene.ElevatorLevelAPos;
-                    Game.Player.Character.CurrentVehicle.Heading = garageOne.SpawnHeading + 30f;
-                    garageOne.LoadInterior();
-                    garageOne.LoadExterior();
-                    garageOne.Scene.ElevatorStatus = 1;
+                switch (item.Text) {
+                    case "Garage One":
+                        Game.Player.Character.CurrentVehicle.Position = garageOne.Scene.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Heading = garageOne.SpawnHeading + 30f;
+                        garageOne.LoadInterior();
+                        garageOne.LoadExterior();
+                        garageOne.Scene.ElevatorStatus = 1;
+                        break;
+                    case "Garage Two":
+                        Game.Player.Character.CurrentVehicle.Position = garageTwo.Scene.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Heading = garageTwo.SpawnHeading + 30f;
+                        garageTwo.LoadInterior();
+                        garageTwo.LoadExterior();
+                        garageTwo.Scene.ElevatorStatus = 1;
+                        break;
+                    case "Garage Three":
+                        Game.Player.Character.CurrentVehicle.Position = garageThree.Scene.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Heading = garageThree.SpawnHeading + 30f;
+                        garageThree.LoadInterior();
+                        garageThree.LoadExterior();
+                        garageThree.Scene.ElevatorStatus = 1;
+                        break;
+                    case "Mod Shop":
+                        break;
                 }
-                else if (item.Text == "Garage Two") {
-                    Game.Player.Character.CurrentVehicle.Position = garageTwo.Scene.ElevatorLevelAPos;
-                    Game.Player.Character.CurrentVehicle.Heading = garageTwo.SpawnHeading + 30f;
-                    garageTwo.LoadInterior();
-                    garageTwo.LoadExterior();
-                    garageTwo.Scene.ElevatorStatus = 1;
-                }
-                else if (item.Text == "Garage Three") {
-                    Game.Player.Character.CurrentVehicle.Position = garageThree.Scene.ElevatorLevelAPos;
-                    Game.Player.Character.CurrentVehicle.Heading = garageThree.SpawnHeading + 30f;
-                    garageThree.LoadInterior();
-                    garageThree.LoadExterior();
-                    garageThree.Scene.ElevatorStatus = 1;
-                }
-                else if (item.Text == "Mod Shop") {
 
-                }
                 Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
                 Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
                 Script.Wait(1000);
@@ -771,9 +776,18 @@ namespace SinglePlayerOffice {
                 var currentLocation = GetCurrentLocation();
                 if (item.Text == "Level A" || item.Text == "Level B" || item.Text == "Level C") {
                     var currentGarage = GetCurrentLocation() as Garage;
-                    if (item.Text == "Level A") currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelAPos;
-                    else if (item.Text == "Level B") currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelBPos;
-                    else if (item.Text == "Level C") currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelCPos;
+                    switch (item.Text) {
+                        case "Level A":
+                            currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelAPos;
+                            break;
+                        case "Level B":
+                            currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelBPos;
+                            break;
+                        case "Level C":
+                            currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelCPos;
+                            break;
+                    }
+
                     currentGarage.Scene.ElevatorStatus = 3;
                 }
                 else {
@@ -787,35 +801,38 @@ namespace SinglePlayerOffice {
                         currentGarage.Scene.RemoveVehicleInfo(Game.Player.Character.CurrentVehicle);
                         currentGarage.Scene.SaveVehicleInfoList();
                     }
-                    if (item.Text == "Garage One") {
-                        Game.Player.Character.CurrentVehicle.Position = garageOne.Scene.ElevatorLevelAPos;
-                        Game.Player.Character.CurrentVehicle.Heading = garageOne.SpawnHeading + 30f;
-                        garageOne.LoadInterior();
-                        garageOne.LoadExterior();
-                        garageOne.Scene.ElevatorStatus = 1;
-                    }
-                    else if (item.Text == "Garage Two") {
-                        Game.Player.Character.CurrentVehicle.Position = garageTwo.Scene.ElevatorLevelAPos;
-                        Game.Player.Character.CurrentVehicle.Heading = garageTwo.SpawnHeading + 30f;
-                        garageTwo.LoadInterior();
-                        garageTwo.LoadExterior();
-                        garageTwo.Scene.ElevatorStatus = 1;
-                    }
-                    else if (item.Text == "Garage Three") {
-                        Game.Player.Character.CurrentVehicle.Position = garageThree.Scene.ElevatorLevelAPos;
-                        Game.Player.Character.CurrentVehicle.Heading = garageThree.SpawnHeading + 30f;
-                        garageThree.LoadInterior();
-                        garageThree.LoadExterior();
-                        garageThree.Scene.ElevatorStatus = 1;
-                    }
-                    else if (item.Text == "Mod Shop") {
 
+                    switch (item.Text) {
+                        case "Garage One":
+                            Game.Player.Character.CurrentVehicle.Position = garageOne.Scene.ElevatorLevelAPos;
+                            Game.Player.Character.CurrentVehicle.Heading = garageOne.SpawnHeading + 30f;
+                            garageOne.LoadInterior();
+                            garageOne.LoadExterior();
+                            garageOne.Scene.ElevatorStatus = 1;
+                            break;
+                        case "Garage Two":
+                            Game.Player.Character.CurrentVehicle.Position = garageTwo.Scene.ElevatorLevelAPos;
+                            Game.Player.Character.CurrentVehicle.Heading = garageTwo.SpawnHeading + 30f;
+                            garageTwo.LoadInterior();
+                            garageTwo.LoadExterior();
+                            garageTwo.Scene.ElevatorStatus = 1;
+                            break;
+                        case "Garage Three":
+                            Game.Player.Character.CurrentVehicle.Position = garageThree.Scene.ElevatorLevelAPos;
+                            Game.Player.Character.CurrentVehicle.Heading = garageThree.SpawnHeading + 30f;
+                            garageThree.LoadInterior();
+                            garageThree.LoadExterior();
+                            garageThree.Scene.ElevatorStatus = 1;
+                            break;
+                        case "Mod Shop":
+                            break;
+                        case "Exit the building":
+                            Game.Player.Character.CurrentVehicle.Position = garageEntrance.SpawnPos;
+                            Game.Player.Character.CurrentVehicle.Heading = garageEntrance.SpawnHeading;
+                            Game.Player.Character.Task.ClearAll();
+                            break;
                     }
-                    else if (item.Text == "Exit the building") {
-                        Game.Player.Character.CurrentVehicle.Position = garageEntrance.SpawnPos;
-                        Game.Player.Character.CurrentVehicle.Heading = garageEntrance.SpawnHeading;
-                        Game.Player.Character.Task.ClearAll();
-                    }
+
                     Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
                     Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
                     Script.Wait(1000);
@@ -936,7 +953,7 @@ namespace SinglePlayerOffice {
                         Game.FadeScreenIn(1000);
                         Script.Wait(1000);
                         Game.Player.Money -= price;
-                        SinglePlayerOffice.DisplayNotification("Boss, ~b~" + name + "~w~ is undergoing interior refurbishment. Come back after a day to see the result!", "CHAR_PA_FEMALE", 1, "Personal Assistant", "");
+                        Utilities.DisplayNotification("Boss, ~b~" + name + "~w~ is undergoing interior refurbishment. Come back after a day to see the result!", "CHAR_PA_FEMALE", 1, "Personal Assistant", "");
                     }
                 }
             };
@@ -951,8 +968,8 @@ namespace SinglePlayerOffice {
                     World.DestroyAllCameras();
                     UnloadAllInteriors();
                     UnloadAllExteriors();
-                    Game.Player.Character.Position = SinglePlayerOffice.SavedPos;
-                    Game.Player.Character.Heading = SinglePlayerOffice.SavedRot.Z;
+                    Game.Player.Character.Position = Utilities.SavedPos;
+                    Game.Player.Character.Heading = Utilities.SavedRot.Z;
                     office.LoadInterior();
                     office.LoadExterior();
                     office.Scene.Reset(false);
@@ -1044,9 +1061,17 @@ namespace SinglePlayerOffice {
             modShop.UnloadExterior();
         }
 
+        public void HandleConstructionNotification() {
+            if (ConstructionTime != null && World.CurrentDate.CompareTo(ConstructionTime) > 0) {
+                Utilities.DisplayNotification("Boss, ~b~" + Name + "~w~ is ready! Drop by sometime to check out the building.", "CHAR_PA_FEMALE", 1, "Personal Assistant", "");
+                ConstructionTime = null;
+            }
+        }
+
         public void OnTick() {
             var currentLocation = GetCurrentLocation();
             var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
+
             if (owner != Owner.None && Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)owner && (hours < 9 || hours > 16) && currentLocation is IInterior) {
                 UpdateTeleportMenuButtons();
                 TeleportMenu.GoUp();

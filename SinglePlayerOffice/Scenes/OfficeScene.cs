@@ -381,10 +381,10 @@ namespace SinglePlayerOffice {
             }
             if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && pa != null && Game.Player.Character.Position.DistanceTo(pa.Position) < 2f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                 if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Location.Building.Owner) {
-                    SinglePlayerOffice.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to chat with your PA~n~Press ~INPUT_CONTEXT_SECONDARY~ for executive options");
+                    Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to chat with your PA~n~Press ~INPUT_CONTEXT_SECONDARY~ for executive options");
                     if (Game.IsControlJustPressed(2, GTA.Control.ContextSecondary)) {
-                        SinglePlayerOffice.SavedPos = Game.Player.Character.Position;
-                        SinglePlayerOffice.SavedRot = Game.Player.Character.Rotation;
+                        Utilities.SavedPos = Game.Player.Character.Position;
+                        Utilities.SavedRot = Game.Player.Character.Rotation;
                         SinglePlayerOffice.IsHudHidden = true;
                         Location.Building.PAMenu.Visible = true;
                     }

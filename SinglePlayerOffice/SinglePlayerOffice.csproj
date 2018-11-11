@@ -66,6 +66,7 @@
     <Compile Include="Building\Office.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Scenes\OfficeScene.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="Vehicle\NeonLight.cs" />
     <Compile Include="SinglePlayerOffice.cs" />
     <Compile Include="Buildings\MazeBank.cs" />
@@ -98,6 +99,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY "$(TargetPath)" "D:\Entertainment\Games\Steam\steamapps\common\Grand Theft Auto V\scripts"</PostBuildEvent>
+    <PostBuildEvent>COPY "$(TargetPath)" "D:\Games\Steam\steamapps\common\Grand Theft Auto V\scripts"</PostBuildEvent>
   </PropertyGroup>
 </Project>
