@@ -174,14 +174,7 @@ namespace SinglePlayerOffice {
             }
         }
 
-        public override void OnTick() {
-            Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
-            if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
-            Building.HideExteriorMapObjects();
-            base.OnTick();
-        }
-
-        public void Dispose() {
+        public override void Dispose() {
             Scene.Dispose();
         }
 

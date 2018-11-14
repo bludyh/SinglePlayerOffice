@@ -10,11 +10,6 @@ using NativeUI;
 namespace SinglePlayerOffice {
     class Entrance : Location {
 
-        public Vector3 PurchaseCamPos { get; set; }
-        public Vector3 PurchaseCamRot { get; set; }
-        public float PurchaseCamFOV { get; set; }
-        public Camera PurchaseCam { get; set; }
-
         public Entrance() {
             ActiveInteractions.Add(TeleportOnTick);
         }
@@ -55,18 +50,13 @@ namespace SinglePlayerOffice {
                         Script.Wait(1000);
                         SinglePlayerOffice.IsHudHidden = true;
                         Building.PurchaseMenu.Visible = true;
-                        PurchaseCam = World.CreateCamera(PurchaseCamPos, PurchaseCamRot, PurchaseCamFOV);
-                        World.RenderingCamera = PurchaseCam;
+                        Building.PurchaseCam = World.CreateCamera(Building.PurchaseCamPos, Building.PurchaseCamRot, Building.PurchaseCamFOV);
+                        World.RenderingCamera = Building.PurchaseCam;
                         Script.Wait(1000);
                         Game.FadeScreenIn(1000);
                     }
                 }
             }
-        }
-
-        public override void OnTick() {
-            if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
-            base.OnTick();
         }
 
     }

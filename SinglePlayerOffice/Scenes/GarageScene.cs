@@ -269,8 +269,9 @@ namespace SinglePlayerOffice {
             }
         }
 
-        public override void OnTick() {
-            if (Location == null) Location = SinglePlayerOffice.GetCurrentBuilding().GetCurrentLocation();
+        public override void OnSceneStarted() {
+            base.OnSceneStarted();
+
             if (elevator == null) {
                 Location.Building.GarageOne.Scene.DeleteElevator();
                 Location.Building.GarageTwo.Scene.DeleteElevator();
@@ -283,7 +284,6 @@ namespace SinglePlayerOffice {
                 Location.Building.GarageThree.Scene.DeleteVehicles();
                 CreateVehicles();
             }
-            base.OnTick();
         }
 
         public override void Dispose() {

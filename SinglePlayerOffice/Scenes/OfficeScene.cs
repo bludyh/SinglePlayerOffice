@@ -119,13 +119,6 @@ namespace SinglePlayerOffice {
             Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 11, 3, Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
         }
 
-        private void DeletePed(ref Ped ped) {
-            if (ped != null) {
-                ped.Delete();
-                ped = null;
-            }
-        }
-
         private int GetRandomStaffChairIndex() {
             int index;
             do {
@@ -383,6 +376,7 @@ namespace SinglePlayerOffice {
                 if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) == (int)Location.Building.Owner) {
                     Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to chat with your PA~n~Press ~INPUT_CONTEXT_SECONDARY~ for executive options");
                     if (Game.IsControlJustPressed(2, GTA.Control.ContextSecondary)) {
+                        Game.Player.Character.Task.StandStill(-1);
                         Utilities.SavedPos = Game.Player.Character.Position;
                         Utilities.SavedRot = Game.Player.Character.Rotation;
                         SinglePlayerOffice.IsHudHidden = true;
@@ -397,49 +391,51 @@ namespace SinglePlayerOffice {
             }
         }
 
-        public void Reset(bool resetGreetings = true) {
-            DeletePed(ref boss);
-            BossStatus = 0;
-            MaleStaffStatus = 0;
-            FemaleStaffStatus = 0;
-            PaStatus = 0;
+        public override void OnSceneStarted() {
+            base.OnSceneStarted();
+
             if (buildingNameScaleform != null) {
                 buildingNameScaleform.Dispose();
                 buildingNameScaleform = null;
             }
-            if (resetGreetings) {
-                isBossGreeted = false;
-                isMaleStaffGreeted = false;
-                isFemaleStaffGreeted = false;
-                isPaGreeted = false;
+            if (boss != null) {
+                boss.Delete();
+                boss = null;
             }
+            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Location.Building.Owner && boss == null) CreateBossPed();
+            if (paChair == null) CreatePaChair();
+            if (pa == null) CreatePaPed();
+            isBossGreeted = false;
+            isMaleStaffGreeted = false;
+            isFemaleStaffGreeted = false;
+            isPaGreeted = false;
+            BuildingNameStatus = 0;
+            BossStatus = 0;
+            MaleStaffStatus = 0;
+            FemaleStaffStatus = 0;
+            PaStatus = 0;
         }
 
-        public override void OnTick() {
-            if (Location == null) Location = SinglePlayerOffice.GetCurrentBuilding().GetCurrentLocation();
-            if (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Location.Building.Owner && boss == null) CreateBossPed();
+        protected override void HandleSceneBehaviors() {
             var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
             if ((hours > 8 && hours < 17) && (maleStaff == null && femaleStaff == null)) {
                 CreateMaleStaffPed();
                 CreateFemaleStaffPed();
             }
             else if ((hours < 9 || hours > 16) && (maleStaff != null && femaleStaff != null)) {
-                DeletePed(ref maleStaff);
-                DeletePed(ref femaleStaff);
+                maleStaff.Delete();
+                femaleStaff.Delete();
             }
-            if (paChair == null) CreatePaChair();
-            if (pa == null) CreatePaPed();
-            base.OnTick();
         }
 
         public override void Dispose() {
-            if (paChair != null) paChair.Delete();
             if (buildingNameScaleform != null) buildingNameScaleform.Dispose();
             if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "prop_ex_office_text")) Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "prop_ex_office_text");
-            DeletePed(ref boss);
-            DeletePed(ref maleStaff);
-            DeletePed(ref femaleStaff);
-            DeletePed(ref pa);
+            if (boss != null) boss.Delete();
+            if (maleStaff != null) maleStaff.Delete();
+            if (femaleStaff != null) femaleStaff.Delete();
+            if (paChair != null) paChair.Delete();
+            if (pa != null) pa.Delete();
         }
 
     }

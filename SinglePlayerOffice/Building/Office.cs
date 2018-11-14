@@ -134,14 +134,22 @@ namespace SinglePlayerOffice {
             }
         }
 
-        public override void OnTick() {
-            Game.DisableControlThisFrame(2, GTA.Control.CharacterWheel);
-            if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
-            Building.HideExteriorMapObjects();
-            base.OnTick();
+        protected override void OnArrival() {
+            base.OnArrival();
+
+            Interactions.IsTVOn = false;
+            if (Interactions.TV != null) Interactions.TV.Delete();
+            if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) {
+                Script.Wait(0);
+                Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "tvscreen");
+            }
+            Interactions.IsLeftSafeOpened = false;
+            Interactions.IsRightSafeOpened = false;
+            Interactions.IsRadioOn = false;
+            if (Interactions.RadioEmitter != null) Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, Interactions.RadioEmitter, false);
         }
 
-        public void Dispose() {
+        public override void Dispose() {
             Scene.Dispose();
         }
 

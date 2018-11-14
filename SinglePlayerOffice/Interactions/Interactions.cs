@@ -19,10 +19,10 @@ namespace SinglePlayerOffice {
         private static List<string> sofaPlayerAnimDicts;
         private static List<string> sofaPlayerIdleAnims;
         private static string sofaPlayerAnimDict;
-        private static Prop tv;
+        public static Prop TV { get; set; }
         private static Prop remote;
         private static int tvRenderTargetHandle;
-        private static bool isTVOn;
+        public static bool IsTVOn { get; set; }
         private static Vector3 computerInitialPos;
         private static Vector3 computerInitialRot;
         private static Prop computerChair;
@@ -33,18 +33,18 @@ namespace SinglePlayerOffice {
         private static Vector3 leftSafeInitialPos;
         private static Vector3 leftSafeInitialRot;
         private static Prop leftSafeDoor;
-        private static bool isLeftSafeOpened;
+        public static bool IsLeftSafeOpened { get; set; }
         private static Vector3 rightSafeInitialPos;
         private static Vector3 rightSafeInitialRot;
         private static Prop rightSafeDoor;
-        private static bool isRightSafeOpened;
+        public static bool IsRightSafeOpened { get; set; }
         private static Vector3 radioInitialPos;
         private static Vector3 radioInitialRot;
         private static Prop radio;
         private static List<RadioStation> radioStations;
         private static RadioStation radioStation;
-        private static string radioEmitter;
-        private static bool isRadioOn;
+        public static string RadioEmitter { get; set; }
+        public static bool IsRadioOn { get; set; }
         private static Vector3 bossChairInitialPos;
         private static Vector3 bossChairInitialRot;
         private static Prop bossChair;
@@ -78,16 +78,16 @@ namespace SinglePlayerOffice {
         private static string SofaInteractionHelpText { get { return "Press ~INPUT_CONTEXT~ to sit on the couch"; } }
         public static int SofaInteractionStatus { get; set; }
         public static int SofaTVInteractionStatus { get; set; }
-        private static string TVInteractionHelpText { get { if (!isTVOn) return "Press ~INPUT_CONTEXT~ to turn on the TV"; return "Press ~INPUT_CONTEXT~ to turn off the TV"; } }
+        private static string TVInteractionHelpText { get { if (!IsTVOn) return "Press ~INPUT_CONTEXT~ to turn on the TV"; return "Press ~INPUT_CONTEXT~ to turn off the TV"; } }
         public static int TvInteractionStatus { get; set; }
         private static string ComputerInteractionRejectHelpText { get { return "You do not have access to this computer"; } }
         public static int ComputerInteractionStatus { get; set; }
-        private static string LeftSafeInteractionHelpText { get { if (!isLeftSafeOpened) return "Press ~INPUT_CONTEXT~ to open the safe"; return "Press ~INPUT_CONTEXT~ to close the safe"; } }
+        private static string LeftSafeInteractionHelpText { get { if (!IsLeftSafeOpened) return "Press ~INPUT_CONTEXT~ to open the safe"; return "Press ~INPUT_CONTEXT~ to close the safe"; } }
         public static int LeftSafeInteractionStatus { get; set; }
-        private static string RightSafeInteractionHelpText { get { if (!isRightSafeOpened) return "Press ~INPUT_CONTEXT~ to open the safe"; return "Press ~INPUT_CONTEXT~ to close the safe"; } }
+        private static string RightSafeInteractionHelpText { get { if (!IsRightSafeOpened) return "Press ~INPUT_CONTEXT~ to open the safe"; return "Press ~INPUT_CONTEXT~ to close the safe"; } }
         public static int RightSafeInteractionStatus { get; set; }
         private static string SafeInteractionRejectHelpText { get { return "Only the owner can open the safe"; } }
-        private static string RadioInteractionHelpText { get { if (!isRadioOn) return "Press ~INPUT_CONTEXT~ to turn on the radio"; return "Press ~INPUT_CONTEXT~ to turn off the radio"; } }
+        private static string RadioInteractionHelpText { get { if (!IsRadioOn) return "Press ~INPUT_CONTEXT~ to turn on the radio"; return "Press ~INPUT_CONTEXT~ to turn off the radio"; } }
         public static int RadioInteractionStatus { get; set; }
         private static string ChairInteractionHelpText { get { return "Press ~INPUT_CONTEXT~ to sit down"; } }
         private static string BossChairInteractionRejectHelpText { get { return "Only boss can sit here"; } }
@@ -160,11 +160,11 @@ namespace SinglePlayerOffice {
             };
             sofaPlayerAnimDicts = new List<string> { "anim@amb@office@seating@male@var_a@base@", "anim@amb@office@seating@male@var_d@base@", "anim@amb@office@seating@male@var_e@base@" };
             sofaPlayerIdleAnims = new List<string>() { "idle_a", "idle_b", "idle_c" };
-            isTVOn = false;
+            IsTVOn = false;
             computerPlayerIdleAnims = new List<string>() { "idle_a", "idle_b", "idle_c", "idle_d", "idle_e" };
             computerChairIdleAnims = new List<string> { "idle_a_chair", "idle_b_chair", "idle_c_chair", "idle_d_chair", "idle_e_chair" };
-            isLeftSafeOpened = false;
-            isRightSafeOpened = false;
+            IsLeftSafeOpened = false;
+            IsRightSafeOpened = false;
             radioStations = new List<RadioStation>() {
                 new RadioStation("Los Santos Rock Radio", "Get on the good ship power pop and rock.", "radio_01_class_rock"),
                 new RadioStation("Non-Stop-Pop FM", "Pop hits from the 80s, 90s, noughties, and today.", "radio_02_pop"),
@@ -185,7 +185,7 @@ namespace SinglePlayerOffice {
                 new RadioStation("Vinewood Boulevard Radio", "The soundtrack to your broken dreams and unspent potential.", "radio_18_90s_rock"),
                 new RadioStation("Blaine County Radio", "The home of the patriot. Enough said.", "radio_11_talk_02")
             };
-            isRadioOn = false;
+            IsRadioOn = false;
             bossPlayerIdleAnims = new List<string>() { "idle_a", "idle_c", "idle_d", "idle_e" };
             bossChairIdleAnims = new List<string>() { "idle_a_chair", "idle_c_chair", "idle_d_chair", "idle_e_chair" };
             staffPlayerIdleAnims = new List<string>() { "idle_a", "idle_d", "idle_e" };
@@ -637,7 +637,7 @@ namespace SinglePlayerOffice {
                 case 5:
                     foreach (Prop prop in World.GetNearbyProps(Game.Player.Character.Position, 10f)) {
                         if (prop.Model.Hash == 608950395 || prop.Model.Hash == 1036195894) {
-                            tv = prop;
+                            TV = prop;
                             break;
                         }
                     }
@@ -649,7 +649,7 @@ namespace SinglePlayerOffice {
                     }
                     remoteModel.MarkAsNoLongerNeeded();
                     remote.AttachTo(Game.Player.Character, Game.Player.Character.GetBoneIndex(Bone.SKEL_R_Hand), new Vector3(0.12f, 0.02f, -0.04f), new Vector3(-10f, 100f, 120f));
-                    if (isTVOn && Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2) == 1) Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "TV_BORED", "SPEECH_PARAMS_FORCE");
+                    if (IsTVOn && Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2) == 1) Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "TV_BORED", "SPEECH_PARAMS_FORCE");
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, sofa.Position.X, sofa.Position.Y, sofa.Position.Z, sofa.Rotation.X, sofa.Rotation.Y, sofa.Rotation.Z, 2);
                     Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@game@seated@male@var_c@base@", "enter_a", 4f, -4f, 13, 16, 1000f, 0);
                     SofaTVInteractionStatus = 6;
@@ -688,7 +688,7 @@ namespace SinglePlayerOffice {
                             if (prop.Model.Hash == 608950395 || prop.Model.Hash == 1036195894) {
                                 Utilities.DisplayHelpTextThisFrame(TVInteractionHelpText);
                                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                                    tv = prop;
+                                    TV = prop;
                                     TvInteractionStatus = 1;
                                 }
                                 break;
@@ -697,25 +697,25 @@ namespace SinglePlayerOffice {
                     }
                     break;
                 case 1:
-                    if (tv.Model.Hash == 608950395) {
-                        Prop oldTV = tv;
+                    if (TV.Model.Hash == 608950395) {
+                        Prop oldTV = TV;
                         Model tvModel = new Model("prop_tv_flat_01");
                         tvModel.Request(250);
                         if (tvModel.IsInCdImage && tvModel.IsValid) {
                             while (!tvModel.IsLoaded) Script.Wait(50);
-                            tv = World.CreateProp(tvModel, Vector3.Zero, false, false);
+                            TV = World.CreateProp(tvModel, Vector3.Zero, false, false);
                         }
                         tvModel.MarkAsNoLongerNeeded();
-                        tv.Position = oldTV.Position;
-                        tv.Rotation = oldTV.Rotation;
+                        TV.Position = oldTV.Position;
+                        TV.Rotation = oldTV.Rotation;
                         oldTV.Delete();
                     }
                     TvInteractionStatus = 2;
                     break;
                 case 2:
-                    if (!isTVOn) {
+                    if (!IsTVOn) {
                         if (!Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) Function.Call(Hash.REGISTER_NAMED_RENDERTARGET, "tvscreen", 0);
-                        if (!Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_LINKED, tv.Model)) Function.Call(Hash.LINK_NAMED_RENDERTARGET, tv.Model);
+                        if (!Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_LINKED, TV.Model)) Function.Call(Hash.LINK_NAMED_RENDERTARGET, TV.Model);
                         if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) tvRenderTargetHandle = Function.Call<int>(Hash.GET_NAMED_RENDERTARGET_RENDER_ID, "tvscreen");
                         Function.Call(Hash.REGISTER_SCRIPT_WITH_AUDIO, 0);
                         Function.Call(Hash.SET_TV_CHANNEL, Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2));
@@ -728,13 +728,13 @@ namespace SinglePlayerOffice {
                             Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "tvscreen");
                         }
                     }
-                    isTVOn = !isTVOn;
+                    IsTVOn = !IsTVOn;
                     TvInteractionStatus = 0;
                     break;
             }
-            if (isTVOn) {
+            if (IsTVOn) {
                 Function.Call(Hash.SET_TV_AUDIO_FRONTEND, 0);
-                Function.Call(Hash.ATTACH_TV_AUDIO_TO_ENTITY, tv);
+                Function.Call(Hash.ATTACH_TV_AUDIO_TO_ENTITY, TV);
                 Function.Call(Hash.SET_TEXT_RENDER_ID, tvRenderTargetHandle);
                 Function.Call(Hash._0x61BB1D9B3A95D802, 4);
                 Function.Call(Hash._0xC6372ECD45D73BCD, 1);
@@ -891,7 +891,7 @@ namespace SinglePlayerOffice {
                     }
                     break;
                 case 1:
-                    if (!isLeftSafeOpened) {
+                    if (!IsLeftSafeOpened) {
                         leftSafeInitialPos = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, "anim@amb@office@boss@vault@left@male@", "open", leftSafeDoor.Position.X, leftSafeDoor.Position.Y, leftSafeDoor.Position.Z, leftSafeDoor.Rotation.X, leftSafeDoor.Rotation.Y, leftSafeDoor.Rotation.Z, 0, 2);
                         leftSafeInitialRot = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_ROTATION, "anim@amb@office@boss@vault@left@male@", "open", leftSafeDoor.Position.X, leftSafeDoor.Position.Y, leftSafeDoor.Position.Z, leftSafeDoor.Rotation.X, leftSafeDoor.Rotation.Y, leftSafeDoor.Rotation.Z, 0, 2);
                     }
@@ -900,7 +900,7 @@ namespace SinglePlayerOffice {
                     break;
                 case 2:
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
-                    if (!isLeftSafeOpened) {
+                    if (!IsLeftSafeOpened) {
                         Utilities.SavedPos = leftSafeDoor.Position;
                         Utilities.SavedRot = leftSafeDoor.Rotation;
                     }
@@ -908,15 +908,15 @@ namespace SinglePlayerOffice {
                     break;
                 case 3:
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, Utilities.SavedPos.X, Utilities.SavedPos.Y, Utilities.SavedPos.Z, 0f, 0f, Utilities.SavedRot.Z, 2);
-                    if (!isLeftSafeOpened) {
+                    if (!IsLeftSafeOpened) {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@boss@vault@left@male@", "open", 1.5f, -1.5f, 13, 16, 1.5f, 0);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, leftSafeDoor, syncSceneHandle, "open_door", "anim@amb@office@boss@vault@left@male@", 4f, -4f, 32781, 1000f);
-                        isLeftSafeOpened = true;
+                        IsLeftSafeOpened = true;
                     }
                     else {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@boss@vault@left@male@", "close", 1.5f, -1.5f, 13, 16, 1.5f, 0);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, leftSafeDoor, syncSceneHandle, "close_door", "anim@amb@office@boss@vault@left@male@", 4f, -4f, 32781, 1000f);
-                        isLeftSafeOpened = false;
+                        IsLeftSafeOpened = false;
                     }
                     LeftSafeInteractionStatus = 4;
                     break;
@@ -956,7 +956,7 @@ namespace SinglePlayerOffice {
                     }
                     break;
                 case 1:
-                    if (!isRightSafeOpened) {
+                    if (!IsRightSafeOpened) {
                         rightSafeInitialPos = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, "anim@amb@office@boss@vault@right@male@", "open", rightSafeDoor.Position.X, rightSafeDoor.Position.Y, rightSafeDoor.Position.Z, rightSafeDoor.Rotation.X, rightSafeDoor.Rotation.Y, rightSafeDoor.Rotation.Z, 0, 2);
                         rightSafeInitialRot = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_ROTATION, "anim@amb@office@boss@vault@right@male@", "open", rightSafeDoor.Position.X, rightSafeDoor.Position.Y, rightSafeDoor.Position.Z, rightSafeDoor.Rotation.X, rightSafeDoor.Rotation.Y, rightSafeDoor.Rotation.Z, 0, 2);
                     }
@@ -965,7 +965,7 @@ namespace SinglePlayerOffice {
                     break;
                 case 2:
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
-                    if (!isRightSafeOpened) {
+                    if (!IsRightSafeOpened) {
                         Utilities.SavedPos = rightSafeDoor.Position;
                         Utilities.SavedRot = rightSafeDoor.Rotation;
                     }
@@ -973,15 +973,15 @@ namespace SinglePlayerOffice {
                     break;
                 case 3:
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, Utilities.SavedPos.X, Utilities.SavedPos.Y, Utilities.SavedPos.Z, 0f, 0f, Utilities.SavedRot.Z, 2);
-                    if (!isRightSafeOpened) {
+                    if (!IsRightSafeOpened) {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@boss@vault@right@male@", "open", 1.5f, -1.5f, 13, 16, 1.5f, 0);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, rightSafeDoor, syncSceneHandle, "open_door", "anim@amb@office@boss@vault@right@male@", 4f, -4f, 32781, 1000f);
-                        isRightSafeOpened = true;
+                        IsRightSafeOpened = true;
                     }
                     else {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle, "anim@amb@office@boss@vault@right@male@", "close", 1.5f, -1.5f, 13, 16, 1.5f, 0);
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, rightSafeDoor, syncSceneHandle, "close_door", "anim@amb@office@boss@vault@right@male@", 4f, -4f, 32781, 1000f);
-                        isRightSafeOpened = false;
+                        IsRightSafeOpened = false;
                     }
                     RightSafeInteractionStatus = 4;
                     break;
@@ -1021,11 +1021,11 @@ namespace SinglePlayerOffice {
                 case 2:
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
                     Game.Player.Character.Task.StandStill(-1);
-                    if (!isRadioOn && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                    if (!IsRadioOn && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         radioMenu.Visible = true;
                         RadioInteractionStatus = 0;
                     }
-                    if (isRadioOn) {
+                    if (IsRadioOn) {
                         RadioInteractionStatus = 3;
                     }
                     break;
@@ -1035,23 +1035,23 @@ namespace SinglePlayerOffice {
                     break;
                 case 4:
                     if (Function.Call<float>(Hash.GET_ENTITY_ANIM_CURRENT_TIME, Game.Player.Character, "anim@mp_radio@high_apment", "action_a_bedroom") > 0.5f) {
-                        radioEmitter = SinglePlayerOffice.GetCurrentBuilding().Office.GetRadioEmitter();
-                        if (!isRadioOn) {
-                            Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, radioEmitter, true);
-                            Function.Call(Hash._0x0E0CD610D5EB6C85, radioEmitter, radio);
-                            Function.Call(Hash.SET_EMITTER_RADIO_STATION, radioEmitter, radioStation.GameName);
-                            isRadioOn = true;
+                        RadioEmitter = SinglePlayerOffice.GetCurrentBuilding().Office.GetRadioEmitter();
+                        if (!IsRadioOn) {
+                            Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, RadioEmitter, true);
+                            Function.Call(Hash._0x0E0CD610D5EB6C85, RadioEmitter, radio);
+                            Function.Call(Hash.SET_EMITTER_RADIO_STATION, RadioEmitter, radioStation.GameName);
+                            IsRadioOn = true;
                         }
                         else {
-                            Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, radioEmitter, false);
-                            isRadioOn = false;
+                            Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, RadioEmitter, false);
+                            IsRadioOn = false;
                         }
                         RadioInteractionStatus = 5;
                     }
                     break;
                 case 5:
                     if (Function.Call<float>(Hash.GET_ENTITY_ANIM_CURRENT_TIME, Game.Player.Character, "anim@mp_radio@high_apment", "action_a_bedroom") > 0.9f) {
-                        if (isRadioOn && Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2) == 1) Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "RADIO_LIKE", "SPEECH_PARAMS_FORCE");
+                        if (IsRadioOn && Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2) == 1) Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "RADIO_LIKE", "SPEECH_PARAMS_FORCE");
                         SinglePlayerOffice.IsHudHidden = false;
                         Game.Player.Character.Task.ClearAll();
                         RadioInteractionStatus = 0;
@@ -1370,21 +1370,8 @@ namespace SinglePlayerOffice {
             }
         }
 
-        public static void Reset() {
-            isTVOn = false;
-            if (tv != null) tv.Delete();
-            if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) {
-                Script.Wait(0);
-                Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "tvscreen");
-            }
-            isLeftSafeOpened = false;
-            isRightSafeOpened = false;
-            isRadioOn = false;
-            if (radioEmitter != null) Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, radioEmitter, false);
-        }
-
         public static void Dispose() {
-            if (tv != null) tv.Delete();
+            if (TV != null) TV.Delete();
             if (remote != null) remote.Delete();
             if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) {
                 Script.Wait(0);
@@ -1394,7 +1381,7 @@ namespace SinglePlayerOffice {
                 Script.Wait(0);
                 Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "prop_ex_computer_screen");
             }
-            if (radioEmitter != null) Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, radioEmitter, false);
+            if (RadioEmitter != null) Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, RadioEmitter, false);
         }
     }
 }

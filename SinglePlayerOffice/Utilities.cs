@@ -12,6 +12,7 @@ namespace SinglePlayerOffice {
 
         public static Vector3 SavedPos { get; set; }
         public static Vector3 SavedRot { get; set; }
+        public static Location LastLocation { get; set; }
 
         public static void LoadMPMap() {
             Function.Call(Hash._LOAD_MP_DLC_MAPS);

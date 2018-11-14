@@ -10,14 +10,22 @@ namespace SinglePlayerOffice {
         public Location Location { get; set; }
         public List<Action> ActiveInteractions { get; private set; }
 
-        public Scene() {
+        protected Scene() {
             ActiveInteractions = new List<Action>();
         }
 
-        public virtual void OnTick() {
-            foreach (var interaction in ActiveInteractions) {
+        public virtual void OnSceneStarted() {
+            if (Location == null)
+                Location = SinglePlayerOffice.GetCurrentBuilding().GetCurrentLocation();
+        }
+
+        protected virtual void HandleSceneBehaviors() { }
+
+        public void OnTick() {
+            HandleSceneBehaviors();
+
+            foreach (var interaction in ActiveInteractions)
                 interaction();
-            }
         }
         public abstract void Dispose();
 

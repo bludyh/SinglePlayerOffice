@@ -12,24 +12,19 @@ namespace SinglePlayerOffice {
 
         public MazeBank() {
             try {
-                name = "Maze Bank Tower";
+                Name = "Maze Bank Tower";
                 description = "The building that defined the LS Skyline for a generation. Taller, Classier, more opulent, more shamelessly phallic, less structurally sound - you name it, the Maze Bank Tower is best in class.";
                 price = 4000000;
-                entranceBlipPos = new Vector3(-79.214f, -796.513f, 44.227f);
-                garageEntranceBlipPos = new Vector3(-84.243f, -821.827f, 35.665f);
-                interiorIDs = new List<int>() { 257537, 239617, 239873, 239361, 238593, 238849, 239105, 240129, 240385, 240641, 254465, 254721, 254977, 255233 };
+                InteriorIDs = new List<int>() { 257537, 239617, 239873, 239361, 238593, 238849, 239105, 240129, 240385, 240641, 254465, 254721, 254977, 255233 };
                 exteriorMapObjects = new List<string>() { "dt1_11_dt1_emissive_dt1_11", "dt1_11_dt1_tower" };
-                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", name));
-                owner = (Owner)data.GetValue("Owner", "Owner", -1);
-                entrance = new Entrance {
+                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", Name));
+                Owner = (Owner)data.GetValue("Owner", "Owner", -1);
+                Entrance = new Entrance {
                     TriggerPos = new Vector3(-79.214f, -796.513f, 44.227f),
                     SpawnPos = new Vector3(-80.690f, -795.859f, 44.227f),
                     SpawnHeading = 94.827f,
-                    PurchaseCamPos = new Vector3(-86.710f, -724.772f, 48f),
-                    PurchaseCamRot = new Vector3(32f, 0f, 180f),
-                    PurchaseCamFOV = 90f
                 };
-                garageEntrance = new GarageEntrance {
+                GarageEntrance = new GarageEntrance {
                     TriggerPos = new Vector3(-84.243f, -821.827f, 35.665f),
                     SpawnPos = new Vector3(-84.243f, -821.827f, 35.665f),
                     SpawnHeading = -10f,
@@ -38,7 +33,7 @@ namespace SinglePlayerOffice {
                     ElevatorCamRot = new Vector3(-10f, 0f, -45f),
                     ElevatorCamFOV = 60f
                 };
-                office = new Office {
+                Office = new Office {
                     TriggerPos = new Vector3(-75.771f, -827.188f, 243.386f),
                     SpawnPos = new Vector3(-76.042f, -825.297f, 243.386f),
                     SpawnHeading = 335.794f,
@@ -73,10 +68,10 @@ namespace SinglePlayerOffice {
                         PaChairRot = new Vector3(0f, 0f, -20)
                     }
                 };
-                office.InteriorStyle = GetOfficeInteriorStyle(data.GetValue("Interiors", "OfficeInteriorStyle", "Executive Rich"));
-                office.ExtraDecorsPrice = (office.HasExtraDecors) ? 1650000 : 0;
-                office.ActiveScenes.Add(office.Scene);
-                garageOne = new Garage {
+                Office.InteriorStyle = GetOfficeInteriorStyle(data.GetValue("Interiors", "OfficeInteriorStyle", "Executive Rich"));
+                Office.ExtraDecorsPrice = (Office.HasExtraDecors) ? 1650000 : 0;
+                Office.ActiveScenes.Add(Office.Scene);
+                GarageOne = new Garage {
                     TriggerPos = new Vector3(-91.308f, -821.317f, 222.001f),
                     SpawnPos = new Vector3(-90.054f, -821.810f, 222.000f),
                     SpawnHeading = -110f,
@@ -105,8 +100,8 @@ namespace SinglePlayerOffice {
                         ElevatorRot = new Vector3(0f, 0f, 70.058f)
                     }
                 };
-                garageOne.ActiveScenes.Add(garageOne.Scene);
-                garageTwo = new Garage {
+                GarageOne.ActiveScenes.Add(GarageOne.Scene);
+                GarageTwo = new Garage {
                     TriggerPos = new Vector3(-71.733f, -832.331f, 222.000f),
                     SpawnPos = new Vector3(-71.108f, -830.692f, 222.001f),
                     SpawnHeading = -20f,
@@ -135,8 +130,8 @@ namespace SinglePlayerOffice {
                         ElevatorRot = new Vector3(0f, 0f, 160f)
                     }
                 };
-                garageTwo.ActiveScenes.Add(garageTwo.Scene);
-                garageThree = new Garage {
+                GarageTwo.ActiveScenes.Add(GarageTwo.Scene);
+                GarageThree = new Garage {
                     TriggerPos = new Vector3(-78.528f, -805.686f, 222.001f),
                     SpawnPos = new Vector3(-79.146f, -807.408f, 222.001f),
                     SpawnHeading = 160f,
@@ -165,8 +160,8 @@ namespace SinglePlayerOffice {
                         ElevatorRot = new Vector3(0f, 0f, -20f)
                     }
                 };
-                garageThree.ActiveScenes.Add(garageThree.Scene);
-                modShop = new ModShop {
+                GarageThree.ActiveScenes.Add(GarageThree.Scene);
+                ModShop = new ModShop {
                     TriggerPos = new Vector3(-68.824f, -814.253f, 285.000f),
                     SpawnPos = new Vector3(-69.980f, -813.785f, 285.000f),
                     SpawnHeading = 66.700f,
@@ -178,14 +173,17 @@ namespace SinglePlayerOffice {
                     PurchaseCamFOV = 70f,
                     FloorStyle = GetModShopFloorStyle(data.GetValue("Interiors", "ModShopFloorStyle", "Floor 1"))
                 };
-                heliPad = new HeliPad {
+                HeliPad = new HeliPad {
                     TriggerPos = new Vector3(-67.784f, -821.609f, 321.287f),
                     SpawnPos = new Vector3(-65.938f, -822.145f, 321.285f),
                     SpawnHeading = 253.635f
                 };
+                PurchaseCamPos = new Vector3(-86.710f, -724.772f, 48f);
+                PurchaseCamRot = new Vector3(32f, 0f, 180f);
+                PurchaseCamFOV = 90f;
 
                 CreateEntranceBlip();
-                if (owner != Owner.None) CreateGarageEntranceBlip();
+                if (Owner != Owner.None) CreateGarageEntranceBlip();
                 CreatePurchaseMenu();
                 CreateTeleportMenu();
                 CreateGarageEntranceMenu();

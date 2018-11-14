@@ -59,10 +59,5 @@ namespace SinglePlayerOffice {
             }
         }
 
-        public override void OnTick() {
-            if (Building == null) Building = SinglePlayerOffice.GetCurrentBuilding();
-            base.OnTick();
-        }
-
     }
 }
