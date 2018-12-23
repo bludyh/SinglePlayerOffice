@@ -8,18 +8,20 @@ using GTA.Math;
 using GTA.Native;
 using NativeUI;
 
-namespace SinglePlayerOffice {
+namespace SinglePlayerOffice.Buildings {
     abstract class Building {
 
-        protected string description;
-        protected int price;
-        protected Blip entranceBlip;
-        protected Blip garageEntranceBlip;
-        protected List<string> exteriorMapObjects;
+        private Blip entranceBlip;
+        private Blip garageEntranceBlip;
+        private Location currentLocation;
         protected ScriptSettings data;
+        protected List<string> exteriorMapObjects;
 
         public string Name { get; protected set; }
+        public string Description { get; protected set; }
+        public int Price { get; protected set; }
         public Owner Owner { get; protected set; }
+        public bool IsOwned { get { return Owner != Owner.None; } }
         public List<int> InteriorIDs { get; protected set; }
         public Entrance Entrance { get; protected set; }
         public GarageEntrance GarageEntrance { get; protected set; }
@@ -39,46 +41,72 @@ namespace SinglePlayerOffice {
         public UIMenu VehicleElevatorMenu { get; set; }
         public UIMenu PAMenu { get; set; }
         public DateTime? ConstructionTime { get; set; }
+        public Location CurrentLocation {
+            get { return currentLocation; }
+            set {
+                if (currentLocation != value) {
+                    currentLocation.OnLocationLeft();
+                    currentLocation = value;
+                    currentLocation.OnLocationArrived();
+                }
+            }
+        }
 
         protected InteriorStyle GetOfficeInteriorStyle(string name) {
-            foreach (InteriorStyle style in Office.InteriorStyles) if (style.Name == name) return style;
+            foreach (InteriorStyle style in Office.InteriorStyles)
+                if (style.Name == name)
+                    return style;
             return null;
         }
 
         protected InteriorStyle GetGarageDecorationStyle(string name) {
-            foreach (InteriorStyle style in Garage.DecorationStyles) if (style.Name == name) return style;
+            foreach (InteriorStyle style in Garage.DecorationStyles)
+                if (style.Name == name)
+                    return style;
             return null;
         }
 
         protected InteriorStyle GetGarageLightingStyle(string name) {
-            foreach (InteriorStyle style in Garage.LightingStyles) if (style.Name == name) return style;
+            foreach (InteriorStyle style in Garage.LightingStyles)
+                if (style.Name == name)
+                    return style;
             return null;
         }
 
         protected InteriorStyle GetGarageOneNumberingStyle(string name) {
-            foreach (InteriorStyle style in Garage.NumberingStylesGarageOne) if (style.Name == name) return style;
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageOne)
+                if (style.Name == name)
+                    return style;
             return null;
         }
 
         protected InteriorStyle GetGarageTwoNumberingStyle(string name) {
-            foreach (InteriorStyle style in Garage.NumberingStylesGarageTwo) if (style.Name == name) return style;
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageTwo)
+                if (style.Name == name)
+                    return style;
             return null;
         }
 
         protected InteriorStyle GetGarageThreeNumberingStyle(string name) {
-            foreach (InteriorStyle style in Garage.NumberingStylesGarageThree) if (style.Name == name) return style;
+            foreach (InteriorStyle style in Garage.NumberingStylesGarageThree)
+                if (style.Name == name)
+                    return style;
             return null;
         }
 
         protected InteriorStyle GetModShopFloorStyle(string name) {
-            foreach (InteriorStyle style in ModShop.FloorStyles) if (style.Name == name) return style;
+            foreach (InteriorStyle style in ModShop.FloorStyles)
+                if (style.Name == name)
+                    return style;
             return null;
         }
 
         protected void CreateEntranceBlip() {
             entranceBlip = World.CreateBlip(Entrance.TriggerPos);
-            if (Owner != Owner.None) entranceBlip.Sprite = (BlipSprite)475;
-            else entranceBlip.Sprite = (BlipSprite)476;
+            if (IsOwned)
+                entranceBlip.Sprite = (BlipSprite)475;
+            else
+                entranceBlip.Sprite = (BlipSprite)476;
             entranceBlip.Name = Name;
             SetBlipColor(entranceBlip);
         }
@@ -102,7 +130,7 @@ namespace SinglePlayerOffice {
         private UIMenu CreateBaseMenu() {
             var baseMenu = new UIMenu("", "~b~Purchase Options");
             baseMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
-            var officeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Office Interiors", description);
+            var officeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Office Interiors", Description);
             officeInteriorsMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
             foreach (InteriorStyle style in Office.InteriorStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
@@ -123,7 +151,7 @@ namespace SinglePlayerOffice {
             };
             var extraDecorsOption = new UIMenuCheckboxItem("Extra Office Decorations", Office.HasExtraDecors, String.Format("Price: ~g~${0:n0}", 1650000));
             baseMenu.AddItem(extraDecorsOption);
-            var garageOneInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Garage One Interiors", description);
+            var garageOneInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Garage One Interiors", Description);
             garageOneInteriorsMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
             var garageOneDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageOneInteriorsMenu, "Decorations");
             garageOneDecorationsMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
@@ -197,7 +225,7 @@ namespace SinglePlayerOffice {
                     World.RenderingCamera.InterpTo(GarageOne.NumberingCam, 1000, true, true);
                 }
             };
-            var garageTwoInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Garage Two Interiors", description);
+            var garageTwoInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Garage Two Interiors", Description);
             garageTwoInteriorsMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
             var garageTwoDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageTwoInteriorsMenu, "Decorations");
             garageTwoDecorationsMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
@@ -271,7 +299,7 @@ namespace SinglePlayerOffice {
                     World.RenderingCamera.InterpTo(GarageTwo.NumberingCam, 1000, true, true);
                 }
             };
-            var garageThreeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Garage Three Interiors", description);
+            var garageThreeInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Garage Three Interiors", Description);
             garageThreeInteriorsMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
             var garageThreeDecorationsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(garageThreeInteriorsMenu, "Decorations");
             garageThreeDecorationsMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
@@ -345,7 +373,7 @@ namespace SinglePlayerOffice {
                     World.RenderingCamera.InterpTo(GarageThree.NumberingCam, 1000, true, true);
                 }
             };
-            var modShopInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Mod Shop Interiors", description);
+            var modShopInteriorsMenu = SinglePlayerOffice.MenuPool.AddSubMenu(baseMenu, "Mod Shop Interiors", Description);
             modShopInteriorsMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(), "SinglePlayerOffice.Resources.dynasty8_executive.png"));
             foreach (InteriorStyle style in ModShop.FloorStyles) {
                 var item = new UIMenuItem(style.Name, String.Format("Price: ~g~${0:n0}", style.Price));
@@ -568,10 +596,6 @@ namespace SinglePlayerOffice {
                 SinglePlayerOffice.IsHudHidden = false;
                 Game.FadeScreenOut(1000);
                 Script.Wait(1000);
-                var currentLocation = GetCurrentLocation();
-                if (currentLocation is Garage currentGarage) {
-                    currentGarage.Scene.SaveVehicleInfoList();
-                }
                 UnloadAllInteriors();
                 UnloadAllExteriors();
                 switch (item.Text) {
@@ -637,8 +661,7 @@ namespace SinglePlayerOffice {
             var goToModShopBtn = new UIMenuItem("Mod Shop");
             var goToHeliPadBtn = new UIMenuItem("Heli Pad");
             var exitBuildingBtn = new UIMenuItem("Exit the building");
-            var currentLocation = GetCurrentLocation();
-            if (currentLocation == Entrance) {
+            if (CurrentLocation == Entrance) {
                 TeleportMenu.AddItem(goToOfficeBtn);
                 TeleportMenu.AddItem(goToGarageOneBtn);
                 TeleportMenu.AddItem(goToGarageTwoBtn);
@@ -646,7 +669,7 @@ namespace SinglePlayerOffice {
                 TeleportMenu.AddItem(goToModShopBtn);
                 TeleportMenu.AddItem(goToHeliPadBtn);
             }
-            else if (currentLocation == Office) {
+            else if (CurrentLocation == Office) {
                 TeleportMenu.AddItem(goToGarageOneBtn);
                 TeleportMenu.AddItem(goToGarageTwoBtn);
                 TeleportMenu.AddItem(goToGarageThreeBtn);
@@ -654,7 +677,7 @@ namespace SinglePlayerOffice {
                 TeleportMenu.AddItem(goToHeliPadBtn);
                 TeleportMenu.AddItem(exitBuildingBtn);
             }
-            else if (currentLocation == GarageOne) {
+            else if (CurrentLocation == GarageOne) {
                 TeleportMenu.AddItem(goToOfficeBtn);
                 TeleportMenu.AddItem(goToGarageTwoBtn);
                 TeleportMenu.AddItem(goToGarageThreeBtn);
@@ -662,7 +685,7 @@ namespace SinglePlayerOffice {
                 TeleportMenu.AddItem(goToHeliPadBtn);
                 TeleportMenu.AddItem(exitBuildingBtn);
             }
-            else if (currentLocation == GarageTwo) {
+            else if (CurrentLocation == GarageTwo) {
                 TeleportMenu.AddItem(goToOfficeBtn);
                 TeleportMenu.AddItem(goToGarageOneBtn);
                 TeleportMenu.AddItem(goToGarageThreeBtn);
@@ -670,7 +693,7 @@ namespace SinglePlayerOffice {
                 TeleportMenu.AddItem(goToHeliPadBtn);
                 TeleportMenu.AddItem(exitBuildingBtn);
             }
-            else if (currentLocation == GarageThree) {
+            else if (CurrentLocation == GarageThree) {
                 TeleportMenu.AddItem(goToOfficeBtn);
                 TeleportMenu.AddItem(goToGarageOneBtn);
                 TeleportMenu.AddItem(goToGarageTwoBtn);
@@ -678,7 +701,7 @@ namespace SinglePlayerOffice {
                 TeleportMenu.AddItem(goToHeliPadBtn);
                 TeleportMenu.AddItem(exitBuildingBtn);
             }
-            else if (currentLocation == ModShop) {
+            else if (CurrentLocation == ModShop) {
                 TeleportMenu.AddItem(goToOfficeBtn);
                 TeleportMenu.AddItem(goToGarageOneBtn);
                 TeleportMenu.AddItem(goToGarageTwoBtn);
@@ -686,7 +709,7 @@ namespace SinglePlayerOffice {
                 TeleportMenu.AddItem(goToHeliPadBtn);
                 TeleportMenu.AddItem(exitBuildingBtn);
             }
-            else if (currentLocation == HeliPad) {
+            else if (CurrentLocation == HeliPad) {
                 TeleportMenu.AddItem(goToOfficeBtn);
                 TeleportMenu.AddItem(goToGarageOneBtn);
                 TeleportMenu.AddItem(goToGarageTwoBtn);
@@ -712,30 +735,30 @@ namespace SinglePlayerOffice {
                 Script.Wait(1000);
                 World.RenderingCamera = null;
                 World.DestroyAllCameras();
-                GarageEntrance.GarageEntranceStatus = 0;
+                GarageEntrance.Interaction.State = 0;
                 UnloadAllInteriors();
                 UnloadAllExteriors();
                 switch (item.Text) {
                     case "Garage One":
-                        Game.Player.Character.CurrentVehicle.Position = GarageOne.Scene.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Position = GarageOne.VehicleElevatorInteraction.LevelAPos;
                         Game.Player.Character.CurrentVehicle.Heading = GarageOne.SpawnHeading + 30f;
                         GarageOne.LoadInterior();
                         GarageOne.LoadExterior();
-                        GarageOne.Scene.ElevatorStatus = 1;
+                        GarageOne.VehicleElevatorInteraction.State = 1;
                         break;
                     case "Garage Two":
-                        Game.Player.Character.CurrentVehicle.Position = GarageTwo.Scene.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Position = GarageTwo.VehicleElevatorInteraction.LevelAPos;
                         Game.Player.Character.CurrentVehicle.Heading = GarageTwo.SpawnHeading + 30f;
                         GarageTwo.LoadInterior();
                         GarageTwo.LoadExterior();
-                        GarageTwo.Scene.ElevatorStatus = 1;
+                        GarageTwo.VehicleElevatorInteraction.State = 1;
                         break;
                     case "Garage Three":
-                        Game.Player.Character.CurrentVehicle.Position = GarageThree.Scene.ElevatorLevelAPos;
+                        Game.Player.Character.CurrentVehicle.Position = GarageThree.VehicleElevatorInteraction.LevelAPos;
                         Game.Player.Character.CurrentVehicle.Heading = GarageThree.SpawnHeading + 30f;
                         GarageThree.LoadInterior();
                         GarageThree.LoadExterior();
-                        GarageThree.Scene.ElevatorStatus = 1;
+                        GarageThree.VehicleElevatorInteraction.State = 1;
                         break;
                     case "Mod Shop":
                         break;
@@ -751,7 +774,7 @@ namespace SinglePlayerOffice {
                 World.RenderingCamera = null;
                 World.DestroyAllCameras();
                 Game.Player.Character.Task.ClearAll();
-                GarageEntrance.GarageEntranceStatus = 0;
+                GarageEntrance.Interaction.State = 0;
             };
             SinglePlayerOffice.MenuPool.Add(GarageEntranceMenu);
         }
@@ -762,22 +785,21 @@ namespace SinglePlayerOffice {
             VehicleElevatorMenu.OnItemSelect += (sender, item, index) => {
                 SinglePlayerOffice.MenuPool.CloseAllMenus();
                 SinglePlayerOffice.IsHudHidden = false;
-                var currentLocation = GetCurrentLocation();
                 if (item.Text == "Level A" || item.Text == "Level B" || item.Text == "Level C") {
-                    var currentGarage = GetCurrentLocation() as Garage;
+                    var currentGarage = (Garage)CurrentLocation;
                     switch (item.Text) {
                         case "Level A":
-                            currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelAPos;
+                            currentGarage.VehicleElevatorInteraction.ElevatorPos = currentGarage.VehicleElevatorInteraction.LevelAPos;
                             break;
                         case "Level B":
-                            currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelBPos;
+                            currentGarage.VehicleElevatorInteraction.ElevatorPos = currentGarage.VehicleElevatorInteraction.LevelBPos;
                             break;
                         case "Level C":
-                            currentGarage.Scene.ElevatorPos = currentGarage.Scene.ElevatorLevelCPos;
+                            currentGarage.VehicleElevatorInteraction.ElevatorPos = currentGarage.VehicleElevatorInteraction.LevelCPos;
                             break;
                     }
 
-                    currentGarage.Scene.ElevatorStatus = 3;
+                    currentGarage.VehicleElevatorInteraction.State = 3;
                 }
                 else {
                     Game.Player.Character.Task.StandStill(-1);
@@ -785,32 +807,27 @@ namespace SinglePlayerOffice {
                     Script.Wait(1000);
                     UnloadAllInteriors();
                     UnloadAllExteriors();
-                    if (currentLocation is Garage currentGarage) {
-                        currentGarage.Scene.RemoveVehicleInfo(Game.Player.Character.CurrentVehicle);
-                        currentGarage.Scene.SaveVehicleInfoList();
-                    }
-
                     switch (item.Text) {
                         case "Garage One":
-                            Game.Player.Character.CurrentVehicle.Position = GarageOne.Scene.ElevatorLevelAPos;
+                            Game.Player.Character.CurrentVehicle.Position = GarageOne.VehicleElevatorInteraction.LevelAPos;
                             Game.Player.Character.CurrentVehicle.Heading = GarageOne.SpawnHeading + 30f;
                             GarageOne.LoadInterior();
                             GarageOne.LoadExterior();
-                            GarageOne.Scene.ElevatorStatus = 1;
+                            GarageOne.VehicleElevatorInteraction.State = 1;
                             break;
                         case "Garage Two":
-                            Game.Player.Character.CurrentVehicle.Position = GarageTwo.Scene.ElevatorLevelAPos;
+                            Game.Player.Character.CurrentVehicle.Position = GarageTwo.VehicleElevatorInteraction.LevelAPos;
                             Game.Player.Character.CurrentVehicle.Heading = GarageTwo.SpawnHeading + 30f;
                             GarageTwo.LoadInterior();
                             GarageTwo.LoadExterior();
-                            GarageTwo.Scene.ElevatorStatus = 1;
+                            GarageTwo.VehicleElevatorInteraction.State = 1;
                             break;
                         case "Garage Three":
-                            Game.Player.Character.CurrentVehicle.Position = GarageThree.Scene.ElevatorLevelAPos;
+                            Game.Player.Character.CurrentVehicle.Position = GarageThree.VehicleElevatorInteraction.LevelAPos;
                             Game.Player.Character.CurrentVehicle.Heading = GarageThree.SpawnHeading + 30f;
                             GarageThree.LoadInterior();
                             GarageThree.LoadExterior();
-                            GarageThree.Scene.ElevatorStatus = 1;
+                            GarageThree.VehicleElevatorInteraction.State = 1;
                             break;
                         case "Mod Shop":
                             break;
@@ -841,38 +858,37 @@ namespace SinglePlayerOffice {
             var goToGarageThreeBtn = new UIMenuItem("Garage Three");
             var goToModShopBtn = new UIMenuItem("Mod Shop");
             var exitBuildingBtn = new UIMenuItem("Exit the building");
-            var currentLocation = GetCurrentLocation();
-            if (currentLocation is Garage garage) {
-                if (garage.Scene.ElevatorPos == garage.Scene.ElevatorLevelAPos) {
+            if (CurrentLocation is Garage garage) {
+                if (garage.VehicleElevatorInteraction.ElevatorPos == garage.VehicleElevatorInteraction.LevelAPos) {
                     VehicleElevatorMenu.AddItem(goToLevelBBtn);
                     VehicleElevatorMenu.AddItem(goToLevelCBtn);
                 }
-                else if (garage.Scene.ElevatorPos == garage.Scene.ElevatorLevelBPos) {
+                else if (garage.VehicleElevatorInteraction.ElevatorPos == garage.VehicleElevatorInteraction.LevelBPos) {
                     VehicleElevatorMenu.AddItem(goToLevelABtn);
                     VehicleElevatorMenu.AddItem(goToLevelCBtn);
                 }
-                else if (garage.Scene.ElevatorPos == garage.Scene.ElevatorLevelCPos) {
+                else if (garage.VehicleElevatorInteraction.ElevatorPos == garage.VehicleElevatorInteraction.LevelCPos) {
                     VehicleElevatorMenu.AddItem(goToLevelABtn);
                     VehicleElevatorMenu.AddItem(goToLevelBBtn);
                 }
             }
             if (Game.Player.Character.IsInVehicle()) {
-                if (currentLocation == GarageOne) {
+                if (CurrentLocation == GarageOne) {
                     VehicleElevatorMenu.AddItem(goToGarageTwoBtn);
                     VehicleElevatorMenu.AddItem(goToGarageThreeBtn);
                     VehicleElevatorMenu.AddItem(goToModShopBtn);
                 }
-                else if (currentLocation == GarageTwo) {
+                else if (CurrentLocation == GarageTwo) {
                     VehicleElevatorMenu.AddItem(goToGarageOneBtn);
                     VehicleElevatorMenu.AddItem(goToGarageThreeBtn);
                     VehicleElevatorMenu.AddItem(goToModShopBtn);
                 }
-                else if (currentLocation == GarageThree) {
+                else if (CurrentLocation == GarageThree) {
                     VehicleElevatorMenu.AddItem(goToGarageOneBtn);
                     VehicleElevatorMenu.AddItem(goToGarageTwoBtn);
                     VehicleElevatorMenu.AddItem(goToModShopBtn);
                 }
-                else if (currentLocation == ModShop) {
+                else if (CurrentLocation == ModShop) {
                     VehicleElevatorMenu.AddItem(goToGarageOneBtn);
                     VehicleElevatorMenu.AddItem(goToGarageTwoBtn);
                     VehicleElevatorMenu.AddItem(goToGarageThreeBtn);
@@ -948,8 +964,7 @@ namespace SinglePlayerOffice {
             refurbishMenu.OnMenuClose += (sender) => {
                 SinglePlayerOffice.MenuPool.CloseAllMenus();
                 SinglePlayerOffice.IsHudHidden = false;
-                var currentLocation = GetCurrentLocation();
-                if (currentLocation != Office || (currentLocation == Office && World.RenderingCamera == Office.PurchaseCam)) {
+                if (CurrentLocation != Office || (CurrentLocation == Office && World.RenderingCamera == Office.PurchaseCam)) {
                     Game.FadeScreenOut(1000);
                     Script.Wait(1000);
                     World.RenderingCamera = null;
@@ -996,7 +1011,7 @@ namespace SinglePlayerOffice {
 
         public int GetBuyingPrice() {
             return (
-                price +
+                Price +
                 Office.InteriorStyle.Price +
                 GarageOne.DecorationStyle.Price + GarageOne.LightingStyle.Price + GarageOne.NumberingStyle.Price +
                 GarageTwo.DecorationStyle.Price + GarageTwo.LightingStyle.Price + GarageTwo.NumberingStyle.Price +
@@ -1008,18 +1023,29 @@ namespace SinglePlayerOffice {
 
         public int GetRefurbishingPrice() {
             int price = 0;
-            if (Office.InteriorStyle != GetOfficeInteriorStyle(data.GetValue("Interiors", "OfficeInteriorStyle", "Executive Rich"))) price += Office.InteriorStyle.Price;
+            if (Office.InteriorStyle != GetOfficeInteriorStyle(data.GetValue("Interiors", "OfficeInteriorStyle", "Executive Rich")))
+                price += Office.InteriorStyle.Price;
             if (Office.HasExtraDecors != data.GetValue("Interiors", "HasExtraOfficeDecors", false)) price += Office.ExtraDecorsPrice;
-            if (GarageOne.DecorationStyle != GetGarageDecorationStyle(data.GetValue("Interiors", "GarageOneDecorationStyle", "Decoration 1"))) price += GarageOne.DecorationStyle.Price;
-            if (GarageOne.LightingStyle != GetGarageLightingStyle(data.GetValue("Interiors", "GarageOneLightingStyle", "Lighting 1"))) price += GarageOne.LightingStyle.Price;
-            if (GarageOne.NumberingStyle != GetGarageOneNumberingStyle(data.GetValue("Interiors", "GarageOneNumberingStyle", "Signage 1"))) price += GarageOne.NumberingStyle.Price;
-            if (GarageTwo.DecorationStyle != GetGarageDecorationStyle(data.GetValue("Interiors", "GarageTwoDecorationStyle", "Decoration 1"))) price += GarageTwo.DecorationStyle.Price;
-            if (GarageTwo.LightingStyle != GetGarageLightingStyle(data.GetValue("Interiors", "GarageTwoLightingStyle", "Lighting 1"))) price += GarageTwo.LightingStyle.Price;
-            if (GarageTwo.NumberingStyle != GetGarageTwoNumberingStyle(data.GetValue("Interiors", "GarageTwoNumberingStyle", "Signage 1"))) price += GarageTwo.NumberingStyle.Price;
-            if (GarageThree.DecorationStyle != GetGarageDecorationStyle(data.GetValue("Interiors", "GarageThreeDecorationStyle", "Decoration 1"))) price += GarageThree.DecorationStyle.Price;
-            if (GarageThree.LightingStyle != GetGarageLightingStyle(data.GetValue("Interiors", "GarageThreeLightingStyle", "Lighting 1"))) price += GarageThree.LightingStyle.Price;
-            if (GarageThree.NumberingStyle != GetGarageThreeNumberingStyle(data.GetValue("Interiors", "GarageThreeNumberingStyle", "Signage 1"))) price += GarageThree.NumberingStyle.Price;
-            if (ModShop.FloorStyle != GetModShopFloorStyle(data.GetValue("Interiors", "ModShopFloorStyle", "Floor 1"))) price += ModShop.FloorStyle.Price;
+            if (GarageOne.DecorationStyle != GetGarageDecorationStyle(data.GetValue("Interiors", "GarageOneDecorationStyle", "Decoration 1")))
+                price += GarageOne.DecorationStyle.Price;
+            if (GarageOne.LightingStyle != GetGarageLightingStyle(data.GetValue("Interiors", "GarageOneLightingStyle", "Lighting 1")))
+                price += GarageOne.LightingStyle.Price;
+            if (GarageOne.NumberingStyle != GetGarageOneNumberingStyle(data.GetValue("Interiors", "GarageOneNumberingStyle", "Signage 1")))
+                price += GarageOne.NumberingStyle.Price;
+            if (GarageTwo.DecorationStyle != GetGarageDecorationStyle(data.GetValue("Interiors", "GarageTwoDecorationStyle", "Decoration 1")))
+                price += GarageTwo.DecorationStyle.Price;
+            if (GarageTwo.LightingStyle != GetGarageLightingStyle(data.GetValue("Interiors", "GarageTwoLightingStyle", "Lighting 1")))
+                price += GarageTwo.LightingStyle.Price;
+            if (GarageTwo.NumberingStyle != GetGarageTwoNumberingStyle(data.GetValue("Interiors", "GarageTwoNumberingStyle", "Signage 1")))
+                price += GarageTwo.NumberingStyle.Price;
+            if (GarageThree.DecorationStyle != GetGarageDecorationStyle(data.GetValue("Interiors", "GarageThreeDecorationStyle", "Decoration 1")))
+                price += GarageThree.DecorationStyle.Price;
+            if (GarageThree.LightingStyle != GetGarageLightingStyle(data.GetValue("Interiors", "GarageThreeLightingStyle", "Lighting 1")))
+                price += GarageThree.LightingStyle.Price;
+            if (GarageThree.NumberingStyle != GetGarageThreeNumberingStyle(data.GetValue("Interiors", "GarageThreeNumberingStyle", "Signage 1")))
+                price += GarageThree.NumberingStyle.Price;
+            if (ModShop.FloorStyle != GetModShopFloorStyle(data.GetValue("Interiors", "ModShopFloorStyle", "Floor 1")))
+                price += ModShop.FloorStyle.Price;
             return price;
         }
 
@@ -1027,16 +1053,30 @@ namespace SinglePlayerOffice {
             return (GetBuyingPrice() * 75) / 100;
         }
 
-        public Location GetCurrentLocation() {
+        public bool IsOwnedBy(Ped ped) {
+            return Function.Call<int>(Hash.GET_PED_TYPE, ped) == (int)Owner;
+        }
+
+        private Location GetCurrentLocation() {
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
-            if (Game.Player.Character.Position.DistanceTo(Entrance.TriggerPos) < 10f) return Entrance;
-            if (currentInteriorID == GarageEntrance.InteriorID) return GarageEntrance;
-            if (Office.InteriorIDs.Contains(currentInteriorID)) return Office;
-            if (currentInteriorID == GarageOne.InteriorID) return GarageOne;
-            if (currentInteriorID == GarageTwo.InteriorID) return GarageTwo;
-            if (currentInteriorID == GarageThree.InteriorID) return GarageThree;
-            if (currentInteriorID == ModShop.InteriorID) return ModShop;
-            if (Game.Player.Character.Position.DistanceTo(HeliPad.TriggerPos) < 10f) return HeliPad;
+
+            if (Game.Player.Character.Position.DistanceTo(Entrance.TriggerPos) < 10f)
+                return Entrance;
+            if (currentInteriorID == GarageEntrance.InteriorID)
+                return GarageEntrance;
+            if (Office.InteriorIDs.Contains(currentInteriorID))
+                return Office;
+            if (currentInteriorID == GarageOne.InteriorID)
+                return GarageOne;
+            if (currentInteriorID == GarageTwo.InteriorID)
+                return GarageTwo;
+            if (currentInteriorID == GarageThree.InteriorID)
+                return GarageThree;
+            if (currentInteriorID == ModShop.InteriorID)
+                return ModShop;
+            if (Game.Player.Character.Position.DistanceTo(HeliPad.TriggerPos) < 10f)
+                return HeliPad;
+
             return null;
         }
 
@@ -1073,21 +1113,27 @@ namespace SinglePlayerOffice {
             }
         }
 
-        public void OnTick() {
-            var currentLocation = GetCurrentLocation();
+        private void HandleVisitingTime() {
             var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
 
-            if (Owner != Owner.None && Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character) != (int)Owner && (hours < 9 || hours > 16) && currentLocation is IInterior) {
+            if (!IsOwnedBy(Game.Player.Character) && (hours < 9 || hours > 16) && CurrentLocation is IInterior) {
                 UpdateTeleportMenuButtons();
                 TeleportMenu.GoUp();
                 TeleportMenu.SelectItem();
             }
-            currentLocation.OnTick();
+        }
+
+        public void Update() {
+            CurrentLocation = GetCurrentLocation();
+
+            HandleVisitingTime();
+
+            CurrentLocation.Update();
         }
 
         public void Dispose() {
-            if (entranceBlip != null) entranceBlip.Remove();
-            if (garageEntranceBlip != null) garageEntranceBlip.Remove();
+            entranceBlip?.Remove();
+            garageEntranceBlip?.Remove();
             Office.Dispose();
             GarageOne.Dispose();
             GarageTwo.Dispose();

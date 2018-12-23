@@ -8,8 +8,10 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 using NativeUI;
+using SinglePlayerOffice.Interactions;
+using SinglePlayerOffice.Vehicles;
 
-namespace SinglePlayerOffice {
+namespace SinglePlayerOffice.Buildings {
     class Garage : Location, IInterior {
 
         public static List<InteriorStyle> DecorationStyles { get; set; }
@@ -17,6 +19,8 @@ namespace SinglePlayerOffice {
         public static List<InteriorStyle> NumberingStylesGarageOne { get; set; }
         public static List<InteriorStyle> NumberingStylesGarageTwo { get; set; }
         public static List<InteriorStyle> NumberingStylesGarageThree { get; set; }
+
+        private List<VehicleInfo> vehicleInfoList;
 
         public string IPL { get; set; }
         public List<string> ExteriorIPLs { get; set; }
@@ -40,7 +44,8 @@ namespace SinglePlayerOffice {
         public float NumberingCamFOV { get; set; }
         public Camera NumberingCam { get; set; }
         public InteriorStyle NumberingStyle { get; set; }
-        public GarageScene Scene { get; set; }
+        public VehicleElevator VehicleElevatorInteraction { get; set; }
+        public VehicleInfo VehicleInfoInteraction { get; private set; }
 
         static Garage() {
             DecorationStyles = new List<InteriorStyle> {
@@ -96,7 +101,8 @@ namespace SinglePlayerOffice {
         }
 
         public Garage() {
-            ActiveInteractions.AddRange(new List<Action> { TeleportOnTick, Interactions.SofaOnTick });
+            vehicleInfoList = new List<VehicleInfo>();
+            VehicleInfoInteraction = new Interactions.VehicleInfoScaleform();
         }
 
         public void LoadInterior() {
@@ -162,20 +168,137 @@ namespace SinglePlayerOffice {
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        protected override void TeleportOnTick() {
-            if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-                Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
-                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                    Game.Player.Character.Task.StandStill(-1);
-                    Building.UpdateTeleportMenuButtons();
-                    SinglePlayerOffice.IsHudHidden = true;
-                    Building.TeleportMenu.Visible = true;
+        private void CreateElevator() {
+            VehicleElevatorInteraction.Elevator = new Elevator();
+            var elevator = VehicleElevatorInteraction.Elevator;
+            var model = new Model("imp_prop_ie_carelev01");
+            model.Request(250);
+            if (model.IsInCdImage && model.IsValid) {
+                while (!model.IsLoaded) Script.Wait(50);
+                elevator.Base = World.CreateProp(model, Vector3.Zero, Vector3.Zero, false, false);
+            }
+            model.MarkAsNoLongerNeeded();
+            model = new Model("imp_prop_ie_carelev02");
+            model.Request(250);
+            if (model.IsInCdImage && model.IsValid) {
+                while (!model.IsLoaded) Script.Wait(50);
+                elevator.Platform = World.CreateProp(model, Vector3.Zero, Vector3.Zero, false, false);
+                elevator.Platform.Position = VehicleElevatorInteraction.LevelAPos;
+                elevator.Platform.Rotation = VehicleElevatorInteraction.ElevatorRot;
+                elevator.Platform.FreezePosition = true;
+            }
+            model.MarkAsNoLongerNeeded();
+            elevator.Base.AttachTo(elevator.Platform, 0);
+        }
+
+        private void DeleteElevator() {
+            var elevator = VehicleElevatorInteraction.Elevator;
+            elevator?.Base.Delete();
+            elevator?.Platform.Delete();
+            elevator = null;
+        }
+
+        public void AddVehicleInfo(Vehicle vehicle) {
+            vehicle.IsPersistent = true;
+            var info = new VehicleInfo(vehicle);
+            vehicleInfoList.Add(info);
+        }
+
+        public void RemoveVehicleInfo(Vehicle vehicle) {
+            foreach (var vehicleInfo in vehicleInfoList) {
+                if (vehicleInfo.Vehicle == vehicle) {
+                    vehicleInfoList.Remove(vehicleInfo);
+                    break;
                 }
             }
         }
 
+        private string GetGarageFileName() {
+            var currentBuilding = Utilities.CurrentBuilding;
+
+            if (this == currentBuilding.GarageOne)
+                return "GarageOne.xml";
+            if (this == currentBuilding.GarageTwo)
+                return "GarageTwo.xml";
+            if (this == currentBuilding.GarageThree)
+                return "GarageThree.xml";
+
+            return null;
+        }
+
+        private void SaveVehicleInfoList() {
+            var currentBuilding = Utilities.CurrentBuilding;
+
+            foreach (var vehicleInfo in vehicleInfoList) {
+                vehicleInfo.Position = vehicleInfo.Vehicle.Position;
+                vehicleInfo.Rotation = vehicleInfo.Vehicle.Rotation;
+            }
+
+            var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
+            var fileName = GetGarageFileName();
+            var writer = new StreamWriter($@"scripts\SinglePlayerOffice\{ currentBuilding.Name }\{ fileName }");
+            serializer.Serialize(writer, vehicleInfoList);
+            writer.Close();
+        }
+
+        private void LoadVehicleInfoList() {
+            var currentBuilding = Utilities.CurrentBuilding;
+
+            var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
+            var fileName = GetGarageFileName();
+            var reader = new StreamReader($@"scripts\SinglePlayerOffice\{ currentBuilding.Name }\{ fileName }");
+            vehicleInfoList = (List<VehicleInfo>)serializer.Deserialize(reader);
+            reader.Close();
+        }
+
+        private void CreateVehicles() {
+            LoadVehicleInfoList();
+
+            foreach (var vehicleInfo in vehicleInfoList)
+                vehicleInfo.CreateVehicle();
+        }
+
+        private void DeleteVehicles() {
+            foreach (var vehicleInfo in vehicleInfoList)
+                vehicleInfo.DeleteVehicle();
+        }
+
+        public override void OnLocationArrived() {
+            CreateElevator();
+            CreateVehicles();
+        }
+
+        public override void OnLocationLeft() {
+            SaveVehicleInfoList();
+            DeleteElevator();
+            DeleteVehicles();
+        }
+
+        protected override void HandleTrigger() {
+            var building = Utilities.CurrentBuilding;
+
+            if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
+                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
+                    Game.Player.Character.Task.StandStill(-1);
+                    building.UpdateTeleportMenuButtons();
+                    SinglePlayerOffice.IsHudHidden = true;
+                    building.TeleportMenu.Visible = true;
+                }
+            }
+        }
+
+        public override void Update() {
+            base.Update();
+
+            VehicleElevatorInteraction.Update();
+            VehicleInfoInteraction.Update();
+        }
+
         public override void Dispose() {
-            Scene.Dispose();
+            DeleteElevator();
+            DeleteVehicles();
+            VehicleInfoInteraction.Dispose();
         }
 
     }

@@ -6,6 +6,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 using NativeUI;
+using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice {
     class SinglePlayerOffice : Script {
@@ -31,14 +32,6 @@ namespace SinglePlayerOffice {
 
             Utilities.LoadMPMap();
             Utilities.RequestGameResources();
-            Interactions.CreateRadioMenu();
-            Interactions.CreateWardrobeMenu();
-        }
-
-        public static Building GetCurrentBuilding() {
-            var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
-            foreach (Building building in Buildings) if (Game.Player.Character.Position.DistanceTo(building.Entrance.TriggerPos) < 10f || building.InteriorIDs.Contains(currentInteriorID) || Game.Player.Character.Position.DistanceTo(building.HeliPad.TriggerPos) < 10f) return building;
-            return null;
         }
 
         private void HandleHUDVisibility() {
@@ -51,21 +44,18 @@ namespace SinglePlayerOffice {
         }
 
         private void OnTick(object sender, EventArgs e) {
-            var currentBuilding = GetCurrentBuilding();
-
             HandleHUDVisibility();
             HandleTimedNotifications();
             MenuPool.ProcessMenus();
 
-            if (currentBuilding != null)
-                currentBuilding.OnTick();
+            Utilities.CurrentBuilding?.Update();
         }
 
         private void OnAborted(object sender, EventArgs e) {
-            foreach (var building in Buildings) building.Dispose();
+            foreach (var building in Buildings)
+                building.Dispose();
             World.RenderingCamera = null;
             World.DestroyAllCameras();
-            Interactions.Dispose();
             Game.Player.Character.Task.ClearAll();
             Utilities.ReleaseGameResources();
         }

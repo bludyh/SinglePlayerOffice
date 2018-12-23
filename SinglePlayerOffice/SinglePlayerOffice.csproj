@@ -34,7 +34,8 @@
     <Reference Include="NativeUI">
       <HintPath>..\..\..\..\scripts\NativeUI.dll</HintPath>
     </Reference>
-    <Reference Include="ScriptHookVDotNet2">
+    <Reference Include="ScriptHookVDotNet2, Version=2.10.7.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\ScriptHookVDotNet2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -56,8 +57,29 @@
     <Compile Include="Building\HeliPad.cs" />
     <Compile Include="Building\GarageEntrance.cs" />
     <Compile Include="Building\IInterior.cs" />
+    <Compile Include="Interactions\BossChairInteraction.cs" />
+    <Compile Include="Interactions\BossInteraction.cs" />
+    <Compile Include="Interactions\BuildingNameInteraction.cs" />
+    <Compile Include="Interactions\ComputerInteraction.cs" />
+    <Compile Include="Interactions\FemaleStaffInteraction.cs" />
+    <Compile Include="Interactions\GarageEntranceInteraction.cs" />
+    <Compile Include="Interactions\Interaction.cs" />
+    <Compile Include="Interactions\INPCInteraction.cs" />
+    <Compile Include="Interactions\LaptopInteraction.cs" />
+    <Compile Include="Interactions\LeftSafeInteraction.cs" />
+    <Compile Include="Interactions\MaleStaffInteraction.cs" />
+    <Compile Include="Interactions\PAInteraction.cs" />
+    <Compile Include="Interactions\RadioInteraction.cs" />
+    <Compile Include="Interactions\RightSafeInteraction.cs" />
+    <Compile Include="Interactions\SofaInteraction.cs" />
+    <Compile Include="Interactions\SofaWithTVInteraction.cs" />
+    <Compile Include="Interactions\StaffChairInteraction.cs" />
+    <Compile Include="Interactions\TVInteration.cs" />
+    <Compile Include="Interactions\VehicleElevatorInteraction.cs" />
+    <Compile Include="Interactions\VehicleInfoInteraction.cs" />
+    <Compile Include="Interactions\WardrobeInteraction.cs" />
+    <Compile Include="Scenes\GarageEntranceScene.cs" />
     <Compile Include="Scenes\GarageScene.cs" />
-    <Compile Include="Interactions\Interactions.cs" />
     <Compile Include="Building\Location.cs" />
     <Compile Include="Building\InteriorStyle.cs" />
     <Compile Include="Logger.cs" />
@@ -78,9 +100,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Interactions\RadioStation.cs" />
-    <Compile Include="Interactions\Sofa.cs" />
-    <Compile Include="Interactions\Wardrobe.cs" />
     <Compile Include="Vehicle\VehicleMod.cs" />
     <Compile Include="Vehicle\VehicleToggleMod.cs" />
     <Compile Include="Vehicle\VehicleInfo.cs" />

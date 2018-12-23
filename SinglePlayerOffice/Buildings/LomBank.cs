@@ -6,18 +6,19 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 using NativeUI;
+using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice {
-    class LomBank : Building {
+    class LomBank : Buildings.Building {
 
         public LomBank() {
             try {
                 Name = "Lombank West";
-                description = "In a radical new step towards diversification of the banking sector. Industry giant Lombank is selling office space to results-driven, high-liquidity kill squads and drug cartels. Be part of the change our financial industry needs.";
-                price = 3100000;
+                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", Name));
+                Description = "In a radical new step towards diversification of the banking sector. Industry giant Lombank is selling office space to results-driven, high-liquidity kill squads and drug cartels. Be part of the change our financial industry needs.";
+                Price = 3100000;
                 InteriorIDs = new List<int>() { 257793, 241921, 242177, 241665, 240897, 241153, 241409, 242433, 242689, 242945, 255489, 255745, 256001, 256257 };
                 exteriorMapObjects = new List<string>() { "sm_13_emissive", "sm_13_bld1", "sm_13_bld1_LOD" };
-                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", Name));
                 Owner = (Owner)data.GetValue("Owner", "Owner", -1);
                 Entrance = new Entrance {
                     TriggerPos = new Vector3(-1581.127f, -558.608f, 34.953f),
@@ -183,7 +184,8 @@ namespace SinglePlayerOffice {
                 PurchaseCamFOV = 67f;
 
                 CreateEntranceBlip();
-                if (Owner != Owner.None) CreateGarageEntranceBlip();
+                if (IsOwned)
+                    CreateGarageEntranceBlip();
                 CreatePurchaseMenu();
                 CreateTeleportMenu();
                 CreateGarageEntranceMenu();

@@ -6,18 +6,19 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 using NativeUI;
+using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice {
-    class MazeBankWest : Building {
+    class MazeBankWest : Buildings.Building {
 
         public MazeBankWest() {
             try {
                 Name = "Maze Bank West";
-                description = "Maze has been the target for more boycotts, demonstrations and civil rights lawsuits than any other bank in America. Access to that wealth of experience doesn't come cheap, but a good education is an investment worth any price.";
-                price = 1000000;
+                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", Name));
+                Description = "Maze has been the target for more boycotts, demonstrations and civil rights lawsuits than any other bank in America. Access to that wealth of experience doesn't come cheap, but a good education is an investment worth any price.";
+                Price = 1000000;
                 InteriorIDs = new List<int>() { 258049, 244225, 244481, 243969, 243201, 243457, 243713, 244737, 244993, 245249, 256513, 256769, 257025, 257281 };
                 exteriorMapObjects = new List<string>() { "sm_15_bld2_dtl", "hei_sm_15_bld2", "sm_15_bld2_LOD", "sm_15_bld2_dtl3", "sm_15_bld1_dtl3", "sm_15_bld2_railing", "sm_15_emissive", "sm_15_emissive_LOD" };
-                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", Name));
                 Owner = (Owner)data.GetValue("Owner", "Owner", -1);
                 Entrance = new Entrance {
                     TriggerPos = new Vector3(-1370.370f, -503.067f, 33.157f),
@@ -183,7 +184,8 @@ namespace SinglePlayerOffice {
                 PurchaseCamFOV = 60f;
 
                 CreateEntranceBlip();
-                if (Owner != Owner.None) CreateGarageEntranceBlip();
+                if (IsOwned)
+                    CreateGarageEntranceBlip();
                 CreatePurchaseMenu();
                 CreateTeleportMenu();
                 CreateGarageEntranceMenu();

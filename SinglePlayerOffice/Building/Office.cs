@@ -6,12 +6,16 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 using NativeUI;
+using SinglePlayerOffice.Interactions;
 
-namespace SinglePlayerOffice {
+namespace SinglePlayerOffice.Buildings {
     class Office : Location, IInterior {
 
         public static List<string> ExtraDecors { get; set; }
 
+        private readonly List<int> occupiedIndexes;
+
+        public override string RadioEmitter { get => GetRadioEmitter(); }
         public List<string> ExteriorIPLs { get; set; }
         public List<int> InteriorIDs { get; set; }
         public Vector3 PurchaseCamPos { get; set; }
@@ -22,7 +26,26 @@ namespace SinglePlayerOffice {
         public InteriorStyle InteriorStyle { get; set; }
         public bool HasExtraDecors { get; set; }
         public int ExtraDecorsPrice { get; set; }
-        public OfficeScene Scene { get; set; }
+        public Vector3 BossChairPos { get; set; }
+        public Boss BossInteraction { get; private set; }
+        public Vector3 PAChairPos { get; set; }
+        public Vector3 PAChairRot { get; set; }
+        public PA PAInteraction { get; private set; }
+        public List<Vector3> StaffChairPosList { get; set; }
+        public MaleStaff MaleStaffInteraction { get; private set; }
+        public FemaleStaff FemaleStaffInteraction { get; private set; }
+        public BuildingNameScaleform BuildingNameInteraction { get; private set; }
+        public BossChair BossChairInteraction { get; private set; }
+        public Computer ComputerInteraction { get; private set; }
+        public Laptop LaptopInteraction { get; private set; }
+        public LeftSafe LeftSafeInteraction { get; private set; }
+        public Radio RadioInteraction { get; private set; }
+        public RightSafe RightSafeInteraction { get; private set; }
+        public SofaInteraction SofaInteraction { get; set; }
+        public SofaAndTV SofaWithTVInteraction { get; set; }
+        public BoardRoomChair StaffChairInteraction { get; private set; }
+        public TV TVInteration { get; private set; }
+        public WardrobeInteraction WardrobeInteraction { get; set; }
 
         static Office() {
             ExtraDecors = new List<string> {
@@ -47,21 +70,36 @@ namespace SinglePlayerOffice {
         }
 
         public Office() {
-            ActiveInteractions.AddRange(new List<Action> {
-                TeleportOnTick,
-                Interactions.SofaOnTick,
-                Interactions.SofaTVOnTick,
-                Interactions.TVOnTick,
-                Interactions.ComputerOnTick,
-                Interactions.LeftSafeOnTick,
-                Interactions.RightSafeOnTick,
-                Interactions.RadioOnTick,
-                Interactions.BossChairOnTick,
-                Interactions.StaffChairOnTick,
-                Interactions.LaptopChairOnTick,
-                Interactions.ShowerOnTick,
-                Interactions.WardrobeOnTick
-            });
+            occupiedIndexes = new List<int>();
+            BossInteraction = new Boss();
+            PAInteraction = new PA();
+            MaleStaffInteraction = new MaleStaff();
+            FemaleStaffInteraction = new FemaleStaff();
+            BuildingNameInteraction = new BuildingNameScaleform();
+            BossChairInteraction = new BossChair();
+            ComputerInteraction = new Computer();
+            LaptopInteraction = new Laptop();
+            LeftSafeInteraction = new LeftSafe();
+            RadioInteraction = new Radio();
+            RightSafeInteraction = new RightSafe();
+            SofaInteraction = new SofaInteraction();
+            StaffChairInteraction = new BoardRoomChair();
+            TVInteration = new TV();
+        }
+
+        private string GetRadioEmitter() {
+            switch (InteriorStyle.Name) {
+                case "Old Spice Warms": return "SE_ex_int_office_01a_Radio_01";
+                case "Old Spice Classical": return "SE_ex_int_office_01b_Radio_01";
+                case "Old Spice Vintage": return "SE_ex_int_office_01c_Radio_01";
+                case "Executive Contrast": return "SE_ex_int_office_02a_Radio_01";
+                case "Executive Rich": return "SE_ex_int_office_02b_Radio_01";
+                case "Executive Cool": return "SE_ex_int_office_02c_Radio_01";
+                case "Power Broker Ice": return "SE_ex_int_office_03a_Radio_01";
+                case "Power Broker Conservative": return "SE_ex_int_office_03b_Radio_01";
+                case "Power Broker Polished": return "SE_ex_int_office_03c_Radio_01";
+                default: throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void LoadInterior() {
@@ -107,50 +145,167 @@ namespace SinglePlayerOffice {
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        public string GetRadioEmitter() {
-            switch (InteriorStyle.Name) {
-                case "Old Spice Warms": return "SE_ex_int_office_01a_Radio_01";
-                case "Old Spice Classical": return "SE_ex_int_office_01b_Radio_01";
-                case "Old Spice Vintage": return "SE_ex_int_office_01c_Radio_01";
-                case "Executive Contrast": return "SE_ex_int_office_02a_Radio_01";
-                case "Executive Rich": return "SE_ex_int_office_02b_Radio_01";
-                case "Executive Cool": return "SE_ex_int_office_02c_Radio_01";
-                case "Power Broker Ice": return "SE_ex_int_office_03a_Radio_01";
-                case "Power Broker Conservative": return "SE_ex_int_office_03b_Radio_01";
-                case "Power Broker Polished": return "SE_ex_int_office_03c_Radio_01";
+        private void CreateBoss() {
+            var currentBuilding = Utilities.CurrentBuilding;
+            var boss = BossInteraction.Ped;
+            switch (currentBuilding.Owner) {
+                case Owner.Michael:
+                    boss = World.CreatePed(PedHash.Michael, BossChairPos);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 0, 0, 4, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 1, 4, 0, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 2, 4, 0, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 3, 0, 7, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 4, 0, 7, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 6, 0, 1, 2);
+                    break;
+                case Owner.Franklin:
+                    boss = World.CreatePed(PedHash.Franklin, BossChairPos);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 0, 0, 3, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 1, 4, 0, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 2, 0, 1, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 3, 22, 0, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 4, 21, 1, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 6, 17, 9, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 8, 14, 0, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 11, 7, 0, 2);
+                    break;
+                case Owner.Trevor:
+                    boss = World.CreatePed(PedHash.Trevor, BossChairPos);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 0, 0, 1, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 1, 5, 0, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 3, 27, 1, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 4, 20, 1, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 6, 19, 12, 2);
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, boss, 8, 14, 0, 2);
+                    break;
             }
-            return null;
         }
 
-        protected override void TeleportOnTick() {
+        private void CreatePA() {
+            var pa = PAInteraction.Ped;
+            pa = World.CreatePed(PedHash.ExecutivePAFemale01, PAChairPos);
+            pa.RelationshipGroup = Function.Call<int>(Hash.GET_HASH_KEY, "PLAYER");
+            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 0, 0, Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 2, Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 0, 2);
+            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 3, 1, 0, 2);
+            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 4, 3, Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 6, 0, Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 7, Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 1, 2), Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 8, 3, 0, 2);
+            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, pa, 11, 3, Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+        }
+
+        private void CreatePAChair() {
+            var paChair = PAInteraction.Chair;
+            Model model = new Model("ex_prop_offchair_exec_03");
+            model.Request(250);
+            if (model.IsInCdImage && model.IsValid) {
+                while (!model.IsLoaded) Script.Wait(50);
+                paChair = World.CreateProp(model, Vector3.Zero, false, false);
+                paChair.Position = PAChairPos;
+                paChair.Rotation = PAChairRot;
+            }
+            model.MarkAsNoLongerNeeded();
+        }
+
+        private int GetRandomStaffChairIndex() {
+            int index;
+            do {
+                index = Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, StaffChairPosList.Count);
+            } while (occupiedIndexes.Contains(index));
+            occupiedIndexes.Add(index);
+            return index;
+        }
+
+        private void CreateMaleStaff() {
+            var maleStaff = MaleStaffInteraction.Ped;
+            maleStaff = World.CreatePed(PedHash.Business01AMM, StaffChairPosList[GetRandomStaffChairIndex()]);
+            Function.Call(Hash.SET_PED_RANDOM_COMPONENT_VARIATION);
+        }
+
+        private void CreateFemaleStaff() {
+            var femaleStaff = FemaleStaffInteraction.Ped;
+            femaleStaff = World.CreatePed(PedHash.Business04AFY, StaffChairPosList[GetRandomStaffChairIndex()]);
+            Function.Call(Hash.SET_PED_RANDOM_COMPONENT_VARIATION);
+        }
+
+        public override void OnLocationArrived() {
+            var currentBuilding = Utilities.CurrentBuilding;
+
+            if (!currentBuilding.IsOwnedBy(Game.Player.Character))
+                CreateBoss();
+            if (PAInteraction.Chair == null)
+                CreatePAChair();
+            if (PAInteraction.Ped == null)
+                CreatePA();
+        }
+
+        public override void OnLocationLeft() {
+            BossInteraction.Reset();
+            PAInteraction.Reset();
+            MaleStaffInteraction.Reset();
+            FemaleStaffInteraction.Reset();
+            LeftSafeInteraction.Reset();
+            RadioInteraction.Reset();
+            RightSafeInteraction.Reset();
+            SofaWithTVInteraction.Reset();
+            TVInteration.Reset();
+        }
+
+        protected override void HandleTrigger() {
+            var currentBuilding = Utilities.CurrentBuilding;
             if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                 Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                     Game.Player.Character.Task.StandStill(-1);
-                    Building.UpdateTeleportMenuButtons();
+                    currentBuilding.UpdateTeleportMenuButtons();
                     SinglePlayerOffice.IsHudHidden = true;
-                    Building.TeleportMenu.Visible = true;
+                    currentBuilding.TeleportMenu.Visible = true;
                 }
             }
         }
 
-        protected override void OnArrival() {
-            base.OnArrival();
+        public override void Update() {
+            base.Update();
 
-            Interactions.IsTVOn = false;
-            if (Interactions.TV != null) Interactions.TV.Delete();
-            if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) {
-                Script.Wait(0);
-                Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "tvscreen");
+            var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
+            if ((hours > 8 && hours < 17) && (MaleStaffInteraction.Ped == null && FemaleStaffInteraction.Ped == null)) {
+                CreateMaleStaff();
+                CreateFemaleStaff();
             }
-            Interactions.IsLeftSafeOpened = false;
-            Interactions.IsRightSafeOpened = false;
-            Interactions.IsRadioOn = false;
-            if (Interactions.RadioEmitter != null) Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, Interactions.RadioEmitter, false);
+            else if (hours < 9 || hours > 16) {
+                MaleStaffInteraction.Ped?.Delete();
+                FemaleStaffInteraction.Ped?.Delete();
+            }
+
+            BossInteraction.Update();
+            PAInteraction.Update();
+            MaleStaffInteraction.Update();
+            FemaleStaffInteraction.Update();
+            BuildingNameInteraction.Update();
+            BossChairInteraction.Update();
+            ComputerInteraction.Update();
+            LaptopInteraction.Update();
+            LeftSafeInteraction.Update();
+            RadioInteraction.Update();
+            RightSafeInteraction.Update();
+            SofaInteraction.Update();
+            SofaWithTVInteraction.Update();
+            StaffChairInteraction.Update();
+            TVInteration.Update();
+            WardrobeInteraction.Update();
         }
 
         public override void Dispose() {
-            Scene.Dispose();
+            BossInteraction.Dispose();
+            PAInteraction.Dispose();
+            MaleStaffInteraction.Dispose();
+            FemaleStaffInteraction.Dispose();
+            BuildingNameInteraction.Dispose();
+            ComputerInteraction.Dispose();
+            RadioInteraction.Dispose();
+            SofaWithTVInteraction.Dispose();
+            TVInteration.Dispose();
         }
 
     }

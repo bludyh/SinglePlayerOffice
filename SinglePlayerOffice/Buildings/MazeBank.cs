@@ -6,18 +6,19 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 using NativeUI;
+using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice {
-    class MazeBank : Building {
+    class MazeBank : Buildings.Building {
 
         public MazeBank() {
             try {
                 Name = "Maze Bank Tower";
-                description = "The building that defined the LS Skyline for a generation. Taller, Classier, more opulent, more shamelessly phallic, less structurally sound - you name it, the Maze Bank Tower is best in class.";
-                price = 4000000;
+                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", Name));
+                Description = "The building that defined the LS Skyline for a generation. Taller, Classier, more opulent, more shamelessly phallic, less structurally sound - you name it, the Maze Bank Tower is best in class.";
+                Price = 4000000;
                 InteriorIDs = new List<int>() { 257537, 239617, 239873, 239361, 238593, 238849, 239105, 240129, 240385, 240641, 254465, 254721, 254977, 255233 };
                 exteriorMapObjects = new List<string>() { "dt1_11_dt1_emissive_dt1_11", "dt1_11_dt1_tower" };
-                data = ScriptSettings.Load(String.Format(@"scripts\SinglePlayerOffice\{0}\data.ini", Name));
                 Owner = (Owner)data.GetValue("Owner", "Owner", -1);
                 Entrance = new Entrance {
                     TriggerPos = new Vector3(-79.214f, -796.513f, 44.227f),
@@ -183,7 +184,8 @@ namespace SinglePlayerOffice {
                 PurchaseCamFOV = 90f;
 
                 CreateEntranceBlip();
-                if (Owner != Owner.None) CreateGarageEntranceBlip();
+                if (IsOwned)
+                    CreateGarageEntranceBlip();
                 CreatePurchaseMenu();
                 CreateTeleportMenu();
                 CreateGarageEntranceMenu();

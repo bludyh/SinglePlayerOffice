@@ -7,7 +7,7 @@ using GTA.Math;
 using GTA.Native;
 using NativeUI;
 
-namespace SinglePlayerOffice {
+namespace SinglePlayerOffice.Buildings {
     class ModShop : Location, IInterior {
 
         public static List<InteriorStyle> FloorStyles { get; set; }
@@ -46,10 +46,6 @@ namespace SinglePlayerOffice {
             };
         }
 
-        public ModShop() {
-            ActiveInteractions.AddRange(new List<Action> { TeleportOnTick, Interactions.SofaTVOnTick, Interactions.TVOnTick });
-        }
-
         public void LoadInterior() {
             Function.Call(Hash.REQUEST_IPL, IPL);
             var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
@@ -85,26 +81,16 @@ namespace SinglePlayerOffice {
             Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
         }
 
-        protected override void TeleportOnTick() {
+        protected override void HandleTrigger() {
+            var currentBuilding = Utilities.CurrentBuilding;
             if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                 Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
                 if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
                     Game.Player.Character.Task.StandStill(-1);
-                    Building.UpdateTeleportMenuButtons();
+                    currentBuilding.UpdateTeleportMenuButtons();
                     SinglePlayerOffice.IsHudHidden = true;
-                    Building.TeleportMenu.Visible = true;
+                    currentBuilding.TeleportMenu.Visible = true;
                 }
-            }
-        }
-
-        protected override void OnArrival() {
-            base.OnArrival();
-
-            Interactions.IsTVOn = false;
-            if (Interactions.TV != null) Interactions.TV.Delete();
-            if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen")) {
-                Script.Wait(0);
-                Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "tvscreen");
             }
         }
 

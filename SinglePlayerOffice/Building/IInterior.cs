@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SinglePlayerOffice {
+namespace SinglePlayerOffice.Buildings {
     interface IInterior {
 
         List<string> ExteriorIPLs { get; set; }

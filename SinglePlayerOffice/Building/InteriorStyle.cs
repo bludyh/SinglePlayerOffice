@@ -7,7 +7,7 @@ using GTA.Math;
 using GTA.Native;
 using NativeUI;
 
-namespace SinglePlayerOffice {
+namespace SinglePlayerOffice.Buildings {
     class InteriorStyle {
 
         public string Name { get; private set; }
