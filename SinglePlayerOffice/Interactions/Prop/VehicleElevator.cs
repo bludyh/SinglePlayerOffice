@@ -1,29 +1,55 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Forms;
 using GTA;
 using GTA.Math;
-using GTA.Native;
-using NativeUI;
 using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice.Interactions {
-    class VehicleElevator : Interaction {
+    internal class VehicleElevator : Interaction {
+        private Prop body;
+        private List<Gate> gates;
+        private Prop platform;
 
-        private List<ElevatorGate> elevatorGates;
-
-        public override string HelpText {
-            get {
-                return "Press ~INPUT_CONTEXT~ to use the vehicle elevator";
-            }
+        public VehicleElevator(Vector3 rot, Vector3 levelAPos, Vector3 levelBPos, Vector3 levelCPos) {
+            gates = new List<Gate>();
+            Rotation = rot;
+            LevelAPos = levelAPos;
+            LevelBPos = levelBPos;
+            LevelCPos = levelCPos;
         }
-        public Elevator Elevator { get; set; }
-        public Vector3 ElevatorPos { get; set; }
-        public Vector3 ElevatorRot { get; set; }
-        public Vector3 LevelAPos { get; set; }
-        public Vector3 LevelBPos { get; set; }
-        public Vector3 LevelCPos { get; set; }
+
+        public override string HelpText => "Press ~INPUT_CONTEXT~ to use the vehicle elevator";
+        public Vector3 Position { get; set; }
+        public Vector3 Rotation { get; }
+        public Vector3 LevelAPos { get; }
+        public Vector3 LevelBPos { get; }
+        public Vector3 LevelCPos { get; }
+        public override bool IsCreated => body != null && platform != null;
+
+        public override void Create() {
+            var model = new Model("imp_prop_ie_carelev01");
+            model.Request(250);
+            if (model.IsInCdImage && model.IsValid) {
+                while (!model.IsLoaded)
+                    Script.Wait(50);
+                body = World.CreateProp(model, Vector3.Zero, Vector3.Zero, false, false);
+            }
+
+            model.MarkAsNoLongerNeeded();
+
+            model = new Model("imp_prop_ie_carelev02");
+            model.Request(250);
+            if (model.IsInCdImage && model.IsValid) {
+                while (!model.IsLoaded)
+                    Script.Wait(50);
+                platform = World.CreateProp(model, Vector3.Zero, Vector3.Zero, false, false);
+                platform.Position = LevelAPos;
+                platform.Rotation = Rotation;
+                platform.FreezePosition = true;
+            }
+
+            model.MarkAsNoLongerNeeded();
+            body?.AttachTo(platform, 0);
+        }
 
         private Vector3? GetCurrentLevelElevatorPos() {
             if (Game.Player.Character.Position.Z > LevelAPos.Z && Game.Player.Character.Position.Z < LevelBPos.Z)
@@ -35,58 +61,45 @@ namespace SinglePlayerOffice.Interactions {
             return null;
         }
 
-        private bool MoveElevator(Vector3 pos) {
-            if (Elevator.Platform.Position.DistanceTo(pos) > 0.01f) {
-                if (Elevator.Platform.Position.Z < pos.Z)
-                    Elevator.Platform.Position = Vector3.Add(Elevator.Platform.Position, new Vector3(0f, 0f, 0.005f));
-                else
-                    Elevator.Platform.Position = Vector3.Add(Elevator.Platform.Position, new Vector3(0f, 0f, -0.005f));
-                return true;
-            }
-            return false;
-        }
-
-        private bool MoveElevatorGate(Prop gate, Vector3 pos) {
-            if (gate.Position.DistanceTo(pos) > 0.01f) {
-                if (gate.Position.Z < pos.Z)
-                    gate.Position = Vector3.Add(gate.Position, new Vector3(0f, 0f, 0.01f));
-                else
-                    gate.Position = Vector3.Add(gate.Position, new Vector3(0f, 0f, -0.01f));
-                return true;
-            }
-            return false;
+        private bool MoveTo(Vector3 targetPos) {
+            if (!(platform.Position.DistanceTo(targetPos) > 0.01f)) return false;
+            platform.Position = Vector3.Add(platform.Position,
+                platform.Position.Z < targetPos.Z ? new Vector3(0f, 0f, 0.005f) : new Vector3(0f, 0f, -0.005f));
+            return true;
         }
 
         public override void Update() {
             var currentBuilding = Utilities.CurrentBuilding;
-            var currentGarage = (Garage)currentBuilding.CurrentLocation;
+            var currentGarage = (Garage) currentBuilding.CurrentLocation;
             switch (State) {
                 case 0:
-                    if (!Game.Player.Character.IsDead
-                        && (Game.Player.Character.Position.DistanceTo(LevelAPos) < 8f
-                        || Game.Player.Character.Position.DistanceTo(LevelBPos) < 8f
-                        || Game.Player.Character.Position.DistanceTo(LevelCPos) < 8f)
-                        && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-
+                    if (!Game.Player.Character.IsDead &&
+                        (Game.Player.Character.Position.DistanceTo(LevelAPos) < 8f ||
+                         Game.Player.Character.Position.DistanceTo(LevelBPos) < 8f ||
+                         Game.Player.Character.Position.DistanceTo(LevelCPos) < 8f) &&
+                        !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
                         Utilities.DisplayHelpTextThisFrame(HelpText);
-                        if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                            ElevatorPos = GetCurrentLevelElevatorPos().GetValueOrDefault();
+                        if (Game.IsControlJustPressed(2, Control.Context)) {
+                            Position = GetCurrentLevelElevatorPos().GetValueOrDefault();
                             State = 3;
                         }
                     }
+
                     break;
                 case 1:
                     currentGarage.AddVehicleInfo(Game.Player.Character.CurrentVehicle);
-                    Elevator.Platform.Position = Elevator.Platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, -1f));
+                    platform.Position = platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, -1f));
                     State = 2;
                     break;
                 case 2:
-                    if (MoveElevator(LevelAPos)) {
-                        Game.Player.Character.CurrentVehicle.Position = Elevator.Platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, 1.3f));
-                        Game.Player.Character.CurrentVehicle.Rotation = Vector3.Add(Game.Player.Character.CurrentVehicle.Rotation, new Vector3(0f, 0f, 0.2f));
+                    if (MoveTo(LevelAPos)) {
+                        Game.Player.Character.CurrentVehicle.Position =
+                            platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, 1.3f));
+                        Game.Player.Character.CurrentVehicle.Rotation =
+                            Vector3.Add(Game.Player.Character.CurrentVehicle.Rotation, new Vector3(0f, 0f, 0.2f));
                     }
                     else {
-                        ElevatorPos = GetCurrentLevelElevatorPos().GetValueOrDefault();
+                        Position = GetCurrentLevelElevatorPos().GetValueOrDefault();
                         SinglePlayerOffice.IsHudHidden = false;
                         Game.Player.Character.Task.ClearAll();
                         if (currentGarage == currentBuilding.GarageOne)
@@ -97,31 +110,62 @@ namespace SinglePlayerOffice.Interactions {
                             Audio.PlaySoundFrontend("Speech_Floor_3", "DLC_IE_Garage_Elevator_Sounds");
                         State = 3;
                     }
+
                     break;
                 case 3:
-                    foreach (var gate in elevatorGates)
-                        MoveElevatorGate(gate.Prop, gate.InitialPos);
-                    if (!MoveElevator(ElevatorPos)) {
-                        var gates = new List<ElevatorGate>();
-                        foreach (var prop in World.GetNearbyProps(Elevator.Platform.Position, 4.5f)) {
-                            if (prop.Model.Hash == -2088725999 || prop.Model.Hash == -1238206604 || (prop.Model.Hash == 1593297148 && Elevator.Platform.Position.DistanceTo(LevelAPos) < 1f)) {
-                                gates.Add(new ElevatorGate(prop, prop.Position));
-                                elevatorGates = gates;
-                            }
+                    foreach (var gate in gates)
+                        gate.MoveTo(gate.InitialPos);
+                    if (!MoveTo(Position)) {
+                        var gates = new List<Gate>();
+                        foreach (var prop in World.GetNearbyProps(platform.Position, 4.5f)) {
+                            if (prop.Model.Hash != -2088725999 && prop.Model.Hash != -1238206604 &&
+                                (prop.Model.Hash != 1593297148 || !(platform.Position.DistanceTo(LevelAPos) < 1f)))
+                                continue;
+                            gates.Add(new Gate(prop, prop.Position));
+                            this.gates = gates;
                         }
+
                         State = 4;
                     }
+
                     break;
                 case 4:
-                    if (!elevatorGates.TrueForAll(gate => MoveElevatorGate(gate.Prop, Vector3.Add(gate.InitialPos, new Vector3(0f, 0f, 3f))))) {
+                    if (!gates.TrueForAll(gate => gate.MoveTo(Vector3.Add(gate.InitialPos, new Vector3(0f, 0f, 3f))))) {
                         currentBuilding.UpdateVehicleElevatorMenuButtons();
                         SinglePlayerOffice.IsHudHidden = true;
                         currentBuilding.VehicleElevatorMenu.Visible = true;
                         State = 0;
                     }
+
                     break;
             }
         }
 
+        public override void Reset() {
+            Dispose();
+        }
+
+        public override void Dispose() {
+            body?.Delete();
+            platform?.Delete();
+        }
+
+        private class Gate {
+            private readonly Prop prop;
+
+            public Gate(Prop prop, Vector3 pos) {
+                this.prop = prop;
+                InitialPos = pos;
+            }
+
+            public Vector3 InitialPos { get; }
+
+            public bool MoveTo(Vector3 pos) {
+                if (!(prop.Position.DistanceTo(pos) > 0.01f)) return false;
+                prop.Position = Vector3.Add(prop.Position,
+                    prop.Position.Z < pos.Z ? new Vector3(0f, 0f, 0.01f) : new Vector3(0f, 0f, -0.01f));
+                return true;
+            }
+        }
     }
 }

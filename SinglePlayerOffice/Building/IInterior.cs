@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SinglePlayerOffice.Buildings {
-    interface IInterior {
-
-        List<string> ExteriorIPLs { get; set; }
+    internal interface IInterior {
+        List<string> ExteriorIpLs { get; set; }
 
         void LoadInterior();
         void UnloadInterior();
         void LoadExterior();
         void UnloadExterior();
-
     }
 }

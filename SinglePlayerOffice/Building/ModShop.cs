@@ -1,26 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Collections.Generic;
 using GTA;
 using GTA.Math;
 using GTA.Native;
-using NativeUI;
+using SinglePlayerOffice.Interactions;
 
 namespace SinglePlayerOffice.Buildings {
-    class ModShop : Location, IInterior {
-
-        public static List<InteriorStyle> FloorStyles { get; set; }
-
-        public string IPL { get; set; }
-        public List<string> ExteriorIPLs { get; set; }
-        public int InteriorID { get; set; }
-        public Vector3 PurchaseCamPos { get; set; }
-        public Vector3 PurchaseCamRot { get; set; }
-        public float PurchaseCamFOV { get; set; }
-        public Camera PurchaseCam { get; set; }
-        public InteriorStyle FloorStyle { get; set; }
-
+    internal class ModShop : Location, IInterior {
         static ModShop() {
             FloorStyles = new List<InteriorStyle> {
                 new InteriorStyle("Floor 1", 0, ""),
@@ -46,53 +31,80 @@ namespace SinglePlayerOffice.Buildings {
             };
         }
 
-        public void LoadInterior() {
-            Function.Call(Hash.REQUEST_IPL, IPL);
-            var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (InteriorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, FloorStyle.Style);
-            Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+        public ModShop() {
+            Tv = new Tv();
         }
 
-        public void LoadInterior(InteriorStyle floorStyle) {
-            Function.Call(Hash.REQUEST_IPL, IPL);
-            var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (InteriorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, floorStyle.Style);
-            Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+        public static List<InteriorStyle> FloorStyles { get; set; }
+
+        public string Ipl { get; set; }
+        public List<string> ExteriorIpLs { get; set; }
+        public int InteriorId { get; set; }
+        public Vector3 PurchaseCamPos { get; set; }
+        public Vector3 PurchaseCamRot { get; set; }
+        public float PurchaseCamFov { get; set; }
+        public Camera PurchaseCam { get; set; }
+        public InteriorStyle FloorStyle { get; set; }
+        //Interactions
+        public SofaAndTv SofaAndTv { get; set; }
+        public Tv Tv { get; }
+
+        public void LoadInterior() {
+            Function.Call(Hash.REQUEST_IPL, Ipl);
+            var currentInteriorId = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X,
+                Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+            foreach (var style in FloorStyles)
+                Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorId, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorId, FloorStyle.Style);
+            Function.Call(Hash.REFRESH_INTERIOR, currentInteriorId);
         }
 
         public void UnloadInterior() {
-            Function.Call(Hash.REMOVE_IPL, IPL);
+            Function.Call(Hash.REMOVE_IPL, Ipl);
         }
 
         public void LoadExterior() {
-            foreach (var ipl in ExteriorIPLs) Function.Call(Hash.REQUEST_IPL, ipl);
+            foreach (var ipl in ExteriorIpLs) Function.Call(Hash.REQUEST_IPL, ipl);
         }
 
         public void UnloadExterior() {
-            foreach (var ipl in ExteriorIPLs) Function.Call(Hash.REMOVE_IPL, ipl);
+            foreach (var ipl in ExteriorIpLs) Function.Call(Hash.REMOVE_IPL, ipl);
+        }
+
+        public void LoadInterior(InteriorStyle floorStyle) {
+            Function.Call(Hash.REQUEST_IPL, Ipl);
+            var currentInteriorId = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X,
+                Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+            foreach (var style in FloorStyles)
+                Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorId, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorId, floorStyle.Style);
+            Function.Call(Hash.REFRESH_INTERIOR, currentInteriorId);
         }
 
         public void ChangeFloorStyle(InteriorStyle floorStyle) {
-            var currentInteriorID = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
-            foreach (InteriorStyle style in FloorStyles) Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorID, style.Style);
-            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorID, floorStyle.Style);
-            Function.Call(Hash.REFRESH_INTERIOR, currentInteriorID);
+            var currentInteriorId = Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X,
+                Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
+            foreach (var style in FloorStyles)
+                Function.Call(Hash._DISABLE_INTERIOR_PROP, currentInteriorId, style.Style);
+            Function.Call(Hash._ENABLE_INTERIOR_PROP, currentInteriorId, floorStyle.Style);
+            Function.Call(Hash.REFRESH_INTERIOR, currentInteriorId);
+        }
+
+        protected override List<Interaction> GetInteractions() {
+            return new List<Interaction> { SofaAndTv, Tv };
         }
 
         protected override void HandleTrigger() {
             var currentBuilding = Utilities.CurrentBuilding;
-            if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-                Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
-                if (Game.IsControlJustPressed(2, GTA.Control.Context)) {
-                    Game.Player.Character.Task.StandStill(-1);
-                    currentBuilding.UpdateTeleportMenuButtons();
-                    SinglePlayerOffice.IsHudHidden = true;
-                    currentBuilding.TeleportMenu.Visible = true;
-                }
-            }
+            if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() ||
+                !(Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f) ||
+                SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
+            Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
+            if (!Game.IsControlJustPressed(2, Control.Context)) return;
+            Game.Player.Character.Task.StandStill(-1);
+            currentBuilding.UpdateTeleportMenuButtons();
+            SinglePlayerOffice.IsHudHidden = true;
+            currentBuilding.TeleportMenu.Visible = true;
         }
-
     }
 }
