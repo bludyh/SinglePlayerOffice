@@ -32,22 +32,24 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         public ModShop() {
+            Radio = new Radio();
             Tv = new Tv();
         }
 
         public static List<InteriorStyle> FloorStyles { get; set; }
 
+        public override string RadioEmitter => "DLC_IE_Office_Garage_Mod_Shop_Radio_01";
         public string Ipl { get; set; }
-        public List<string> ExteriorIpLs { get; set; }
         public int InteriorId { get; set; }
         public Vector3 PurchaseCamPos { get; set; }
         public Vector3 PurchaseCamRot { get; set; }
         public float PurchaseCamFov { get; set; }
         public Camera PurchaseCam { get; set; }
         public InteriorStyle FloorStyle { get; set; }
-        //Interactions
+        public Radio Radio { get; }
         public SofaAndTv SofaAndTv { get; set; }
         public Tv Tv { get; }
+        public List<string> ExteriorIpLs { get; set; }
 
         public void LoadInterior() {
             Function.Call(Hash.REQUEST_IPL, Ipl);
@@ -91,20 +93,19 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         protected override List<Interaction> GetInteractions() {
-            return new List<Interaction> { SofaAndTv, Tv };
+            return new List<Interaction> { Radio, SofaAndTv, Tv };
         }
 
         protected override void HandleTrigger() {
-            var currentBuilding = Utilities.CurrentBuilding;
             if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() ||
                 !(Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f) ||
                 SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
             Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
             if (!Game.IsControlJustPressed(2, Control.Context)) return;
             Game.Player.Character.Task.StandStill(-1);
-            currentBuilding.UpdateTeleportMenuButtons();
+            Utilities.CurrentBuilding.UpdateTeleportMenuButtons();
             SinglePlayerOffice.IsHudHidden = true;
-            currentBuilding.TeleportMenu.Visible = true;
+            Utilities.CurrentBuilding.TeleportMenu.Visible = true;
         }
     }
 }

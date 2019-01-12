@@ -15,7 +15,7 @@ namespace SinglePlayerOffice.Interactions {
             this.chairSpawnRot = chairSpawnRot;
         }
 
-        public bool IsGreeted { get; private set; }
+        public bool IsGreeted { get; set; }
         public int ConversationState { get; set; }
         public override bool IsCreated => ped != null && chair != null;
 
@@ -52,9 +52,13 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Update() {
-            var currentBuilding = Utilities.CurrentBuilding;
             switch (State) {
                 case 0:
+                    Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@pa@female@");
+                    if (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@pa@female@"))
+                        State = 1;
+                    break;
+                case 1:
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, chair.Position.X,
                         chair.Position.Y, chair.Position.Z, 0f, 0f, chair.Rotation.Z, 2);
                     Function.Call(Hash.SET_SYNCHRONIZED_SCENE_LOOPED, syncSceneHandle, true);
@@ -71,7 +75,7 @@ namespace SinglePlayerOffice.Interactions {
                     if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped)) break;
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "GREET_ATTRACTIVE_F",
                         "SPEECH_PARAMS_FORCE");
-                    ConversationState = currentBuilding.IsOwnedBy(Game.Player.Character) ? 2 : 0;
+                    ConversationState = Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) ? 2 : 0;
                     IsGreeted = true;
                     break;
                 case 2:
@@ -114,19 +118,19 @@ namespace SinglePlayerOffice.Interactions {
             if (Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, Game.Player.Character.Position.X,
                         Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 0.5f, 220394186, 0, 0, 0)
                     .Model == 220394186 && ConversationState == 0) {
-                if (currentBuilding.IsOwnedBy(Game.Player.Character) && !IsGreeted) {
+                if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) && !IsGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "EXECPA_GREET", "SPEECH_PARAMS_FORCE");
                     ConversationState = 1;
                 }
-                else if (!currentBuilding.IsOwnedBy(Game.Player.Character) && !IsGreeted) {
+                else if (!Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) && !IsGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "GENERIC_HI", "SPEECH_PARAMS_FORCE");
                     ConversationState = 1;
                 }
-                else if (currentBuilding.IsOwnedBy(Game.Player.Character) && IsGreeted) {
+                else if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) && IsGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "EXECPA_FAREWELL", "SPEECH_PARAMS_FORCE");
                     ConversationState = 3;
                 }
-                else if (!currentBuilding.IsOwnedBy(Game.Player.Character) && IsGreeted) {
+                else if (!Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) && IsGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "GENERIC_BYE", "SPEECH_PARAMS_FORCE");
                     ConversationState = 3;
                 }
@@ -135,7 +139,7 @@ namespace SinglePlayerOffice.Interactions {
             if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() || ped == null ||
                 !(Game.Player.Character.Position.DistanceTo(ped.Position) < 2f) ||
                 SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
-            if (currentBuilding.IsOwnedBy(Game.Player.Character)) {
+            if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
                 Utilities.DisplayHelpTextThisFrame(
                     "Press ~INPUT_CONTEXT~ to chat with your PA~n~Press ~INPUT_CONTEXT_SECONDARY~ for executive options");
                 if (Game.IsControlJustPressed(2, Control.ContextSecondary)) {
@@ -143,30 +147,28 @@ namespace SinglePlayerOffice.Interactions {
                     Utilities.SavedPos = Game.Player.Character.Position;
                     Utilities.SavedRot = Game.Player.Character.Rotation;
                     SinglePlayerOffice.IsHudHidden = true;
-                    currentBuilding.PaMenu.Visible = true;
+                    Utilities.CurrentBuilding.PaMenu.Visible = true;
                 }
             }
 
-            if (Game.IsControlJustPressed(2, Control.Context) &&
-                !Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, Game.Player.Character) &&
-                !Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped)) {
-                Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped,
-                    currentBuilding.IsOwnedBy(Game.Player.Character)
-                        ? "EXECPA_CHATVIP"
-                        : "EXECPA_CHATOTHERS", "SPEECH_PARAMS_FORCE");
-                ConversationState = 4;
-            }
+            if (!Game.IsControlJustPressed(2, Control.Context) ||
+                Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, Game.Player.Character) ||
+                Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped)) return;
+            Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped,
+                Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character)
+                    ? "EXECPA_CHATVIP"
+                    : "EXECPA_CHATOTHERS", "SPEECH_PARAMS_FORCE");
+            ConversationState = 4;
         }
 
         public override void Reset() {
             IsGreeted = false;
-            State = 0;
-            ConversationState = 0;
         }
 
         public override void Dispose() {
             ped?.Delete();
             chair?.Delete();
+            Function.Call(Hash.REMOVE_ANIM_DICT, "anim@amb@office@pa@female@");
         }
     }
 }

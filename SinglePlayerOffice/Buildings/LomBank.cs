@@ -18,7 +18,7 @@ namespace SinglePlayerOffice.Buildings {
                     257793, 241921, 242177, 241665, 240897, 241153, 241409, 242433, 242689, 242945, 255489, 255745,
                     256001, 256257
                 };
-                exteriorMapObjects = new List<string> {"sm_13_emissive", "sm_13_bld1", "sm_13_bld1_LOD"};
+                exteriorMapObjects = new List<string> { "sm_13_emissive", "sm_13_bld1", "sm_13_bld1_LOD" };
                 Owner = (Owner) data.GetValue("Owner", "Owner", -1);
                 Entrance = new Entrance {
                     TriggerPos = new Vector3(-1581.127f, -558.608f, 34.953f),
@@ -39,9 +39,9 @@ namespace SinglePlayerOffice.Buildings {
                     TriggerPos = new Vector3(-1579.750f, -565.049f, 108.523f),
                     SpawnPos = new Vector3(-1578.013f, -565.397f, 108.523f),
                     SpawnHeading = 214.074f,
-                    ExteriorIpLs = new List<string> {"hei_sm_13_exshadowmesh"},
+                    ExteriorIpLs = new List<string> { "hei_sm_13_exshadowmesh" },
                     InteriorIDs =
-                        new List<int> {241921, 242177, 241665, 240897, 241153, 241409, 242433, 242689, 242945},
+                        new List<int> { 241921, 242177, 241665, 240897, 241153, 241409, 242433, 242689, 242945 },
                     PurchaseCamPos = new Vector3(-1567.370f, -587.616f, 109.5f),
                     PurchaseCamRot = new Vector3(-5f, 0f, -12f),
                     PurchaseCamFov = 60f,
@@ -86,7 +86,7 @@ namespace SinglePlayerOffice.Buildings {
                     SpawnPos = new Vector3(-1585.244f, -562.935f, 86.501f),
                     SpawnHeading = -144f,
                     Ipl = "imp_sm_13_cargarage_a",
-                    ExteriorIpLs = new List<string> {"hei_sm_13_impexpproxy_a"},
+                    ExteriorIpLs = new List<string> { "hei_sm_13_impexpproxy_a" },
                     InteriorId = 255489,
                     PurchaseCamPos = new Vector3(-1585.244f, -562.935f, 88.501f),
                     PurchaseCamRot = new Vector3(-5f, -1f, -144f),
@@ -122,7 +122,7 @@ namespace SinglePlayerOffice.Buildings {
                     SpawnPos = new Vector3(-1564.414f, -557.834f, 86.501f),
                     SpawnHeading = 126f,
                     Ipl = "imp_sm_13_cargarage_b",
-                    ExteriorIpLs = new List<string> {"hei_sm_13_impexpproxy_b"},
+                    ExteriorIpLs = new List<string> { "hei_sm_13_impexpproxy_b" },
                     InteriorId = 255745,
                     PurchaseCamPos = new Vector3(-1564.414f, -557.834f, 88.501f),
                     PurchaseCamRot = new Vector3(-5f, -1f, 126f),
@@ -158,7 +158,7 @@ namespace SinglePlayerOffice.Buildings {
                     SpawnPos = new Vector3(-1559.331f, -578.897f, 86.501f),
                     SpawnHeading = 36f,
                     Ipl = "imp_sm_13_cargarage_c",
-                    ExteriorIpLs = new List<string> {"hei_sm_13_impexpproxy_c"},
+                    ExteriorIpLs = new List<string> { "hei_sm_13_impexpproxy_c" },
                     InteriorId = 256001,
                     PurchaseCamPos = new Vector3(-1559.331f, -578.897f, 88.501f),
                     PurchaseCamRot = new Vector3(-5f, -1f, 36f),
@@ -195,7 +195,7 @@ namespace SinglePlayerOffice.Buildings {
                     SpawnPos = new Vector3(-1570.438f, -571.884f, 105.200f),
                     SpawnHeading = 30.991f,
                     Ipl = "imp_sm_13_modgarage",
-                    ExteriorIpLs = new List<string> {"hei_sm_13_impexpproxy_modshop"},
+                    ExteriorIpLs = new List<string> { "hei_sm_13_impexpproxy_modshop" },
                     InteriorId = 256257,
                     PurchaseCamPos = new Vector3(-1573.166f, -571.276f, 107.2f),
                     PurchaseCamRot = new Vector3(-20f, 0f, 126f),

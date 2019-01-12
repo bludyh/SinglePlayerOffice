@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GTA;
 using GTA.Math;
+using GTA.Native;
 using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice.Interactions {
@@ -69,8 +70,7 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Update() {
-            var currentBuilding = Utilities.CurrentBuilding;
-            var currentGarage = (Garage) currentBuilding.CurrentLocation;
+            var currentGarage = (Garage) Utilities.CurrentBuilding.CurrentLocation;
             switch (State) {
                 case 0:
                     if (!Game.Player.Character.IsDead &&
@@ -81,17 +81,22 @@ namespace SinglePlayerOffice.Interactions {
                         Utilities.DisplayHelpTextThisFrame(HelpText);
                         if (Game.IsControlJustPressed(2, Control.Context)) {
                             Position = GetCurrentLevelElevatorPos().GetValueOrDefault();
-                            State = 3;
+                            State = 4;
                         }
                     }
 
                     break;
                 case 1:
-                    currentGarage.AddVehicleInfo(Game.Player.Character.CurrentVehicle);
-                    platform.Position = platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, -1f));
-                    State = 2;
+                    if (Function.Call<bool>(Hash.REQUEST_SCRIPT_AUDIO_BANK, "DLC_IMPORTEXPORT/GARAGE_ELEVATOR", false,
+                        -1))
+                        State = 2;
                     break;
                 case 2:
+                    currentGarage.AddVehicleInfo(Game.Player.Character.CurrentVehicle);
+                    platform.Position = platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, -1f));
+                    State = 3;
+                    break;
+                case 3:
                     if (MoveTo(LevelAPos)) {
                         Game.Player.Character.CurrentVehicle.Position =
                             platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, 1.3f));
@@ -102,17 +107,18 @@ namespace SinglePlayerOffice.Interactions {
                         Position = GetCurrentLevelElevatorPos().GetValueOrDefault();
                         SinglePlayerOffice.IsHudHidden = false;
                         Game.Player.Character.Task.ClearAll();
-                        if (currentGarage == currentBuilding.GarageOne)
+                        if (currentGarage == Utilities.CurrentBuilding.GarageOne)
                             Audio.PlaySoundFrontend("Speech_Floor_1", "DLC_IE_Garage_Elevator_Sounds");
-                        else if (currentGarage == currentBuilding.GarageTwo)
+                        else if (currentGarage == Utilities.CurrentBuilding.GarageTwo)
                             Audio.PlaySoundFrontend("Speech_Floor_2", "DLC_IE_Garage_Elevator_Sounds");
-                        else if (currentGarage == currentBuilding.GarageThree)
+                        else if (currentGarage == Utilities.CurrentBuilding.GarageThree)
                             Audio.PlaySoundFrontend("Speech_Floor_3", "DLC_IE_Garage_Elevator_Sounds");
-                        State = 3;
+                        Function.Call(Hash.RELEASE_NAMED_SCRIPT_AUDIO_BANK, "DLC_IMPORTEXPORT/GARAGE_ELEVATOR");
+                        State = 4;
                     }
 
                     break;
-                case 3:
+                case 4:
                     foreach (var gate in gates)
                         gate.MoveTo(gate.InitialPos);
                     if (!MoveTo(Position)) {
@@ -125,15 +131,15 @@ namespace SinglePlayerOffice.Interactions {
                             this.gates = gates;
                         }
 
-                        State = 4;
+                        State = 5;
                     }
 
                     break;
-                case 4:
+                case 5:
                     if (!gates.TrueForAll(gate => gate.MoveTo(Vector3.Add(gate.InitialPos, new Vector3(0f, 0f, 3f))))) {
-                        currentBuilding.UpdateVehicleElevatorMenuButtons();
+                        Utilities.CurrentBuilding.UpdateVehicleElevatorMenuButtons();
                         SinglePlayerOffice.IsHudHidden = true;
-                        currentBuilding.VehicleElevatorMenu.Visible = true;
+                        Utilities.CurrentBuilding.VehicleElevatorMenu.Visible = true;
                         State = 0;
                     }
 

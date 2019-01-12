@@ -28,7 +28,7 @@ namespace SinglePlayerOffice.Interactions {
         public Vector3 Rotation { get; }
 
         public void CreateWardrobeMenu() {
-            wardrobeMenu = new UIMenu("", "~b~Outfit Options") {MouseEdgeEnabled = false};
+            wardrobeMenu = new UIMenu("", "~b~Outfit Options") { MouseEdgeEnabled = false };
             wardrobeMenu.SetBannerType(new Sprite("shopui_title_highendfashion", "shopui_title_highendfashion",
                 new Point(0, 0), new Size(0, 0)));
 
@@ -473,15 +473,15 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Update() {
-            var currentBuilding = Utilities.CurrentBuilding;
             switch (State) {
                 case 0:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() &&
                         !SinglePlayerOffice.MenuPool.IsAnyMenuOpen() &&
                         Game.Player.Character.Position.DistanceTo(Position) < 1f) {
-                        if (currentBuilding.IsOwnedBy(Game.Player.Character)) {
+                        if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
                             Utilities.DisplayHelpTextThisFrame(HelpText);
                             if (Game.IsControlJustPressed(2, Control.Context)) {
+                                Game.Player.Character.Weapons.Select(WeaponHash.Unarmed);
                                 SinglePlayerOffice.IsHudHidden = true;
                                 State = 1;
                             }

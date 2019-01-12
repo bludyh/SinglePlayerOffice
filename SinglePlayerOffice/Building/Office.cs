@@ -41,13 +41,13 @@ namespace SinglePlayerOffice.Buildings {
             LeftSafe = new LeftSafe();
             Radio = new Radio();
             RightSafe = new RightSafe();
+            Shower = new Shower();
             Tv = new Tv();
         }
 
         public static List<string> ExtraDecors { get; set; }
 
         public override string RadioEmitter => GetRadioEmitter();
-        public List<string> ExteriorIpLs { get; set; }
         public List<int> InteriorIDs { get; set; }
         public Vector3 PurchaseCamPos { get; set; }
         public Vector3 PurchaseCamRot { get; set; }
@@ -57,8 +57,6 @@ namespace SinglePlayerOffice.Buildings {
         public InteriorStyle InteriorStyle { get; set; }
         public bool HasExtraDecors { get; set; }
         public int ExtraDecorsPrice { get; set; }
-
-        //Interactions
         public Boss Boss { get; set; }
         public Pa Pa { get; set; }
         public List<Staff> Staffs { get; set; }
@@ -70,10 +68,12 @@ namespace SinglePlayerOffice.Buildings {
         public LeftSafe LeftSafe { get; }
         public Radio Radio { get; }
         public RightSafe RightSafe { get; }
+        public Shower Shower { get; }
         public List<Sofa> Sofas { get; set; }
         public SofaAndTv SofaAndTv { get; set; }
         public Tv Tv { get; }
         public Wardrobe Wardrobe { get; set; }
+        public List<string> ExteriorIpLs { get; set; }
 
         public void LoadInterior() {
             Function.Call(Hash.REQUEST_IPL, InteriorStyle.Style);
@@ -162,6 +162,7 @@ namespace SinglePlayerOffice.Buildings {
             interactions.Add(LeftSafe);
             interactions.Add(Radio);
             interactions.Add(RightSafe);
+            interactions.Add(Shower);
             interactions.AddRange(Sofas);
             interactions.Add(SofaAndTv);
             interactions.Add(Tv);
@@ -171,25 +172,22 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         public override void OnLocationArrived() {
-            var currentBuilding = Utilities.CurrentBuilding;
-
-            if (!currentBuilding.IsOwnedBy(Game.Player.Character))
+            if (!Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character))
                 Boss.Create();
             if (!Pa.IsCreated)
                 Pa.Create();
         }
 
         protected override void HandleTrigger() {
-            var currentBuilding = Utilities.CurrentBuilding;
             if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() ||
                 !(Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f) ||
                 SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
             Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
             if (!Game.IsControlJustPressed(2, Control.Context)) return;
             Game.Player.Character.Task.StandStill(-1);
-            currentBuilding.UpdateTeleportMenuButtons();
+            Utilities.CurrentBuilding.UpdateTeleportMenuButtons();
             SinglePlayerOffice.IsHudHidden = true;
-            currentBuilding.TeleportMenu.Visible = true;
+            Utilities.CurrentBuilding.TeleportMenu.Visible = true;
         }
 
         private void HandleSpawningStaffs() {

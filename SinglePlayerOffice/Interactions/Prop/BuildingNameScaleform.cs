@@ -7,7 +7,6 @@ namespace SinglePlayerOffice.Interactions {
         private static Scaleform _buildingNameScaleform;
 
         public override void Update() {
-            var currentBuilding = Utilities.CurrentBuilding;
             switch (State) {
                 case 0:
                     if (_buildingNameScaleform == null) {
@@ -40,7 +39,7 @@ namespace SinglePlayerOffice.Interactions {
                     if (_buildingNameScaleform.IsLoaded) {
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION, _buildingNameScaleform.Handle,
                             "SET_ORGANISATION_NAME");
-                        Function.Call((Hash) 8646405517797544368, currentBuilding.Name);
+                        Function.Call((Hash) 8646405517797544368, Utilities.CurrentBuilding.Name);
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, 0);
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, 0);
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, 0);
@@ -51,6 +50,11 @@ namespace SinglePlayerOffice.Interactions {
 
                     break;
             }
+        }
+
+        public override void Reset() {
+            _buildingNameScaleform?.Dispose();
+            _buildingNameScaleform = null;
         }
 
         public override void Dispose() {

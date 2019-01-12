@@ -826,7 +826,7 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         protected void CreateGarageEntranceMenu() {
-            GarageEntranceMenu = new UIMenu("", "~b~Garage Options", new Point(0, -107)) {MouseEdgeEnabled = false};
+            GarageEntranceMenu = new UIMenu("", "~b~Garage Options", new Point(0, -107)) { MouseEdgeEnabled = false };
             GarageEntranceMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(),
                 "SinglePlayerOffice.Resources.no_banner.png"));
             GarageEntranceMenu.AddItem(new UIMenuItem("Garage One"));
@@ -1097,6 +1097,11 @@ namespace SinglePlayerOffice.Buildings {
                 Game.Player.Character.Heading = Utilities.SavedRot.Z;
                 Office.LoadInterior();
                 Office.LoadExterior();
+                Office.Pa.IsGreeted = true;
+                Office.Staffs.ForEach(s => {
+                    s.IsGreeted = true;
+                    s.State = 0;
+                });
                 Game.Player.Character.Task.ClearAll();
                 Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
                 Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
@@ -1266,10 +1271,14 @@ namespace SinglePlayerOffice.Buildings {
         public void Dispose() {
             entranceBlip?.Remove();
             garageEntranceBlip?.Remove();
+            Entrance.Dispose();
+            GarageEntrance.Dispose();
             Office.Dispose();
             GarageOne.Dispose();
             GarageTwo.Dispose();
             GarageThree.Dispose();
+            ModShop.Dispose();
+            HeliPad.Dispose();
         }
     }
 }

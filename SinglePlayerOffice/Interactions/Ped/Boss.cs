@@ -14,13 +14,12 @@ namespace SinglePlayerOffice.Interactions {
             this.spawnPos = spawnPos;
         }
 
-        public bool IsGreeted { get; private set; }
+        public bool IsGreeted { get; set; }
         public int ConversationState { get; set; }
         public override bool IsCreated => ped != null;
 
         public override void Create() {
-            var currentBuilding = Utilities.CurrentBuilding;
-            switch (currentBuilding.Owner) {
+            switch (Utilities.CurrentBuilding.Owner) {
                 case Owner.Michael:
                     ped = World.CreatePed(PedHash.Michael, spawnPos);
                     Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 0, 0, 4, 2);
@@ -65,8 +64,13 @@ namespace SinglePlayerOffice.Interactions {
                     State = 1;
                     break;
                 case 1:
+                    Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@boss@male@");
+                    if (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boardroom@boss@male@"))
+                        State = 2;
+                    break;
+                case 2:
                     if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, chair, "anim@amb@office@boardroom@boss@male@",
-                        "enter_b_chair", 2)) {
+                        "enter_b_chair", 3)) {
                         syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, chair.Position.X,
                             chair.Position.Y, chair.Position.Z, 0f, 0f, chair.Heading, 2);
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, ped, syncSceneHandle,
@@ -74,13 +78,11 @@ namespace SinglePlayerOffice.Interactions {
                         Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, chair, syncSceneHandle, "enter_b_chair",
                             "anim@amb@office@boardroom@boss@male@", 4f, -4f, 32781, 1000f);
                     }
-                    else {
-                        State = 2;
-                    }
-
+                    else 
+                        State = 3;
                     break;
-                case 2:
-                    if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
+                case 3:
+                    if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) < 1f) break;
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, chair.Position.X,
                         chair.Position.Y, chair.Position.Z, 0f, 0f, chair.Heading, 2);
                     Function.Call(Hash.SET_SYNCHRONIZED_SCENE_LOOPED, syncSceneHandle, true);
@@ -128,11 +130,11 @@ namespace SinglePlayerOffice.Interactions {
             Dispose();
             IsGreeted = false;
             State = 0;
-            ConversationState = 0;
         }
 
         public override void Dispose() {
             ped?.Delete();
+            Function.Call(Hash.REMOVE_ANIM_DICT, "anim@amb@office@boardroom@boss@male@");
         }
     }
 }

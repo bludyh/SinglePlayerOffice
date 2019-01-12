@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using GTA;
 using GTA.Native;
 using NativeUI;
@@ -9,6 +10,7 @@ namespace SinglePlayerOffice {
     internal class SinglePlayerOffice : Script {
         public SinglePlayerOffice() {
             Tick += OnTick;
+            KeyUp += OnKeyUp;
             Aborted += OnAborted;
 
             MenuPool = new MenuPool();
@@ -16,10 +18,9 @@ namespace SinglePlayerOffice {
             LomBank = new LomBank();
             MazeBank = new MazeBank();
             MazeBankWest = new MazeBankWest();
-            Buildings = new List<Building> {Arcadius, LomBank, MazeBank, MazeBankWest};
+            Buildings = new List<Building> { Arcadius, LomBank, MazeBank, MazeBankWest };
 
             Utilities.LoadMpMap();
-            Utilities.RequestGameResources();
         }
 
         public static bool IsHudHidden { get; set; }
@@ -48,13 +49,21 @@ namespace SinglePlayerOffice {
             Utilities.CurrentBuilding?.Update();
         }
 
+        //Debug begin
+        private static void OnKeyUp(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.F5) {
+                Logger.Log(Utilities.SavedPos);
+                Logger.Log(Utilities.SavedRot);
+            }
+        }
+        //Debug end
+
         private static void OnAborted(object sender, EventArgs e) {
             foreach (var building in Buildings)
                 building.Dispose();
             World.RenderingCamera = null;
             World.DestroyAllCameras();
             Game.Player.Character.Task.ClearAll();
-            Utilities.ReleaseGameResources();
         }
     }
 }

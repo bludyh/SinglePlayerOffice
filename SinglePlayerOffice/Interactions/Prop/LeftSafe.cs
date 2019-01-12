@@ -14,7 +14,6 @@ namespace SinglePlayerOffice.Interactions {
         public bool IsSafeOpened { get; private set; }
 
         public override void Update() {
-            var currentBuilding = Utilities.CurrentBuilding;
             switch (State) {
                 case 0:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle())
@@ -26,10 +25,11 @@ namespace SinglePlayerOffice.Interactions {
                                 case -524920966:
                                 case -1842578680:
                                 case -1387653807:
-                                    if (currentBuilding.IsOwnedBy(Game.Player.Character)) {
+                                    if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
                                         Utilities.DisplayHelpTextThisFrame(HelpText);
                                         if (Game.IsControlJustPressed(2, Control.Context)) {
                                             door = prop;
+                                            Game.Player.Character.Weapons.Select(WeaponHash.Unarmed);
                                             SinglePlayerOffice.IsHudHidden = true;
                                             State = 1;
                                         }
@@ -42,6 +42,11 @@ namespace SinglePlayerOffice.Interactions {
                             }
                     break;
                 case 1:
+                    Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boss@vault@left@male@");
+                    if (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boss@vault@left@male@"))
+                        State = 2;
+                    break;
+                case 2:
                     if (!IsSafeOpened) {
                         initialPos = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION,
                             "anim@amb@office@boss@vault@left@male@", "open", door.Position.X, door.Position.Y,
@@ -53,18 +58,18 @@ namespace SinglePlayerOffice.Interactions {
 
                     Function.Call(Hash.TASK_GO_STRAIGHT_TO_COORD, Game.Player.Character, initialPos.X, initialPos.Y,
                         initialPos.Z, 1f, -1, initialRot.Z, 0f);
-                    State = 2;
+                    State = 3;
                     break;
-                case 2:
+                case 3:
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
                     if (!IsSafeOpened) {
                         Utilities.SavedPos = door.Position;
                         Utilities.SavedRot = door.Rotation;
                     }
 
-                    State = 3;
+                    State = 4;
                     break;
-                case 3:
+                case 4:
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, Utilities.SavedPos.X,
                         Utilities.SavedPos.Y, Utilities.SavedPos.Z, 0f, 0f, Utilities.SavedRot.Z, 2);
                     if (!IsSafeOpened) {
@@ -82,12 +87,13 @@ namespace SinglePlayerOffice.Interactions {
                         IsSafeOpened = false;
                     }
 
-                    State = 4;
+                    State = 5;
                     break;
-                case 4:
-                    if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) != 1f) break;
+                case 5:
+                    if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) < 1f) break;
                     SinglePlayerOffice.IsHudHidden = false;
                     Game.Player.Character.Task.ClearAll();
+                    Function.Call(Hash.REMOVE_ANIM_DICT, "anim@amb@office@boss@vault@left@male@");
                     State = 0;
                     break;
             }

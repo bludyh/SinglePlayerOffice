@@ -62,6 +62,7 @@
     <Compile Include="Interactions\Prop\BuildingNameScaleform.cs" />
     <Compile Include="Interactions\Prop\Computer.cs" />
     <Compile Include="Interactions\Ped\Staff.cs" />
+    <Compile Include="Interactions\Prop\Shower.cs" />
     <Compile Include="Interactions\Prop\VehicleElevatorEntrance.cs" />
     <Compile Include="Interactions\Interaction.cs" />
     <Compile Include="Interactions\Prop\Laptop.cs" />

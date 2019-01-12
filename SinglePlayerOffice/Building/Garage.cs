@@ -76,7 +76,6 @@ namespace SinglePlayerOffice.Buildings {
         public static List<InteriorStyle> NumberingStylesGarageThree { get; set; }
 
         public string Ipl { get; set; }
-        public List<string> ExteriorIpLs { get; set; }
         public int InteriorId { get; set; }
         public Vector3 PurchaseCamPos { get; set; }
         public Vector3 PurchaseCamRot { get; set; }
@@ -97,10 +96,10 @@ namespace SinglePlayerOffice.Buildings {
         public float NumberingCamFov { get; set; }
         public Camera NumberingCam { get; set; }
         public InteriorStyle NumberingStyle { get; set; }
-        //Interactions
         public List<Sofa> Sofas { get; set; }
         public VehicleElevator VehicleElevator { get; set; }
         public VehicleInfoScaleform VehicleInfoScaleform { get; }
+        public List<string> ExteriorIpLs { get; set; }
 
         public void LoadInterior() {
             Function.Call(Hash.REQUEST_IPL, Ipl);
@@ -201,21 +200,17 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         private string GetGarageFileName() {
-            var currentBuilding = Utilities.CurrentBuilding;
-
-            if (this == currentBuilding.GarageOne)
+            if (this == Utilities.CurrentBuilding.GarageOne)
                 return "GarageOne.xml";
-            if (this == currentBuilding.GarageTwo)
+            if (this == Utilities.CurrentBuilding.GarageTwo)
                 return "GarageTwo.xml";
-            if (this == currentBuilding.GarageThree)
+            if (this == Utilities.CurrentBuilding.GarageThree)
                 return "GarageThree.xml";
 
             return null;
         }
 
         private void SaveVehicleInfoList() {
-            var currentBuilding = Utilities.CurrentBuilding;
-
             foreach (var vehicleInfo in vehicleInfoList) {
                 vehicleInfo.Position = vehicleInfo.Vehicle.Position;
                 vehicleInfo.Rotation = vehicleInfo.Vehicle.Rotation;
@@ -223,17 +218,15 @@ namespace SinglePlayerOffice.Buildings {
 
             var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
             var fileName = GetGarageFileName();
-            var writer = new StreamWriter($@"scripts\SinglePlayerOffice\{currentBuilding.Name}\{fileName}");
+            var writer = new StreamWriter($@"scripts\SinglePlayerOffice\{Utilities.CurrentBuilding.Name}\{fileName}");
             serializer.Serialize(writer, vehicleInfoList);
             writer.Close();
         }
 
         private void LoadVehicleInfoList() {
-            var currentBuilding = Utilities.CurrentBuilding;
-
             var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
             var fileName = GetGarageFileName();
-            var reader = new StreamReader($@"scripts\SinglePlayerOffice\{currentBuilding.Name}\{fileName}");
+            var reader = new StreamReader($@"scripts\SinglePlayerOffice\{Utilities.CurrentBuilding.Name}\{fileName}");
             vehicleInfoList = (List<VehicleInfo>) serializer.Deserialize(reader);
             reader.Close();
         }
