@@ -5,7 +5,9 @@ using GTA.Native;
 using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice.Interactions {
+
     internal class VehicleElevator : Interaction {
+
         private Prop body;
         private List<Gate> gates;
         private Prop platform;
@@ -29,6 +31,7 @@ namespace SinglePlayerOffice.Interactions {
         public override void Create() {
             var model = new Model("imp_prop_ie_carelev01");
             model.Request(250);
+
             if (model.IsInCdImage && model.IsValid) {
                 while (!model.IsLoaded)
                     Script.Wait(50);
@@ -39,6 +42,7 @@ namespace SinglePlayerOffice.Interactions {
 
             model = new Model("imp_prop_ie_carelev02");
             model.Request(250);
+
             if (model.IsInCdImage && model.IsValid) {
                 while (!model.IsLoaded)
                     Script.Wait(50);
@@ -59,26 +63,33 @@ namespace SinglePlayerOffice.Interactions {
                 return LevelBPos;
             if (Game.Player.Character.Position.Z > LevelCPos.Z)
                 return LevelCPos;
+
             return null;
         }
 
         private bool MoveTo(Vector3 targetPos) {
             if (!(platform.Position.DistanceTo(targetPos) > 0.01f)) return false;
+
             platform.Position = Vector3.Add(platform.Position,
                 platform.Position.Z < targetPos.Z ? new Vector3(0f, 0f, 0.005f) : new Vector3(0f, 0f, -0.005f));
+
             return true;
         }
 
         public override void Update() {
-            var currentGarage = (Garage) Utilities.CurrentBuilding.CurrentLocation;
+            var currentBuilding = SinglePlayerOffice.CurrentBuilding;
+            var currentGarage = (Garage) currentBuilding.CurrentLocation;
+
             switch (State) {
                 case 0:
+
                     if (!Game.Player.Character.IsDead &&
                         (Game.Player.Character.Position.DistanceTo(LevelAPos) < 8f ||
                          Game.Player.Character.Position.DistanceTo(LevelBPos) < 8f ||
                          Game.Player.Character.Position.DistanceTo(LevelCPos) < 8f) &&
-                        !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
+                        !UI.MenuPool.IsAnyMenuOpen()) {
                         Utilities.DisplayHelpTextThisFrame(HelpText);
+
                         if (Game.IsControlJustPressed(2, Control.Context)) {
                             Position = GetCurrentLevelElevatorPos().GetValueOrDefault();
                             State = 4;
@@ -90,13 +101,16 @@ namespace SinglePlayerOffice.Interactions {
                     if (Function.Call<bool>(Hash.REQUEST_SCRIPT_AUDIO_BANK, "DLC_IMPORTEXPORT/GARAGE_ELEVATOR", false,
                         -1))
                         State = 2;
+
                     break;
                 case 2:
                     currentGarage.AddVehicleInfo(Game.Player.Character.CurrentVehicle);
                     platform.Position = platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, -1f));
                     State = 3;
+
                     break;
                 case 3:
+
                     if (MoveTo(LevelAPos)) {
                         Game.Player.Character.CurrentVehicle.Position =
                             platform.GetOffsetInWorldCoords(new Vector3(0f, 0f, 1.3f));
@@ -105,13 +119,13 @@ namespace SinglePlayerOffice.Interactions {
                     }
                     else {
                         Position = GetCurrentLevelElevatorPos().GetValueOrDefault();
-                        SinglePlayerOffice.IsHudHidden = false;
+                        UI.IsHudHidden = false;
                         Game.Player.Character.Task.ClearAll();
-                        if (currentGarage == Utilities.CurrentBuilding.GarageOne)
+                        if (currentGarage == currentBuilding.GarageOne)
                             Audio.PlaySoundFrontend("Speech_Floor_1", "DLC_IE_Garage_Elevator_Sounds");
-                        else if (currentGarage == Utilities.CurrentBuilding.GarageTwo)
+                        else if (currentGarage == currentBuilding.GarageTwo)
                             Audio.PlaySoundFrontend("Speech_Floor_2", "DLC_IE_Garage_Elevator_Sounds");
-                        else if (currentGarage == Utilities.CurrentBuilding.GarageThree)
+                        else if (currentGarage == currentBuilding.GarageThree)
                             Audio.PlaySoundFrontend("Speech_Floor_3", "DLC_IE_Garage_Elevator_Sounds");
                         Function.Call(Hash.RELEASE_NAMED_SCRIPT_AUDIO_BANK, "DLC_IMPORTEXPORT/GARAGE_ELEVATOR");
                         State = 4;
@@ -121,12 +135,15 @@ namespace SinglePlayerOffice.Interactions {
                 case 4:
                     foreach (var gate in gates)
                         gate.MoveTo(gate.InitialPos);
+
                     if (!MoveTo(Position)) {
                         var gates = new List<Gate>();
+
                         foreach (var prop in World.GetNearbyProps(platform.Position, 4.5f)) {
                             if (prop.Model.Hash != -2088725999 && prop.Model.Hash != -1238206604 &&
                                 (prop.Model.Hash != 1593297148 || !(platform.Position.DistanceTo(LevelAPos) < 1f)))
                                 continue;
+
                             gates.Add(new Gate(prop, prop.Position));
                             this.gates = gates;
                         }
@@ -136,10 +153,10 @@ namespace SinglePlayerOffice.Interactions {
 
                     break;
                 case 5:
+
                     if (!gates.TrueForAll(gate => gate.MoveTo(Vector3.Add(gate.InitialPos, new Vector3(0f, 0f, 3f))))) {
-                        Utilities.CurrentBuilding.UpdateVehicleElevatorMenuButtons();
-                        SinglePlayerOffice.IsHudHidden = true;
-                        Utilities.CurrentBuilding.VehicleElevatorMenu.Visible = true;
+                        UI.IsHudHidden = true;
+                        UI.VehicleElevatorMenu.Visible = true;
                         State = 0;
                     }
 
@@ -157,6 +174,7 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         private class Gate {
+
             private readonly Prop prop;
 
             public Gate(Prop prop, Vector3 pos) {
@@ -168,10 +186,15 @@ namespace SinglePlayerOffice.Interactions {
 
             public bool MoveTo(Vector3 pos) {
                 if (!(prop.Position.DistanceTo(pos) > 0.01f)) return false;
+
                 prop.Position = Vector3.Add(prop.Position,
                     prop.Position.Z < pos.Z ? new Vector3(0f, 0f, 0.01f) : new Vector3(0f, 0f, -0.01f));
+
                 return true;
             }
+
         }
+
     }
+
 }

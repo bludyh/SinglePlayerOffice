@@ -1,14 +1,13 @@
 ﻿using System;
-using GTA;
 using GTA.Math;
 using GTA.Native;
-using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice {
+
     internal static class Utilities {
+
         public static Vector3 SavedPos { get; set; }
         public static Vector3 SavedRot { get; set; }
-        public static Building CurrentBuilding => GetCurrentBuilding();
 
         public static void LoadMpMap() {
             Function.Call(Hash._LOAD_MP_DLC_MAPS);
@@ -74,36 +73,10 @@ namespace SinglePlayerOffice {
             for (var i = 0; i < message.Length; i += 99)
                 Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, message.Substring(i, Math.Min(99, message.Length - i)));
             Function.Call(Hash._0x1E6611149DB3DB6B, picName, picName, 1, iconType, sender, subject, 1f);
+
             return Function.Call<int>(Hash._DRAW_NOTIFICATION, 1, 1);
         }
 
-        private static Building GetCurrentBuilding() {
-            var currentInteriorId = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
-
-            foreach (var building in SinglePlayerOffice.Buildings)
-                if (Game.Player.Character.Position.DistanceTo(building.Entrance.TriggerPos) < 10f
-                    || building.InteriorIDs.Contains(currentInteriorId)
-                    || Game.Player.Character.Position.DistanceTo(building.HeliPad.TriggerPos) < 10f)
-                    return building;
-
-            return null;
-        }
-
-        public static void TalkShit() {
-            switch (Function.Call<int>(Hash.GET_PED_TYPE, Game.Player.Character)) {
-                case 0:
-                    Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "CULT_TALK",
-                        "SPEECH_PARAMS_FORCE");
-                    break;
-                case 1:
-                    Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "PED_RANT_RESP",
-                        "SPEECH_PARAMS_FORCE");
-                    break;
-                case 3:
-                    Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "GENERIC_INSULT_OLD",
-                        "SPEECH_PARAMS_FORCE");
-                    break;
-            }
-        }
     }
+
 }

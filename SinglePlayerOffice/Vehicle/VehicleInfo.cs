@@ -7,7 +7,9 @@ using GTA.Math;
 using GTA.Native;
 
 namespace SinglePlayerOffice.Vehicles {
+
     public class VehicleInfo {
+
         public VehicleInfo() { }
 
         public VehicleInfo(Vehicle vehicle) {
@@ -323,16 +325,19 @@ namespace SinglePlayerOffice.Vehicles {
                 Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "lectro"))
                 return p2 ? "PRINCIPL" : "PRINCIPE";
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "hexer")) return "LCC";
+
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "bmx") ||
                 Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "cruiser") ||
                 Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "scorcher"))
                 if (!p2)
                     return "Ped";
+
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "tribike") ||
                 Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "tribike2") ||
                 Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "tribike3"))
                 if (!p2)
                     return "TriCycles";
+
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "cogcabrio") ||
                 Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "superd") ||
                 Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "windsor")) return "ENUS";
@@ -585,19 +590,23 @@ namespace SinglePlayerOffice.Vehicles {
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "jester3")) return "DINKA";
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "taipan")) return "CHEVAL";
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "cheburek")) return "RUNE";
+
             return "";
         }
 
         public string GetLogoTextureDict() {
             var brandName = GetBrandName(false);
+
             if (brandName == "LCC" || brandName == "Grotti_2" || brandName == "PROGEN" || brandName == "RUNE")
                 return "MPCarHUD2";
+
             return "MPCarHUD";
         }
 
         public float GetMaxSpeedInPercentage() {
             var maxSpeed = Function.Call<float>(Hash._0x53AF99BAA671CA47, Vehicle);
             var percentage = maxSpeed / 52.0588235294f * 100f;
+
             return percentage > 100f ? 100f : percentage;
         }
 
@@ -609,6 +618,7 @@ namespace SinglePlayerOffice.Vehicles {
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "t20")) maxAcceleration -= 0.05f;
             if (Vehicle.Model.Hash == Function.Call<int>(Hash.GET_HASH_KEY, "vindicator")) maxAcceleration -= 0.02f;
             var percentage = maxAcceleration / 0.45625f * 100f;
+
             return percentage > 100f ? 100f : percentage;
         }
 
@@ -616,6 +626,7 @@ namespace SinglePlayerOffice.Vehicles {
             var maxBraking = Function.Call<float>(Hash._0xAD7E85FC227197C4, Vehicle);
             if (Vehicle.Model.IsBicycle) maxBraking *= 0.5f;
             var percentage = maxBraking / 2.97297297297f * 100f;
+
             return percentage > 100f ? 100f : percentage;
         }
 
@@ -623,11 +634,13 @@ namespace SinglePlayerOffice.Vehicles {
             var maxTraction = Function.Call<float>(Hash._0xA132FB5370554DB0, Vehicle);
             if (Vehicle.Model.IsBicycle) maxTraction *= 0.5f;
             var percentage = maxTraction / 3.30864197531f * 100f;
+
             return percentage > 100f ? 100f : percentage;
         }
 
         public List<NeonLight> GetNeonLights() {
             var neonLights = new List<NeonLight>();
+
             foreach (VehicleNeonLight light in Enum.GetValues(typeof(VehicleNeonLight))) {
                 var neonLight = new NeonLight(light, Vehicle.IsNeonLightsOn(light));
                 neonLights.Add(neonLight);
@@ -638,6 +651,7 @@ namespace SinglePlayerOffice.Vehicles {
 
         public List<VehicleMod> GetMods() {
             var mods = new List<VehicleMod>();
+
             foreach (GTA.VehicleMod vehicleMod in Enum.GetValues(typeof(GTA.VehicleMod))) {
                 var mod = new VehicleMod(vehicleMod, Vehicle.GetMod(vehicleMod));
                 mods.Add(mod);
@@ -648,6 +662,7 @@ namespace SinglePlayerOffice.Vehicles {
 
         public List<VehicleToggleMod> GetToggleMods() {
             var toggleMods = new List<VehicleToggleMod>();
+
             foreach (GTA.VehicleToggleMod vehicleToggleMod in Enum.GetValues(typeof(GTA.VehicleToggleMod))) {
                 var toggleMod = new VehicleToggleMod(vehicleToggleMod, Vehicle.IsToggleModOn(vehicleToggleMod));
                 toggleMods.Add(toggleMod);
@@ -671,7 +686,7 @@ namespace SinglePlayerOffice.Vehicles {
             vehicle.WindowTint = (VehicleWindowTint) WindowTint;
             vehicle.WheelType = (VehicleWheelType) WheelType;
             vehicle.RoofState = (VehicleRoofState) RoofState;
-            if (!Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character))
+            if (!SinglePlayerOffice.CurrentBuilding.IsOwnedBy(Game.Player.Character))
                 vehicle.LockStatus = VehicleLockStatus.Locked;
             else
                 vehicle.LockStatus = (VehicleLockStatus) LockStatus;
@@ -698,5 +713,7 @@ namespace SinglePlayerOffice.Vehicles {
         public void DeleteVehicle() {
             Vehicle?.Delete();
         }
+
     }
+
 }

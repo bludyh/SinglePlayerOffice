@@ -8,7 +8,9 @@ using SinglePlayerOffice.Interactions;
 using SinglePlayerOffice.Vehicles;
 
 namespace SinglePlayerOffice.Buildings {
+
     internal class Garage : Location, IInterior {
+
         private List<VehicleInfo> vehicleInfoList;
 
         static Garage() {
@@ -194,17 +196,21 @@ namespace SinglePlayerOffice.Buildings {
         public void RemoveVehicleInfo(Vehicle vehicle) {
             foreach (var vehicleInfo in vehicleInfoList) {
                 if (vehicleInfo.Vehicle != vehicle) continue;
+
                 vehicleInfoList.Remove(vehicleInfo);
+
                 break;
             }
         }
 
         private string GetGarageFileName() {
-            if (this == Utilities.CurrentBuilding.GarageOne)
+            var currentBuilding = SinglePlayerOffice.CurrentBuilding;
+
+            if (this == currentBuilding.GarageOne)
                 return "GarageOne.xml";
-            if (this == Utilities.CurrentBuilding.GarageTwo)
+            if (this == currentBuilding.GarageTwo)
                 return "GarageTwo.xml";
-            if (this == Utilities.CurrentBuilding.GarageThree)
+            if (this == currentBuilding.GarageThree)
                 return "GarageThree.xml";
 
             return null;
@@ -218,7 +224,8 @@ namespace SinglePlayerOffice.Buildings {
 
             var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
             var fileName = GetGarageFileName();
-            var writer = new StreamWriter($@"scripts\SinglePlayerOffice\{Utilities.CurrentBuilding.Name}\{fileName}");
+            var writer =
+                new StreamWriter($@"scripts\SinglePlayerOffice\{SinglePlayerOffice.CurrentBuilding.Name}\{fileName}");
             serializer.Serialize(writer, vehicleInfoList);
             writer.Close();
         }
@@ -226,7 +233,8 @@ namespace SinglePlayerOffice.Buildings {
         private void LoadVehicleInfoList() {
             var serializer = new XmlSerializer(typeof(List<VehicleInfo>));
             var fileName = GetGarageFileName();
-            var reader = new StreamReader($@"scripts\SinglePlayerOffice\{Utilities.CurrentBuilding.Name}\{fileName}");
+            var reader =
+                new StreamReader($@"scripts\SinglePlayerOffice\{SinglePlayerOffice.CurrentBuilding.Name}\{fileName}");
             vehicleInfoList = (List<VehicleInfo>) serializer.Deserialize(reader);
             reader.Close();
         }
@@ -267,17 +275,17 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         protected override void HandleTrigger() {
-            var building = Utilities.CurrentBuilding;
-
             if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() ||
                 !(Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f) ||
-                SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
+                UI.MenuPool.IsAnyMenuOpen()) return;
+
             Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
+
             if (!Game.IsControlJustPressed(2, Control.Context)) return;
+
             Game.Player.Character.Task.StandStill(-1);
-            building.UpdateTeleportMenuButtons();
-            SinglePlayerOffice.IsHudHidden = true;
-            building.TeleportMenu.Visible = true;
+            UI.IsHudHidden = true;
+            UI.TeleportMenu.Visible = true;
         }
 
         public override void Dispose() {
@@ -285,5 +293,7 @@ namespace SinglePlayerOffice.Buildings {
 
             DeleteVehicles();
         }
+
     }
+
 }

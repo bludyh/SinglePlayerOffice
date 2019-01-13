@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using GTA;
 using GTA.Native;
-using NativeUI;
 using SinglePlayerOffice.Buildings;
 
 namespace SinglePlayerOffice {
+
     internal class SinglePlayerOffice : Script {
+
         public SinglePlayerOffice() {
             Tick += OnTick;
             KeyUp += OnKeyUp;
             Aborted += OnAborted;
 
-            MenuPool = new MenuPool();
             Arcadius = new Arcadius();
             LomBank = new LomBank();
             MazeBank = new MazeBank();
@@ -23,17 +23,23 @@ namespace SinglePlayerOffice {
             Utilities.LoadMpMap();
         }
 
-        public static bool IsHudHidden { get; set; }
-        public static MenuPool MenuPool { get; private set; }
         public static Arcadius Arcadius { get; private set; }
         public static LomBank LomBank { get; private set; }
         public static MazeBank MazeBank { get; private set; }
         public static MazeBankWest MazeBankWest { get; private set; }
         public static List<Building> Buildings { get; private set; }
+        public static Building CurrentBuilding => GetCurrentBuilding();
 
-        private static void HandleHudVisibility() {
-            if (IsHudHidden)
-                Function.Call(Hash.HIDE_HUD_AND_RADAR_THIS_FRAME);
+        private static Building GetCurrentBuilding() {
+            var currentInteriorId = Function.Call<int>(Hash.GET_INTERIOR_FROM_ENTITY, Game.Player.Character);
+
+            foreach (var building in Buildings)
+                if (Game.Player.Character.Position.DistanceTo(building.Entrance.TriggerPos) < 10f
+                    || building.InteriorIDs.Contains(currentInteriorId)
+                    || Game.Player.Character.Position.DistanceTo(building.HeliPad.TriggerPos) < 10f)
+                    return building;
+
+            return null;
         }
 
         private static void HandleTimedNotifications() {
@@ -42,11 +48,12 @@ namespace SinglePlayerOffice {
         }
 
         private static void OnTick(object sender, EventArgs e) {
-            HandleHudVisibility();
             HandleTimedNotifications();
-            MenuPool.ProcessMenus();
 
-            Utilities.CurrentBuilding?.Update();
+            UI.HandleHudVisibility();
+            UI.HandleMenus();
+
+            CurrentBuilding?.Update();
         }
 
         //Debug begin
@@ -56,6 +63,7 @@ namespace SinglePlayerOffice {
                 Logger.Log(Utilities.SavedRot);
             }
         }
+
         //Debug end
 
         private static void OnAborted(object sender, EventArgs e) {
@@ -65,5 +73,7 @@ namespace SinglePlayerOffice {
             World.DestroyAllCameras();
             Game.Player.Character.Task.ClearAll();
         }
+
     }
+
 }

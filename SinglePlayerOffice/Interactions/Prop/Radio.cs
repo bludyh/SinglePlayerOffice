@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Reflection;
 using GTA;
 using GTA.Math;
 using GTA.Native;
-using NativeUI;
 
 namespace SinglePlayerOffice.Interactions {
+
     internal class RadioStation {
+
         public RadioStation(string name, string des, string gameName) {
             Name = name;
             Description = des;
@@ -17,12 +16,12 @@ namespace SinglePlayerOffice.Interactions {
         public string Name { get; }
         public string Description { get; }
         public string GameName { get; }
+
     }
 
     internal class Radio : Interaction {
+
         private Prop radio;
-        private UIMenu radioMenu;
-        private RadioStation radioStation;
 
         static Radio() {
             Stations = new List<RadioStation> {
@@ -71,10 +70,6 @@ namespace SinglePlayerOffice.Interactions {
             };
         }
 
-        public Radio() {
-            CreateRadioMenu();
-        }
-
         public static List<RadioStation> Stations { get; }
 
         public override string HelpText => !IsRadioOn
@@ -82,53 +77,37 @@ namespace SinglePlayerOffice.Interactions {
             : "Press ~INPUT_CONTEXT~ to turn off the radio";
 
         public bool IsRadioOn { get; private set; }
-
-        private void CreateRadioMenu() {
-            radioMenu = new UIMenu("", "~b~Radio Stations", new Point(0, -107));
-            radioMenu.SetBannerType(Sprite.WriteFileFromResources(Assembly.GetExecutingAssembly(),
-                "SinglePlayerOffice.Resources.no_banner.png"));
-            foreach (var station in Stations) {
-                var radioStationBtn = new UIMenuItem(station.Name, station.Description);
-                radioMenu.AddItem(radioStationBtn);
-            }
-
-            radioMenu.RefreshIndex();
-            radioMenu.OnItemSelect += (sender, item, index) => {
-                SinglePlayerOffice.MenuPool.CloseAllMenus();
-                radioStation = Stations[index];
-                State = 4;
-            };
-            radioMenu.OnMenuClose += sender => {
-                SinglePlayerOffice.IsHudHidden = false;
-                Game.Player.Character.Task.ClearAll();
-            };
-            SinglePlayerOffice.MenuPool.Add(radioMenu);
-        }
+        public RadioStation Station { get; set; }
 
         public override void Update() {
+            var currentBuilding = SinglePlayerOffice.CurrentBuilding;
+
             switch (State) {
                 case 0:
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() &&
-                        !SinglePlayerOffice.MenuPool.IsAnyMenuOpen())
+                        !UI.MenuPool.IsAnyMenuOpen())
                         foreach (var prop in World.GetNearbyProps(Game.Player.Character.Position, 1f))
                             switch (prop.Model.Hash) {
                                 case -364924791:
                                 case 2079380440:
                                     Utilities.DisplayHelpTextThisFrame(HelpText);
+
                                     if (Game.IsControlJustPressed(2, Control.Context)) {
                                         radio = prop;
                                         Game.Player.Character.Weapons.Select(WeaponHash.Unarmed);
-                                        SinglePlayerOffice.IsHudHidden = true;
+                                        UI.IsHudHidden = true;
                                         State = 1;
                                     }
 
                                     break;
                             }
+
                     break;
                 case 1:
                     Function.Call(Hash.REQUEST_ANIM_DICT, "anim@mp_radio@high_apment");
                     if (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@mp_radio@high_apment"))
                         State = 2;
+
                     break;
                 case 2:
                     initialPos = radio.GetOffsetInWorldCoords(new Vector3(0f, -0.65f, 0f));
@@ -138,40 +117,47 @@ namespace SinglePlayerOffice.Interactions {
                     Function.Call(Hash.TASK_GO_STRAIGHT_TO_COORD, Game.Player.Character, initialPos.X, initialPos.Y,
                         initialPos.Z, 1f, 1, initialRot.Z, 0f);
                     State = 3;
+
                     break;
                 case 3:
+
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
+
                     Game.Player.Character.Task.StandStill(-1);
-                    if (!IsRadioOn && !SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) {
-                        radioMenu.Visible = true;
+
+                    if (!IsRadioOn && !UI.MenuPool.IsAnyMenuOpen()) {
+                        UI.RadioMenu.Visible = true;
                         State = 0;
                     }
 
                     if (IsRadioOn)
                         State = 4;
+
                     break;
                 case 4:
                     Game.Player.Character.Task.PlayAnimation("anim@mp_radio@high_apment", "action_a_bedroom");
                     State = 5;
+
                     break;
                 case 5:
+
                     if (Function.Call<float>(Hash.GET_ENTITY_ANIM_CURRENT_TIME, Game.Player.Character,
                             "anim@mp_radio@high_apment", "action_a_bedroom") > 0.5f) {
                         if (!IsRadioOn) {
                             Function.Call(Hash.SET_STATIC_EMITTER_ENABLED,
-                                Utilities.CurrentBuilding.CurrentLocation.RadioEmitter,
+                                currentBuilding.CurrentLocation.RadioEmitter,
                                 true);
                             Function.Call(Hash._0x0E0CD610D5EB6C85,
-                                Utilities.CurrentBuilding.CurrentLocation.RadioEmitter,
+                                currentBuilding.CurrentLocation.RadioEmitter,
                                 radio);
                             Function.Call(Hash.SET_EMITTER_RADIO_STATION,
-                                Utilities.CurrentBuilding.CurrentLocation.RadioEmitter,
-                                radioStation.GameName);
+                                currentBuilding.CurrentLocation.RadioEmitter,
+                                Station.GameName);
                             IsRadioOn = true;
                         }
                         else {
                             Function.Call(Hash.SET_STATIC_EMITTER_ENABLED,
-                                Utilities.CurrentBuilding.CurrentLocation.RadioEmitter,
+                                currentBuilding.CurrentLocation.RadioEmitter,
                                 false);
                             IsRadioOn = false;
                         }
@@ -181,15 +167,18 @@ namespace SinglePlayerOffice.Interactions {
 
                     break;
                 case 6:
+
                     if (Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, Game.Player.Character,
                         "anim@mp_radio@high_apment", "action_a_bedroom", 3)) break;
+
                     if (IsRadioOn && Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2) == 1)
                         Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "RADIO_LIKE",
                             "SPEECH_PARAMS_FORCE");
-                    SinglePlayerOffice.IsHudHidden = false;
+                    UI.IsHudHidden = false;
                     Game.Player.Character.Task.ClearAll();
                     Function.Call(Hash.REMOVE_ANIM_DICT, "anim@mp_radio@high_apment");
                     State = 0;
+
                     break;
             }
         }
@@ -200,8 +189,11 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Dispose() {
-            Function.Call(Hash.SET_STATIC_EMITTER_ENABLED, Utilities.CurrentBuilding.CurrentLocation.RadioEmitter,
+            Function.Call(Hash.SET_STATIC_EMITTER_ENABLED,
+                SinglePlayerOffice.CurrentBuilding.CurrentLocation.RadioEmitter,
                 false);
         }
+
     }
+
 }

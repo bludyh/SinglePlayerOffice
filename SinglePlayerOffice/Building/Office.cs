@@ -6,7 +6,9 @@ using GTA.Native;
 using SinglePlayerOffice.Interactions;
 
 namespace SinglePlayerOffice.Buildings {
+
     internal class Office : Location, IInterior {
+
         static Office() {
             ExtraDecors = new List<string> {
                 "cash_set_01", "cash_set_02", "cash_set_03", "cash_set_04", "cash_set_05", "cash_set_06", "cash_set_07",
@@ -172,7 +174,7 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         public override void OnLocationArrived() {
-            if (!Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character))
+            if (!SinglePlayerOffice.CurrentBuilding.IsOwnedBy(Game.Player.Character))
                 Boss.Create();
             if (!Pa.IsCreated)
                 Pa.Create();
@@ -181,17 +183,20 @@ namespace SinglePlayerOffice.Buildings {
         protected override void HandleTrigger() {
             if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() ||
                 !(Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f) ||
-                SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
+                UI.MenuPool.IsAnyMenuOpen()) return;
+
             Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
+
             if (!Game.IsControlJustPressed(2, Control.Context)) return;
+
             Game.Player.Character.Task.StandStill(-1);
-            Utilities.CurrentBuilding.UpdateTeleportMenuButtons();
-            SinglePlayerOffice.IsHudHidden = true;
-            Utilities.CurrentBuilding.TeleportMenu.Visible = true;
+            UI.IsHudHidden = true;
+            UI.TeleportMenu.Visible = true;
         }
 
         private void HandleSpawningStaffs() {
             var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
+
             if (hours > 8 && hours < 17) {
                 foreach (var staff in Staffs)
                     if (!staff.IsCreated)
@@ -208,5 +213,7 @@ namespace SinglePlayerOffice.Buildings {
 
             HandleSpawningStaffs();
         }
+
     }
+
 }

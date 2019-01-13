@@ -4,7 +4,9 @@ using GTA.Native;
 using SinglePlayerOffice.Vehicles;
 
 namespace SinglePlayerOffice.Interactions {
+
     internal class VehicleInfoScaleform : Interaction {
+
         private static VehicleInfo _vehicleInfo;
         private static Scaleform _scaleform;
 
@@ -12,6 +14,7 @@ namespace SinglePlayerOffice.Interactions {
             switch (State) {
                 case 0:
                     var vehicle = World.GetClosestVehicle(Game.Player.Character.Position, 3f);
+
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() && vehicle != null) {
                         if (_vehicleInfo == null || vehicle != _vehicleInfo.Vehicle) {
                             _vehicleInfo = new VehicleInfo(vehicle);
@@ -35,6 +38,7 @@ namespace SinglePlayerOffice.Interactions {
                     break;
                 case 1:
                     _scaleform = new Scaleform("MP_CAR_STATS_01");
+
                     if (_scaleform.IsLoaded) {
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION, _scaleform.Handle,
                             "SET_VEHICLE_INFOR_AND_STATS");
@@ -73,5 +77,7 @@ namespace SinglePlayerOffice.Interactions {
         public override void Dispose() {
             _scaleform?.Dispose();
         }
+
     }
+
 }

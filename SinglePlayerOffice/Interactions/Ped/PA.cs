@@ -3,7 +3,9 @@ using GTA.Math;
 using GTA.Native;
 
 namespace SinglePlayerOffice.Interactions {
+
     internal class Pa : Interaction {
+
         private readonly Vector3 chairSpawnPos;
         private readonly Vector3 chairSpawnRot;
         private Prop chair;
@@ -22,6 +24,7 @@ namespace SinglePlayerOffice.Interactions {
         public override void Create() {
             var model = new Model("ex_prop_offchair_exec_03");
             model.Request(250);
+
             if (model.IsInCdImage && model.IsValid) {
                 while (!model.IsLoaded)
                     Script.Wait(50);
@@ -52,11 +55,14 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Update() {
+            var currentBuilding = SinglePlayerOffice.CurrentBuilding;
+
             switch (State) {
                 case 0:
                     Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@pa@female@");
                     if (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@pa@female@"))
                         State = 1;
+
                     break;
                 case 1:
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, chair.Position.X,
@@ -67,70 +73,87 @@ namespace SinglePlayerOffice.Interactions {
                     Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, chair, syncSceneHandle, "base_chair",
                         "anim@amb@office@pa@female@", 1000f, -2f, 4 | 256, 1148846080);
                     State = -1;
+
                     break;
             }
 
             switch (ConversationState) {
                 case 1:
+
                     if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped)) break;
+
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "GREET_ATTRACTIVE_F",
                         "SPEECH_PARAMS_FORCE");
-                    ConversationState = Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) ? 2 : 0;
+                    ConversationState = currentBuilding.IsOwnedBy(Game.Player.Character) ? 2 : 0;
                     IsGreeted = true;
+
                     break;
                 case 2:
+
                     if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, Game.Player.Character)) break;
+
                     switch (Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2)) {
                         case 0:
                             Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "EXECPA_STYLE", "SPEECH_PARAMS_FORCE");
+
                             break;
                         case 1:
                             Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "EXECPA_DECOR", "SPEECH_PARAMS_FORCE");
+
                             break;
                     }
 
                     ConversationState = 0;
+
                     break;
                 case 3:
+
                     if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped)) break;
+
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "GENERIC_BYE",
                         "SPEECH_PARAMS_FORCE");
                     ConversationState = 0;
                     IsGreeted = false;
+
                     break;
                 case 4:
+
                     if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped)) break;
+
                     switch (Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 2)) {
                         case 0:
                             Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "GENERIC_YES",
                                 "SPEECH_PARAMS_FORCE");
+
                             break;
                         case 1:
                             Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "STRIP_2ND_DANCE_ACCEPT",
                                 "SPEECH_PARAMS_FORCE");
+
                             break;
                     }
 
                     ConversationState = 0;
+
                     break;
             }
 
             if (Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, Game.Player.Character.Position.X,
                         Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 0.5f, 220394186, 0, 0, 0)
                     .Model == 220394186 && ConversationState == 0) {
-                if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) && !IsGreeted) {
+                if (currentBuilding.IsOwnedBy(Game.Player.Character) && !IsGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "EXECPA_GREET", "SPEECH_PARAMS_FORCE");
                     ConversationState = 1;
                 }
-                else if (!Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) && !IsGreeted) {
+                else if (!currentBuilding.IsOwnedBy(Game.Player.Character) && !IsGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "GENERIC_HI", "SPEECH_PARAMS_FORCE");
                     ConversationState = 1;
                 }
-                else if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) && IsGreeted) {
+                else if (currentBuilding.IsOwnedBy(Game.Player.Character) && IsGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "EXECPA_FAREWELL", "SPEECH_PARAMS_FORCE");
                     ConversationState = 3;
                 }
-                else if (!Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character) && IsGreeted) {
+                else if (!currentBuilding.IsOwnedBy(Game.Player.Character) && IsGreeted) {
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "GENERIC_BYE", "SPEECH_PARAMS_FORCE");
                     ConversationState = 3;
                 }
@@ -138,24 +161,27 @@ namespace SinglePlayerOffice.Interactions {
 
             if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() || ped == null ||
                 !(Game.Player.Character.Position.DistanceTo(ped.Position) < 2f) ||
-                SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
-            if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
+                UI.MenuPool.IsAnyMenuOpen()) return;
+
+            if (currentBuilding.IsOwnedBy(Game.Player.Character)) {
                 Utilities.DisplayHelpTextThisFrame(
                     "Press ~INPUT_CONTEXT~ to chat with your PA~n~Press ~INPUT_CONTEXT_SECONDARY~ for executive options");
+
                 if (Game.IsControlJustPressed(2, Control.ContextSecondary)) {
                     Game.Player.Character.Task.StandStill(-1);
                     Utilities.SavedPos = Game.Player.Character.Position;
                     Utilities.SavedRot = Game.Player.Character.Rotation;
-                    SinglePlayerOffice.IsHudHidden = true;
-                    Utilities.CurrentBuilding.PaMenu.Visible = true;
+                    UI.IsHudHidden = true;
+                    UI.PaMenu.Visible = true;
                 }
             }
 
             if (!Game.IsControlJustPressed(2, Control.Context) ||
                 Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, Game.Player.Character) ||
                 Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped)) return;
+
             Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped,
-                Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character)
+                currentBuilding.IsOwnedBy(Game.Player.Character)
                     ? "EXECPA_CHATVIP"
                     : "EXECPA_CHATOTHERS", "SPEECH_PARAMS_FORCE");
             ConversationState = 4;
@@ -170,5 +196,7 @@ namespace SinglePlayerOffice.Interactions {
             chair?.Delete();
             Function.Call(Hash.REMOVE_ANIM_DICT, "anim@amb@office@pa@female@");
         }
+
     }
+
 }

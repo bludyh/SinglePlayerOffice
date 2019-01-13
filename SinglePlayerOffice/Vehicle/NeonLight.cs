@@ -1,7 +1,9 @@
 ﻿using GTA;
 
 namespace SinglePlayerOffice.Vehicles {
+
     public class NeonLight {
+
         public NeonLight() { }
 
         public NeonLight(VehicleNeonLight light, bool isOn) {
@@ -11,5 +13,7 @@ namespace SinglePlayerOffice.Vehicles {
 
         public VehicleNeonLight Light { get; set; }
         public bool IsOn { get; set; }
+
     }
+
 }

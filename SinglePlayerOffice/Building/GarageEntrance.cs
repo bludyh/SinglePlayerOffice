@@ -3,7 +3,9 @@ using GTA;
 using SinglePlayerOffice.Interactions;
 
 namespace SinglePlayerOffice.Buildings {
+
     internal class GarageEntrance : Location {
+
         public int InteriorId { get; set; }
         public VehicleElevatorEntrance VehicleElevatorEntrance { get; set; }
 
@@ -12,17 +14,22 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         protected override void HandleTrigger() {
+            var currentBuilding = SinglePlayerOffice.CurrentBuilding;
+
             if (Game.Player.Character.IsDead || !Game.Player.Character.IsInVehicle() ||
                 !(Game.Player.Character.Position.DistanceTo(TriggerPos) < 10f) ||
-                SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
-            if (Utilities.CurrentBuilding.IsOwned) {
-                if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
-                    if (World.CurrentDate.CompareTo(Utilities.CurrentBuilding.ConstructionTime) > 0) {
+                UI.MenuPool.IsAnyMenuOpen()) return;
+
+            if (currentBuilding.IsOwned) {
+                if (currentBuilding.IsOwnedBy(Game.Player.Character)) {
+                    if (World.CurrentDate.CompareTo(currentBuilding.ConstructionTime) > 0) {
                         Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the vehicle elevator");
+
                         if (!Game.IsControlJustPressed(2, Control.Context)) return;
+
                         VehicleElevatorEntrance.State = 1;
-                        SinglePlayerOffice.IsHudHidden = true;
-                        Utilities.CurrentBuilding.GarageEntranceMenu.Visible = true;
+                        UI.IsHudHidden = true;
+                        UI.GarageEntranceMenu.Visible = true;
                     }
                     else {
                         Utilities.DisplayHelpTextThisFrame("Building is under construction. Come back later");
@@ -36,5 +43,7 @@ namespace SinglePlayerOffice.Buildings {
                 Utilities.DisplayHelpTextThisFrame("You do not own this building");
             }
         }
+
     }
+
 }

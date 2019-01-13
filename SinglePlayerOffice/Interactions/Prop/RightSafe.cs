@@ -3,7 +3,9 @@ using GTA.Math;
 using GTA.Native;
 
 namespace SinglePlayerOffice.Interactions {
+
     internal class RightSafe : Interaction {
+
         private Prop door;
 
         public override string HelpText => !IsSafeOpened
@@ -25,12 +27,14 @@ namespace SinglePlayerOffice.Interactions {
                                 case 1854960432:
                                 case 682108925:
                                 case 1002451519:
-                                    if (Utilities.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
+
+                                    if (SinglePlayerOffice.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
                                         Utilities.DisplayHelpTextThisFrame(HelpText);
+
                                         if (Game.IsControlJustPressed(2, Control.Context)) {
                                             door = prop;
                                             Game.Player.Character.Weapons.Select(WeaponHash.Unarmed);
-                                            SinglePlayerOffice.IsHudHidden = true;
+                                            UI.IsHudHidden = true;
                                             State = 1;
                                         }
                                     }
@@ -40,13 +44,16 @@ namespace SinglePlayerOffice.Interactions {
 
                                     break;
                             }
+
                     break;
                 case 1:
                     Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boss@vault@right@male@");
                     if (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, "anim@amb@office@boss@vault@right@male@"))
                         State = 2;
+
                     break;
                 case 2:
+
                     if (!IsSafeOpened) {
                         initialPos = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION,
                             "anim@amb@office@boss@vault@right@male@", "open", door.Position.X, door.Position.Y,
@@ -59,19 +66,24 @@ namespace SinglePlayerOffice.Interactions {
                     Function.Call(Hash.TASK_GO_STRAIGHT_TO_COORD, Game.Player.Character, initialPos.X, initialPos.Y,
                         initialPos.Z, 1f, -1, initialRot.Z, 0f);
                     State = 3;
+
                     break;
                 case 3:
+
                     if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, 0x7d8f4411) == 1) break;
+
                     if (!IsSafeOpened) {
                         Utilities.SavedPos = door.Position;
                         Utilities.SavedRot = door.Rotation;
                     }
 
                     State = 4;
+
                     break;
                 case 4:
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, Utilities.SavedPos.X,
                         Utilities.SavedPos.Y, Utilities.SavedPos.Z, 0f, 0f, Utilities.SavedRot.Z, 2);
+
                     if (!IsSafeOpened) {
                         Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, Game.Player.Character, syncSceneHandle,
                             "anim@amb@office@boss@vault@right@male@", "open", 1.5f, -1.5f, 13, 16, 1.5f, 0);
@@ -88,13 +100,17 @@ namespace SinglePlayerOffice.Interactions {
                     }
 
                     State = 5;
+
                     break;
                 case 5:
+
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) < 1f) break;
-                    SinglePlayerOffice.IsHudHidden = false;
+
+                    UI.IsHudHidden = false;
                     Game.Player.Character.Task.ClearAll();
                     Function.Call(Hash.REMOVE_ANIM_DICT, "anim@amb@office@boss@vault@right@male@");
                     State = 0;
+
                     break;
             }
         }
@@ -102,5 +118,7 @@ namespace SinglePlayerOffice.Interactions {
         public override void Reset() {
             IsSafeOpened = false;
         }
+
     }
+
 }

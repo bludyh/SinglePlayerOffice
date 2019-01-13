@@ -3,7 +3,9 @@ using GTA.Math;
 using GTA.Native;
 
 namespace SinglePlayerOffice.Interactions {
+
     internal class Staff : Interaction {
+
         private readonly Model model;
         private readonly Vector3 spawnPos;
         private Prop chair;
@@ -26,13 +28,16 @@ namespace SinglePlayerOffice.Interactions {
         public override void Update() {
             switch (State) {
                 case 0:
+
                     if (!Function.Call<bool>(Hash.IS_INTERIOR_READY,
                             Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X,
                                 Game.Player.Character.Position.Y, Game.Player.Character.Position.Z)) ||
                         !Function.Call<bool>(Hash.IS_PED_STILL, ped)) break;
+
                     chair = Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, ped.Position.X, ped.Position.Y,
                         ped.Position.Z, 1f, -1278649385, 0, 0, 0);
                     State = 1;
+
                     break;
                 case 1:
                     Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@crew@male@var_b@base@");
@@ -42,8 +47,10 @@ namespace SinglePlayerOffice.Interactions {
                         Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED,
                             "anim@amb@office@boardroom@crew@female@var_c@base@"))
                         State = 2;
+
                     break;
                 case 2:
+
                     if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, chair,
                         $"anim@amb@office@boardroom@crew@{(ped.Gender == Gender.Male ? "male@var_b" : "female@var_c")}@base@",
                         "enter_chair", 3)) {
@@ -56,11 +63,15 @@ namespace SinglePlayerOffice.Interactions {
                             $"anim@amb@office@boardroom@crew@{(ped.Gender == Gender.Male ? "male@var_b" : "female@var_c")}@base@",
                             4f, -4f, 32781, 1000f);
                     }
-                    else
+                    else {
                         State = 3;
+                    }
+
                     break;
                 case 3:
+
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) < 1f) break;
+
                     syncSceneHandle = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, chair.Position.X,
                         chair.Position.Y, chair.Position.Z, 0f, 0f, chair.Heading, 2);
                     Function.Call(Hash.SET_SYNCHRONIZED_SCENE_LOOPED, syncSceneHandle, true);
@@ -71,26 +82,34 @@ namespace SinglePlayerOffice.Interactions {
                         $"anim@amb@office@boardroom@crew@{(ped.Gender == Gender.Male ? "male@var_b" : "female@var_c")}@base@",
                         4f, -4f, 32781, 1000f);
                     State = -1;
+
                     break;
             }
 
             switch (ConversationState) {
                 case 1:
+
                     if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, Game.Player.Character)) break;
+
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, ped, "GENERIC_HI", "SPEECH_PARAMS_FORCE");
                     ConversationState = 0;
                     IsGreeted = true;
+
                     break;
                 case 2:
+
                     if (Function.Call<bool>(Hash.IS_AMBIENT_SPEECH_PLAYING, ped)) break;
+
                     Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character, "PED_RANT_RESP",
                         "SPEECH_PARAMS_FORCE");
                     ConversationState = 0;
+
                     break;
             }
 
             if (ped == null || !(Game.Player.Character.Position.DistanceTo(ped.Position) < 1f) ||
                 ConversationState != 0) return;
+
             if (!IsGreeted) {
                 Function.Call(Hash._PLAY_AMBIENT_SPEECH1, Game.Player.Character,
                     $"GENERIC_HI{(ped.Gender == Gender.Male ? string.Empty : "_FEMALE")}", "SPEECH_PARAMS_FORCE");
@@ -114,5 +133,7 @@ namespace SinglePlayerOffice.Interactions {
             Function.Call(Hash.REMOVE_ANIM_DICT, "anim@amb@office@boardroom@crew@male@var_b@base@");
             Function.Call(Hash.REMOVE_ANIM_DICT, "anim@amb@office@boardroom@crew@female@var_c@base@");
         }
+
     }
+
 }

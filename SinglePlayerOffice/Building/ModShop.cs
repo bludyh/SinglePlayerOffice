@@ -5,7 +5,9 @@ using GTA.Native;
 using SinglePlayerOffice.Interactions;
 
 namespace SinglePlayerOffice.Buildings {
+
     internal class ModShop : Location, IInterior {
+
         static ModShop() {
             FloorStyles = new List<InteriorStyle> {
                 new InteriorStyle("Floor 1", 0, ""),
@@ -99,13 +101,17 @@ namespace SinglePlayerOffice.Buildings {
         protected override void HandleTrigger() {
             if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() ||
                 !(Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f) ||
-                SinglePlayerOffice.MenuPool.IsAnyMenuOpen()) return;
+                UI.MenuPool.IsAnyMenuOpen()) return;
+
             Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the elevator");
+
             if (!Game.IsControlJustPressed(2, Control.Context)) return;
+
             Game.Player.Character.Task.StandStill(-1);
-            Utilities.CurrentBuilding.UpdateTeleportMenuButtons();
-            SinglePlayerOffice.IsHudHidden = true;
-            Utilities.CurrentBuilding.TeleportMenu.Visible = true;
+            UI.IsHudHidden = true;
+            UI.TeleportMenu.Visible = true;
         }
+
     }
+
 }

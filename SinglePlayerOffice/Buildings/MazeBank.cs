@@ -6,11 +6,13 @@ using GTA.Native;
 using SinglePlayerOffice.Interactions;
 
 namespace SinglePlayerOffice.Buildings {
+
     internal class MazeBank : Building {
+
         public MazeBank() {
             try {
+                SaveData = ScriptSettings.Load(@"scripts\SinglePlayerOffice\Maze Bank Tower\data.ini");
                 Name = "Maze Bank Tower";
-                data = ScriptSettings.Load($@"scripts\SinglePlayerOffice\{Name}\data.ini");
                 Description =
                     "The building that defined the LS Skyline for a generation. Taller, Classier, more opulent, more shamelessly phallic, less structurally sound - you name it, the Maze Bank Tower is best in class.";
                 Price = 4000000;
@@ -18,12 +20,15 @@ namespace SinglePlayerOffice.Buildings {
                     257537, 239617, 239873, 239361, 238593, 238849, 239105, 240129, 240385, 240641, 254465, 254721,
                     254977, 255233
                 };
-                exteriorMapObjects = new List<string> { "dt1_11_dt1_emissive_dt1_11", "dt1_11_dt1_tower" };
-                Owner = (Owner) data.GetValue("Owner", "Owner", -1);
+                ExteriorMapObjects = new List<string> { "dt1_11_dt1_emissive_dt1_11", "dt1_11_dt1_tower" };
+                Owner = (Owner) SaveData.GetValue("Owner", "Owner", -1);
                 Entrance = new Entrance {
                     TriggerPos = new Vector3(-79.214f, -796.513f, 44.227f),
                     SpawnPos = new Vector3(-80.690f, -795.859f, 44.227f),
-                    SpawnHeading = 94.827f
+                    SpawnHeading = 94.827f,
+                    PurchaseCamPos = new Vector3(-86.710f, -724.772f, 48f),
+                    PurchaseCamRot = new Vector3(32f, 0f, 180f),
+                    PurchaseCamFov = 90f
                 };
                 GarageEntrance = new GarageEntrance {
                     TriggerPos = new Vector3(-84.243f, -821.827f, 35.665f),
@@ -57,7 +62,7 @@ namespace SinglePlayerOffice.Buildings {
                             new InteriorStyle("Power Broker Polished", 910000, "ex_dt1_11_office_03c"),
                             new InteriorStyle("Power Broker Ice", 1000000, "ex_dt1_11_office_03a")
                         },
-                    HasExtraDecors = data.GetValue("Interiors", "HasExtraOfficeDecors", false),
+                    HasExtraDecors = SaveData.GetValue("Interiors", "HasExtraOfficeDecors", false),
                     Boss = new Boss(new Vector3(-60.116f, -806.817f, 242.982f)),
                     Pa = new Pa(new Vector3(-72.069f, -814.251f, 242.988f), new Vector3(0f, 0f, -20)),
                     Staffs =
@@ -77,7 +82,7 @@ namespace SinglePlayerOffice.Buildings {
                     Wardrobe = new Wardrobe(new Vector3(-78.625f, -812.353f, 243.386f), new Vector3(0f, 0f, 70f))
                 };
                 Office.InteriorStyle =
-                    GetOfficeInteriorStyle(data.GetValue("Interiors", "OfficeInteriorStyle", "Executive Rich"));
+                    GetOfficeInteriorStyle(SaveData.GetValue("Interiors", "OfficeInteriorStyle", "Executive Rich"));
                 Office.ExtraDecorsPrice = Office.HasExtraDecors ? 1650000 : 0;
                 Office.SofaAndTv = new SofaAndTv(Office.Tv, new Vector3(-68.486f, -804.237f, 242.386f),
                     new Vector3(0f, 0f, -20f));
@@ -95,18 +100,19 @@ namespace SinglePlayerOffice.Buildings {
                     DecorationCamRot = new Vector3(5f, 0f, -60f),
                     DecorationCamFov = 60f,
                     DecorationStyle =
-                        GetGarageDecorationStyle(data.GetValue("Interiors", "GarageOneDecorationStyle",
+                        GetGarageDecorationStyle(SaveData.GetValue("Interiors", "GarageOneDecorationStyle",
                             "Decoration 1")),
                     LightingCamPos = new Vector3(-88.599f, -828.209f, 222.000f),
                     LightingCamRot = new Vector3(55f, 0f, -160f),
                     LightingCamFov = 70f,
                     LightingStyle =
-                        GetGarageLightingStyle(data.GetValue("Interiors", "GarageOneLightingStyle", "Lighting 1")),
+                        GetGarageLightingStyle(SaveData.GetValue("Interiors", "GarageOneLightingStyle", "Lighting 1")),
                     NumberingCamPos = new Vector3(-82.111f, -817.941f, 222.001f),
                     NumberingCamRot = new Vector3(12f, 0f, -20f),
                     NumberingCamFov = 60f,
                     NumberingStyle =
-                        GetGarageOneNumberingStyle(data.GetValue("Interiors", "GarageOneNumberingStyle", "Signage 1")),
+                        GetGarageOneNumberingStyle(SaveData.GetValue("Interiors", "GarageOneNumberingStyle",
+                            "Signage 1")),
                     Sofas = new List<Sofa> {
                         new Sofa(new Vector3(-89.163f, -829.880f, 221.02f), new Vector3(0f, 0f, 70f)),
                         new Sofa(new Vector3(-87.723f, -832.991f, 221.02f), new Vector3(0f, 0f, 159f))
@@ -131,18 +137,19 @@ namespace SinglePlayerOffice.Buildings {
                     DecorationCamRot = new Vector3(5f, 0f, 30f),
                     DecorationCamFov = 60f,
                     DecorationStyle =
-                        GetGarageDecorationStyle(data.GetValue("Interiors", "GarageTwoDecorationStyle",
+                        GetGarageDecorationStyle(SaveData.GetValue("Interiors", "GarageTwoDecorationStyle",
                             "Decoration 1")),
                     LightingCamPos = new Vector3(-64.710f, -829.159f, 222.001f),
                     LightingCamRot = new Vector3(55f, 0f, -70f),
                     LightingCamFov = 70f,
                     LightingStyle =
-                        GetGarageLightingStyle(data.GetValue("Interiors", "GarageTwoLightingStyle", "Lighting 1")),
+                        GetGarageLightingStyle(SaveData.GetValue("Interiors", "GarageTwoLightingStyle", "Lighting 1")),
                     NumberingCamPos = new Vector3(-75.044f, -822.666f, 222.001f),
                     NumberingCamRot = new Vector3(12f, 0f, 70f),
                     NumberingCamFov = 60f,
                     NumberingStyle =
-                        GetGarageTwoNumberingStyle(data.GetValue("Interiors", "GarageTwoNumberingStyle", "Signage 1")),
+                        GetGarageTwoNumberingStyle(SaveData.GetValue("Interiors", "GarageTwoNumberingStyle",
+                            "Signage 1")),
                     Sofas = new List<Sofa> {
                         new Sofa(new Vector3(-63.093f, -829.658f, 221.02f), new Vector3(0f, 0f, 161f)),
                         new Sofa(new Vector3(-59.932f, -828.260f, 221.02f), new Vector3(0f, 0f, -110f))
@@ -167,18 +174,19 @@ namespace SinglePlayerOffice.Buildings {
                     DecorationCamRot = new Vector3(5f, 0f, -150f),
                     DecorationCamFov = 60f,
                     DecorationStyle =
-                        GetGarageDecorationStyle(data.GetValue("Interiors", "GarageThreeDecorationStyle",
+                        GetGarageDecorationStyle(SaveData.GetValue("Interiors", "GarageThreeDecorationStyle",
                             "Decoration 1")),
                     LightingCamPos = new Vector3(-85.524f, -808.880f, 222.001f),
                     LightingCamRot = new Vector3(55f, 0f, 110f),
                     LightingCamFov = 70f,
                     LightingStyle =
-                        GetGarageLightingStyle(data.GetValue("Interiors", "GarageThreeLightingStyle", "Lighting 1")),
+                        GetGarageLightingStyle(SaveData.GetValue("Interiors", "GarageThreeLightingStyle",
+                            "Lighting 1")),
                     NumberingCamPos = new Vector3(-75.209f, -815.338f, 222.000f),
                     NumberingCamRot = new Vector3(12f, 0f, -110f),
                     NumberingCamFov = 60f,
                     NumberingStyle =
-                        GetGarageThreeNumberingStyle(data.GetValue("Interiors", "GarageThreeNumberingStyle",
+                        GetGarageThreeNumberingStyle(SaveData.GetValue("Interiors", "GarageThreeNumberingStyle",
                             "Signage 1")),
                     Sofas = new List<Sofa> {
                         new Sofa(new Vector3(-87.225f, -808.333f, 221.02f), new Vector3(0f, 0f, -20f)),
@@ -200,7 +208,7 @@ namespace SinglePlayerOffice.Buildings {
                     PurchaseCamPos = new Vector3(-72.767f, -814.608f, 287f),
                     PurchaseCamRot = new Vector3(-20f, 0f, 160f),
                     PurchaseCamFov = 70f,
-                    FloorStyle = GetModShopFloorStyle(data.GetValue("Interiors", "ModShopFloorStyle", "Floor 1"))
+                    FloorStyle = GetModShopFloorStyle(SaveData.GetValue("Interiors", "ModShopFloorStyle", "Floor 1"))
                 };
                 ModShop.SofaAndTv = new SofaAndTv(ModShop.Tv, new Vector3(-63.968f, -820.524f, 284.645f),
                     new Vector3(0f, 0f, -21f));
@@ -209,22 +217,16 @@ namespace SinglePlayerOffice.Buildings {
                     SpawnPos = new Vector3(-65.938f, -822.145f, 321.285f),
                     SpawnHeading = 253.635f
                 };
-                PurchaseCamPos = new Vector3(-86.710f, -724.772f, 48f);
-                PurchaseCamRot = new Vector3(32f, 0f, 180f);
-                PurchaseCamFov = 90f;
 
                 CreateEntranceBlip();
                 if (IsOwned)
                     CreateGarageEntranceBlip();
-                CreatePurchaseMenu();
-                CreateTeleportMenu();
-                CreateGarageEntranceMenu();
-                CreateVehicleElevatorMenu();
-                CreatePaMenu();
             }
             catch (Exception ex) {
                 Logger.Log(ex.ToString());
             }
         }
+
     }
+
 }

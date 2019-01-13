@@ -3,7 +3,9 @@ using GTA.Math;
 using GTA.Native;
 
 namespace SinglePlayerOffice.Interactions {
+
     internal class Tv : Interaction {
+
         private int tvRenderTargetHandle;
 
         public Prop Prop { get; set; }
@@ -16,10 +18,13 @@ namespace SinglePlayerOffice.Interactions {
         public override void Update() {
             switch (State) {
                 case 0:
+
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle())
                         foreach (var prop in World.GetNearbyProps(Game.Player.Character.Position, 1.5f)) {
                             if (prop.Model.Hash != 608950395 && prop.Model.Hash != 1036195894) continue;
+
                             Utilities.DisplayHelpTextThisFrame(HelpText);
+
                             if (Game.IsControlJustPressed(2, Control.Context)) {
                                 Prop = prop;
                                 State = 1;
@@ -30,10 +35,12 @@ namespace SinglePlayerOffice.Interactions {
 
                     break;
                 case 1:
+
                     if (Prop.Model.Hash == 608950395) {
                         var oldTv = Prop;
                         var tvModel = new Model("prop_tv_flat_01");
                         tvModel.Request(250);
+
                         if (tvModel.IsInCdImage && tvModel.IsValid) {
                             while (!tvModel.IsLoaded)
                                 Script.Wait(50);
@@ -47,8 +54,10 @@ namespace SinglePlayerOffice.Interactions {
                     }
 
                     State = 2;
+
                     break;
                 case 2:
+
                     if (!IsTvOn) {
                         if (!Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen"))
                             Function.Call(Hash.REGISTER_NAMED_RENDERTARGET, "tvscreen", 0);
@@ -71,10 +80,12 @@ namespace SinglePlayerOffice.Interactions {
 
                     IsTvOn = !IsTvOn;
                     State = 0;
+
                     break;
             }
 
             if (!IsTvOn) return;
+
             Function.Call(Hash.SET_TV_AUDIO_FRONTEND, 0);
             Function.Call(Hash.ATTACH_TV_AUDIO_TO_ENTITY, Prop);
             Function.Call(Hash.SET_TEXT_RENDER_ID, tvRenderTargetHandle);
@@ -94,5 +105,7 @@ namespace SinglePlayerOffice.Interactions {
             if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "tvscreen"))
                 Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "tvscreen");
         }
+
     }
+
 }

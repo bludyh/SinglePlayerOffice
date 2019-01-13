@@ -4,7 +4,9 @@ using GTA.Math;
 using SinglePlayerOffice.Interactions;
 
 namespace SinglePlayerOffice.Buildings {
+
     internal abstract class Location {
+
         public Vector3 TriggerPos { get; set; }
         public Vector3 SpawnPos { get; set; }
         public float SpawnHeading { get; set; }
@@ -27,7 +29,7 @@ namespace SinglePlayerOffice.Buildings {
         public virtual void Update() {
             if (this is IInterior) {
                 Game.DisableControlThisFrame(2, Control.CharacterWheel);
-                Utilities.CurrentBuilding.HideExteriorMapObjects();
+                SinglePlayerOffice.CurrentBuilding.HideExteriorMapObjects();
             }
 
             HandleTrigger();
@@ -40,5 +42,7 @@ namespace SinglePlayerOffice.Buildings {
             foreach (var interaction in Interactions)
                 interaction.Dispose();
         }
+
     }
+
 }

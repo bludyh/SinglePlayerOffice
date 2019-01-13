@@ -2,16 +2,20 @@
 using GTA.Native;
 
 namespace SinglePlayerOffice.Interactions {
+
     internal class BuildingNameScaleform : Interaction {
+
         private static int _buildingNameRenderTargetHandle;
         private static Scaleform _buildingNameScaleform;
 
         public override void Update() {
             switch (State) {
                 case 0:
+
                     if (_buildingNameScaleform == null) {
                         if (!Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "prop_ex_office_text")) {
                             Function.Call(Hash.REGISTER_NAMED_RENDERTARGET, "prop_ex_office_text", 0);
+
                             if (!Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_LINKED, -2082168399)) {
                                 Function.Call(Hash.LINK_NAMED_RENDERTARGET, -2082168399);
                                 _buildingNameRenderTargetHandle =
@@ -36,10 +40,11 @@ namespace SinglePlayerOffice.Interactions {
                     break;
                 case 1:
                     _buildingNameScaleform = new Scaleform("ORGANISATION_NAME");
+
                     if (_buildingNameScaleform.IsLoaded) {
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION, _buildingNameScaleform.Handle,
                             "SET_ORGANISATION_NAME");
-                        Function.Call((Hash) 8646405517797544368, Utilities.CurrentBuilding.Name);
+                        Function.Call((Hash) 8646405517797544368, SinglePlayerOffice.CurrentBuilding.Name);
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, 0);
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, 0);
                         Function.Call(Hash._PUSH_SCALEFORM_MOVIE_FUNCTION_PARAMETER_INT, 0);
@@ -62,5 +67,7 @@ namespace SinglePlayerOffice.Interactions {
             if (Function.Call<bool>(Hash.IS_NAMED_RENDERTARGET_REGISTERED, "prop_ex_office_text"))
                 Function.Call(Hash.RELEASE_NAMED_RENDERTARGET, "prop_ex_office_text");
         }
+
     }
+
 }
