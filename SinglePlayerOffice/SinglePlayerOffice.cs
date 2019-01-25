@@ -58,10 +58,7 @@ namespace SinglePlayerOffice {
 
         //Debug begin
         private static void OnKeyUp(object sender, KeyEventArgs e) {
-            if (e.KeyCode == Keys.F5) {
-                Logger.Log(Utilities.SavedPos);
-                Logger.Log(Utilities.SavedRot);
-            }
+            if (e.KeyCode == Keys.F5) { }
         }
 
         //Debug end
@@ -69,9 +66,13 @@ namespace SinglePlayerOffice {
         private static void OnAborted(object sender, EventArgs e) {
             foreach (var building in Buildings)
                 building.Dispose();
+
             World.RenderingCamera = null;
             World.DestroyAllCameras();
             Game.Player.Character.Task.ClearAll();
+
+            if (Game.IsScreenFadedOut)
+                Game.FadeScreenIn(1000);
         }
 
     }

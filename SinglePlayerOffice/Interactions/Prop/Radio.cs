@@ -5,79 +5,61 @@ using GTA.Native;
 
 namespace SinglePlayerOffice.Interactions {
 
-    internal class RadioStation {
-
-        public RadioStation(string name, string des, string gameName) {
-            Name = name;
-            Description = des;
-            GameName = gameName;
-        }
-
-        public string Name { get; }
-        public string Description { get; }
-        public string GameName { get; }
-
-    }
-
     internal class Radio : Interaction {
 
         private Prop radio;
 
         static Radio() {
-            Stations = new List<RadioStation> {
-                new RadioStation("Los Santos Rock Radio", "Get on the good ship power pop and rock.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.LosSantosRockRadio)),
-                new RadioStation("Non-Stop-Pop FM", "Pop hits from the 80s, 90s, noughties, and today.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.NonStopPopFM)),
-                new RadioStation("Radio Los Santos", "Contemporary Hip Hop blazing into your stereo.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.RadioLosSantos)),
-                new RadioStation("Channel X", "Real Punk. Real West Coast.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.ChannelX)),
-                new RadioStation("West Coast Talk Radio",
+            Stations = new List<Station> {
+                new Station("Los Santos Rock Radio", "Get on the good ship power pop and rock.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.LosSantosRockRadio)),
+                new Station("Non-Stop-Pop FM", "Pop hits from the 80s, 90s, noughties, and today.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.NonStopPopFM)),
+                new Station("Radio Los Santos", "Contemporary Hip Hop blazing into your stereo.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.RadioLosSantos)),
+                new Station("Channel X", "Real Punk. Real West Coast.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.ChannelX)),
+                new Station("West Coast Talk Radio",
                     "Real Talk. Real Issues. Real Patronizing. Radio that’s all about you.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.WestCoastTalkRadio)),
-                new RadioStation("Rebel Radio", "The true sound of Blaine County - drunk, armed, and ready to party.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.RebelRadio)),
-                new RadioStation("Soulwax FM", "A continuous mix of dance and electronica.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.SoulwaxFM)),
-                new RadioStation("East Los FM",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.WestCoastTalkRadio)),
+                new Station("Rebel Radio", "The true sound of Blaine County - drunk, armed, and ready to party.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.RebelRadio)),
+                new Station("Soulwax FM", "A continuous mix of dance and electronica.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.SoulwaxFM)),
+                new Station("East Los FM",
                     "Mexican electronica mixing corridos and traditional songs with hip hop, rock, and ska.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.EastLosFM)),
-                new RadioStation("West Coast Classics",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.EastLosFM)),
+                new Station("West Coast Classics",
                     "Coming at you from the city of Davis - music from the days of the pager.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.WestCoastClassics)),
-                new RadioStation("Blue Ark", "The hottest reggae, dancehall and dub served up by The Upsetter.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.TheBlueArk)),
-                new RadioStation("WorldWide FM", "Join Gilles Peterson as he brings that perfect beat to Los Santos.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.WorldWideFM)),
-                new RadioStation("FlyLo FM", "A mix to carry you through the Los Santos freeways at top speed.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.FlyloFM)),
-                new RadioStation("The Lowdown 91.1", "The groove, the soul, the R&B. You dig?",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.TheLowdown)),
-                new RadioStation("The Lab", "Dropping science with Dr. No and the Chemical Bro.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.TheLab)),
-                new RadioStation("Radio Mirror Park", "Indie modern rock from the underground.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.RadioMirrorPark)),
-                new RadioStation("Space 103.2", "Bringing the Funk to your Assdroid.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.Space)),
-                new RadioStation("Vinewood Boulevard Radio",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.WestCoastClassics)),
+                new Station("Blue Ark", "The hottest reggae, dancehall and dub served up by The Upsetter.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.TheBlueArk)),
+                new Station("WorldWide FM", "Join Gilles Peterson as he brings that perfect beat to Los Santos.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.WorldWideFM)),
+                new Station("FlyLo FM", "A mix to carry you through the Los Santos freeways at top speed.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.FlyloFM)),
+                new Station("The Lowdown 91.1", "The groove, the soul, the R&B. You dig?",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.TheLowdown)),
+                new Station("The Lab", "Dropping science with Dr. No and the Chemical Bro.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.TheLab)),
+                new Station("Radio Mirror Park", "Indie modern rock from the underground.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.RadioMirrorPark)),
+                new Station("Space 103.2", "Bringing the Funk to your Assdroid.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.Space)),
+                new Station("Vinewood Boulevard Radio",
                     "The soundtrack to your broken dreams and unspent potential.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.VinewoodBoulevardRadio)),
-                new RadioStation("blonded Los Santos 97.8 FM", "An eclectic mix of savory soul, hip hop and deep cuts.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.BlondedLosSantos)),
-                new RadioStation("Blaine County Radio", "The home of the patriot. Enough said.",
-                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) GTA.RadioStation.BlaineCountyRadio))
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.VinewoodBoulevardRadio)),
+                new Station("blonded Los Santos 97.8 FM", "An eclectic mix of savory soul, hip hop and deep cuts.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.BlondedLosSantos)),
+                new Station("Blaine County Radio", "The home of the patriot. Enough said.",
+                    Function.Call<string>(Hash.GET_RADIO_STATION_NAME, (int) RadioStation.BlaineCountyRadio))
             };
         }
 
-        public static List<RadioStation> Stations { get; }
-
-        public override string HelpText => !IsRadioOn
-            ? "Press ~INPUT_CONTEXT~ to turn on the radio"
-            : "Press ~INPUT_CONTEXT~ to turn off the radio";
+        public static List<Station> Stations { get; }
 
         public bool IsRadioOn { get; private set; }
-        public RadioStation Station { get; set; }
+        public Station CurrentStation { get; set; }
 
         public override void Update() {
             var currentBuilding = SinglePlayerOffice.CurrentBuilding;
@@ -90,7 +72,9 @@ namespace SinglePlayerOffice.Interactions {
                             switch (prop.Model.Hash) {
                                 case -364924791:
                                 case 2079380440:
-                                    Utilities.DisplayHelpTextThisFrame(HelpText);
+                                    Utilities.DisplayHelpTextThisFrame(!IsRadioOn
+                                        ? "Press ~INPUT_CONTEXT~ to turn on the radio"
+                                        : "Press ~INPUT_CONTEXT~ to turn off the radio");
 
                                     if (Game.IsControlJustPressed(2, Control.Context)) {
                                         radio = prop;
@@ -152,7 +136,7 @@ namespace SinglePlayerOffice.Interactions {
                                 radio);
                             Function.Call(Hash.SET_EMITTER_RADIO_STATION,
                                 currentBuilding.CurrentLocation.RadioEmitter,
-                                Station.GameName);
+                                CurrentStation.GameName);
                             IsRadioOn = true;
                         }
                         else {
@@ -192,6 +176,20 @@ namespace SinglePlayerOffice.Interactions {
             Function.Call(Hash.SET_STATIC_EMITTER_ENABLED,
                 SinglePlayerOffice.CurrentBuilding.CurrentLocation.RadioEmitter,
                 false);
+        }
+
+        internal class Station {
+
+            public Station(string name, string des, string gameName) {
+                Name = name;
+                Description = des;
+                GameName = gameName;
+            }
+
+            public string Name { get; }
+            public string Description { get; }
+            public string GameName { get; }
+
         }
 
     }

@@ -17,10 +17,6 @@ namespace SinglePlayerOffice.Interactions {
             Rotation = rot;
         }
 
-        public override string HelpText => "Press ~INPUT_CONTEXT~ to change outfit";
-
-        public override string RejectHelpText => "You cannot change outfit here";
-
         public Vector3 Position { get; }
         public Vector3 Rotation { get; }
 
@@ -32,7 +28,7 @@ namespace SinglePlayerOffice.Interactions {
                         !UI.MenuPool.IsAnyMenuOpen() &&
                         Game.Player.Character.Position.DistanceTo(Position) < 1f) {
                         if (SinglePlayerOffice.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
-                            Utilities.DisplayHelpTextThisFrame(HelpText);
+                            Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to change outfit");
 
                             if (Game.IsControlJustPressed(2, Control.Context)) {
                                 Game.Player.Character.Weapons.Select(WeaponHash.Unarmed);
@@ -41,7 +37,7 @@ namespace SinglePlayerOffice.Interactions {
                             }
                         }
                         else {
-                            Utilities.DisplayHelpTextThisFrame(RejectHelpText);
+                            Utilities.DisplayHelpTextThisFrame("You cannot change outfit here");
                         }
                     }
 

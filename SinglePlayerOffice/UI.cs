@@ -1312,7 +1312,7 @@ namespace SinglePlayerOffice {
             radioMenu.OnItemSelect += (sender, item, index) => {
                 MenuPool.CloseAllMenus();
                 var radio = SinglePlayerOffice.CurrentBuilding.CurrentLocation.Interactions.OfType<Radio>().First();
-                radio.Station = Radio.Stations[index];
+                radio.CurrentStation = Radio.Stations[index];
                 radio.State = 4;
             };
             radioMenu.OnMenuClose += sender => {

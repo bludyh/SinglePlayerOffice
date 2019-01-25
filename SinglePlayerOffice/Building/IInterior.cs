@@ -7,8 +7,11 @@ namespace SinglePlayerOffice.Buildings {
         List<string> ExteriorIpLs { get; set; }
 
         void LoadInterior();
+
         void UnloadInterior();
+
         void LoadExterior();
+
         void UnloadExterior();
 
     }

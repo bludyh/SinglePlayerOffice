@@ -21,7 +21,6 @@ namespace SinglePlayerOffice.Interactions {
             Rotation = rot;
         }
 
-        public override string HelpText => "Press ~INPUT_CONTEXT~ to sit on the couch";
         public Vector3 Position { get; }
         public Vector3 Rotation { get; }
 
@@ -32,7 +31,7 @@ namespace SinglePlayerOffice.Interactions {
                     if (!Game.Player.Character.IsDead && !Game.Player.Character.IsInVehicle() &&
                         Game.Player.Character.Position.DistanceTo(Position) < 1.5f &&
                         World.GetNearbyPeds(Position, 0.5f).Length == 0) {
-                        Utilities.DisplayHelpTextThisFrame(HelpText);
+                        Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to sit on the couch");
 
                         if (Game.IsControlJustPressed(2, Control.Context)) {
                             Game.Player.Character.Weapons.Select(WeaponHash.Unarmed);

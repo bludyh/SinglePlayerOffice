@@ -17,7 +17,10 @@ namespace SinglePlayerOffice.Buildings {
             return new List<Interaction>();
         }
 
-        public virtual void OnLocationArrived() { }
+        public virtual void OnLocationArrived() {
+            foreach (var interaction in Interactions)
+                interaction.Initialize();
+        }
 
         public virtual void OnLocationLeft() {
             foreach (var interaction in Interactions)

@@ -19,39 +19,42 @@ namespace SinglePlayerOffice.Interactions {
 
         public bool IsGreeted { get; set; }
         public int ConversationState { get; set; }
-        public override bool IsCreated => ped != null && chair != null;
 
-        public override void Create() {
-            var model = new Model("ex_prop_offchair_exec_03");
-            model.Request(250);
+        public override void Initialize() {
+            if (chair == null) {
+                var model = new Model("ex_prop_offchair_exec_03");
+                model.Request(250);
 
-            if (model.IsInCdImage && model.IsValid) {
-                while (!model.IsLoaded)
-                    Script.Wait(50);
-                chair = World.CreateProp(model, Vector3.Zero, false, false);
-                chair.Position = chairSpawnPos;
-                chair.Rotation = chairSpawnRot;
+                if (model.IsInCdImage && model.IsValid) {
+                    while (!model.IsLoaded)
+                        Script.Wait(50);
+                    chair = World.CreateProp(model, Vector3.Zero, false, false);
+                    chair.Position = chairSpawnPos;
+                    chair.Rotation = chairSpawnRot;
+                }
+
+                model.MarkAsNoLongerNeeded();
             }
 
-            model.MarkAsNoLongerNeeded();
-
-            ped = World.CreatePed(PedHash.ExecutivePAFemale01, chairSpawnPos);
-            ped.RelationshipGroup = Function.Call<int>(Hash.GET_HASH_KEY, "PLAYER");
-            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 0, 0,
-                Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
-            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 2,
-                Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 0, 2);
-            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 3, 1, 0, 2);
-            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 4, 3,
-                Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
-            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 6, 0,
-                Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
-            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 7,
-                Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 1, 2),
-                Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
-            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 8, 3, 0, 2);
-            Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 11, 3,
-                Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+            if (ped == null) {
+                ped = World.CreatePed(PedHash.ExecutivePAFemale01, chairSpawnPos);
+                ped.RelationshipGroup = Function.Call<int>(Hash.GET_HASH_KEY, "PLAYER");
+                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 0, 0,
+                    Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 2,
+                    Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 0, 2);
+                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 3, 1, 0, 2);
+                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 4, 3,
+                    Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 6, 0,
+                    Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 7,
+                    Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 1, 2),
+                    Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 8, 3, 0, 2);
+                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, ped, 11, 3,
+                    Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, 0, 3), 2);
+            }
         }
 
         public override void Update() {

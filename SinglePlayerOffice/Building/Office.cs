@@ -153,7 +153,8 @@ namespace SinglePlayerOffice.Buildings {
         protected override List<Interaction> GetInteractions() {
             var interactions = new List<Interaction>();
 
-            interactions.Add(Boss);
+            if (!SinglePlayerOffice.CurrentBuilding.IsOwnedBy(Game.Player.Character))
+                interactions.Add(Boss);
             interactions.Add(Pa);
             interactions.AddRange(Staffs);
             interactions.Add(BoardRoomChair);
@@ -173,13 +174,6 @@ namespace SinglePlayerOffice.Buildings {
             return interactions;
         }
 
-        public override void OnLocationArrived() {
-            if (!SinglePlayerOffice.CurrentBuilding.IsOwnedBy(Game.Player.Character))
-                Boss.Create();
-            if (!Pa.IsCreated)
-                Pa.Create();
-        }
-
         protected override void HandleTrigger() {
             if (Game.Player.Character.IsDead || Game.Player.Character.IsInVehicle() ||
                 !(Game.Player.Character.Position.DistanceTo(TriggerPos) < 1.0f) ||
@@ -192,26 +186,6 @@ namespace SinglePlayerOffice.Buildings {
             Game.Player.Character.Task.StandStill(-1);
             UI.IsHudHidden = true;
             UI.TeleportMenu.Visible = true;
-        }
-
-        private void HandleSpawningStaffs() {
-            var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
-
-            if (hours > 8 && hours < 17) {
-                foreach (var staff in Staffs)
-                    if (!staff.IsCreated)
-                        staff.Create();
-            }
-            else {
-                foreach (var staff in Staffs)
-                    staff.Dispose();
-            }
-        }
-
-        public override void Update() {
-            base.Update();
-
-            HandleSpawningStaffs();
         }
 
     }

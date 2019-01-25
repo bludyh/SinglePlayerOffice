@@ -9,10 +9,6 @@ namespace SinglePlayerOffice.Interactions {
         private int tvRenderTargetHandle;
 
         public Prop Prop { get; set; }
-
-        public override string HelpText =>
-            !IsTvOn ? "Press ~INPUT_CONTEXT~ to turn on the TV" : "Press ~INPUT_CONTEXT~ to turn off the TV";
-
         public bool IsTvOn { get; private set; }
 
         public override void Update() {
@@ -23,7 +19,9 @@ namespace SinglePlayerOffice.Interactions {
                         foreach (var prop in World.GetNearbyProps(Game.Player.Character.Position, 1.5f)) {
                             if (prop.Model.Hash != 608950395 && prop.Model.Hash != 1036195894) continue;
 
-                            Utilities.DisplayHelpTextThisFrame(HelpText);
+                            Utilities.DisplayHelpTextThisFrame(!IsTvOn
+                                ? "Press ~INPUT_CONTEXT~ to turn on the TV"
+                                : "Press ~INPUT_CONTEXT~ to turn off the TV");
 
                             if (Game.IsControlJustPressed(2, Control.Context)) {
                                 Prop = prop;

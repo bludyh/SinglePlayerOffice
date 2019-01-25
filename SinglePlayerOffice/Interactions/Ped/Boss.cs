@@ -9,7 +9,6 @@ namespace SinglePlayerOffice.Interactions {
 
         private readonly Vector3 spawnPos;
         private Prop chair;
-
         private Ped ped;
 
         public Boss(Vector3 spawnPos) {
@@ -18,9 +17,10 @@ namespace SinglePlayerOffice.Interactions {
 
         public bool IsGreeted { get; set; }
         public int ConversationState { get; set; }
-        public override bool IsCreated => ped != null;
 
-        public override void Create() {
+        public override void Initialize() {
+            if (ped != null) return;
+
             switch (SinglePlayerOffice.CurrentBuilding.Owner) {
                 case Owner.Michael:
                     ped = World.CreatePed(PedHash.Michael, spawnPos);
@@ -153,7 +153,6 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Reset() {
-            Dispose();
             IsGreeted = false;
             State = 0;
         }

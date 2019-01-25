@@ -8,11 +8,6 @@ namespace SinglePlayerOffice.Interactions {
 
         private Prop door;
 
-        public override string HelpText => !IsSafeOpened
-            ? "Press ~INPUT_CONTEXT~ to open the safe"
-            : "Press ~INPUT_CONTEXT~ to close the safe";
-
-        public override string RejectHelpText => "Only the owner can open the safe";
         public bool IsSafeOpened { get; private set; }
 
         public override void Update() {
@@ -29,7 +24,9 @@ namespace SinglePlayerOffice.Interactions {
                                 case 1002451519:
 
                                     if (SinglePlayerOffice.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
-                                        Utilities.DisplayHelpTextThisFrame(HelpText);
+                                        Utilities.DisplayHelpTextThisFrame(!IsSafeOpened
+                                            ? "Press ~INPUT_CONTEXT~ to open the safe"
+                                            : "Press ~INPUT_CONTEXT~ to close the safe");
 
                                         if (Game.IsControlJustPressed(2, Control.Context)) {
                                             door = prop;
@@ -39,7 +36,7 @@ namespace SinglePlayerOffice.Interactions {
                                         }
                                     }
                                     else {
-                                        Utilities.DisplayHelpTextThisFrame(RejectHelpText);
+                                        Utilities.DisplayHelpTextThisFrame("Only the owner can open the safe");
                                     }
 
                                     break;

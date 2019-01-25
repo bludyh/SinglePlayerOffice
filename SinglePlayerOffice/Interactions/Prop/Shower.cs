@@ -20,8 +20,6 @@ namespace SinglePlayerOffice.Interactions {
                 { "male_shower_idle_a", "male_shower_idle_b", "male_shower_idle_c", "male_shower_idle_d" };
         }
 
-        public override string HelpText => "Press ~INPUT_CONTEXT~ to take a shower";
-
         public override void Update() {
             switch (State) {
                 case 0:
@@ -30,7 +28,7 @@ namespace SinglePlayerOffice.Interactions {
                         foreach (var prop in World.GetNearbyProps(Game.Player.Character.Position, 2f)) {
                             if (prop.Model.Hash != 879181614) continue;
 
-                            Utilities.DisplayHelpTextThisFrame(HelpText);
+                            Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to take a shower");
 
                             if (Game.IsControlJustPressed(2, Control.Context)) {
                                 door = prop;

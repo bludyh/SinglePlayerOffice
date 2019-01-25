@@ -18,16 +18,28 @@ namespace SinglePlayerOffice.Interactions {
 
         public bool IsGreeted { get; set; }
         public int ConversationState { get; set; }
-        public override bool IsCreated => ped != null;
-
-        public override void Create() {
-            ped = World.CreatePed(model, spawnPos);
-            Function.Call(Hash.SET_PED_RANDOM_COMPONENT_VARIATION, ped, 0);
-        }
 
         public override void Update() {
             switch (State) {
                 case 0:
+                    var hours = Function.Call<int>(Hash.GET_CLOCK_HOURS);
+
+                    if (hours > 8 && hours < 17) {
+                        if (ped == null) {
+                            ped = World.CreatePed(model, spawnPos);
+                            Function.Call(Hash.SET_PED_RANDOM_COMPONENT_VARIATION, ped, 0);
+                            State = 1;
+                        }
+                    }
+                    else {
+                        if (ped != null) {
+                            ped.Delete();
+                            ped = null;
+                        }
+                    }
+
+                    break;
+                case 1:
 
                     if (!Function.Call<bool>(Hash.IS_INTERIOR_READY,
                             Function.Call<int>(Hash.GET_INTERIOR_AT_COORDS, Game.Player.Character.Position.X,
@@ -36,20 +48,20 @@ namespace SinglePlayerOffice.Interactions {
 
                     chair = Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, ped.Position.X, ped.Position.Y,
                         ped.Position.Z, 1f, -1278649385, 0, 0, 0);
-                    State = 1;
+                    State = 2;
 
                     break;
-                case 1:
+                case 2:
                     Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@crew@male@var_b@base@");
                     Function.Call(Hash.REQUEST_ANIM_DICT, "anim@amb@office@boardroom@crew@female@var_c@base@");
                     if (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED,
                             "anim@amb@office@boardroom@crew@male@var_b@base@") &&
                         Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED,
                             "anim@amb@office@boardroom@crew@female@var_c@base@"))
-                        State = 2;
+                        State = 3;
 
                     break;
-                case 2:
+                case 3:
 
                     if (!Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, chair,
                         $"anim@amb@office@boardroom@crew@{(ped.Gender == Gender.Male ? "male@var_b" : "female@var_c")}@base@",
@@ -64,11 +76,11 @@ namespace SinglePlayerOffice.Interactions {
                             4f, -4f, 32781, 1000f);
                     }
                     else {
-                        State = 3;
+                        State = 4;
                     }
 
                     break;
-                case 3:
+                case 4:
 
                     if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, syncSceneHandle) < 1f) break;
 
@@ -81,7 +93,7 @@ namespace SinglePlayerOffice.Interactions {
                     Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, chair, syncSceneHandle, "base_chair",
                         $"anim@amb@office@boardroom@crew@{(ped.Gender == Gender.Male ? "male@var_b" : "female@var_c")}@base@",
                         4f, -4f, 32781, 1000f);
-                    State = -1;
+                    State = 0;
 
                     break;
             }
@@ -125,7 +137,7 @@ namespace SinglePlayerOffice.Interactions {
 
         public override void Reset() {
             IsGreeted = false;
-            State = 0;
+            State = 1;
         }
 
         public override void Dispose() {

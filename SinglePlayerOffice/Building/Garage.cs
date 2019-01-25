@@ -262,7 +262,8 @@ namespace SinglePlayerOffice.Buildings {
         }
 
         public override void OnLocationArrived() {
-            VehicleElevator.Create();
+            base.OnLocationArrived();
+
             CreateVehicles();
         }
 

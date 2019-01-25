@@ -20,10 +20,6 @@ namespace SinglePlayerOffice.Interactions {
                 { "idle_a_chair", "idle_b_chair", "idle_c_chair", "idle_d_chair", "idle_e_chair" };
         }
 
-        public override string HelpText => "Press ~INPUT_CONTEXT~ to sit down";
-
-        public override string RejectHelpText => "You do not have access to this computer";
-
         public override void Update() {
             switch (State) {
                 case 0:
@@ -34,7 +30,7 @@ namespace SinglePlayerOffice.Interactions {
                                 World.GetNearbyPeds(prop.Position, 0.5f).Length != 0) continue;
 
                             if (SinglePlayerOffice.CurrentBuilding.IsOwnedBy(Game.Player.Character)) {
-                                Utilities.DisplayHelpTextThisFrame(HelpText);
+                                Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to sit down");
 
                                 if (Game.IsControlJustPressed(2, Control.Context)) {
                                     chair = prop;
@@ -44,7 +40,7 @@ namespace SinglePlayerOffice.Interactions {
                                 }
                             }
                             else {
-                                Utilities.DisplayHelpTextThisFrame(RejectHelpText);
+                                Utilities.DisplayHelpTextThisFrame("You do not have access to this computer");
                             }
 
                             break;

@@ -20,15 +20,13 @@ namespace SinglePlayerOffice.Interactions {
             LevelCPos = levelCPos;
         }
 
-        public override string HelpText => "Press ~INPUT_CONTEXT~ to use the vehicle elevator";
         public Vector3 Position { get; set; }
         public Vector3 Rotation { get; }
         public Vector3 LevelAPos { get; }
         public Vector3 LevelBPos { get; }
         public Vector3 LevelCPos { get; }
-        public override bool IsCreated => body != null && platform != null;
 
-        public override void Create() {
+        public override void Initialize() {
             var model = new Model("imp_prop_ie_carelev01");
             model.Request(250);
 
@@ -88,7 +86,7 @@ namespace SinglePlayerOffice.Interactions {
                          Game.Player.Character.Position.DistanceTo(LevelBPos) < 8f ||
                          Game.Player.Character.Position.DistanceTo(LevelCPos) < 8f) &&
                         !UI.MenuPool.IsAnyMenuOpen()) {
-                        Utilities.DisplayHelpTextThisFrame(HelpText);
+                        Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to use the vehicle elevator");
 
                         if (Game.IsControlJustPressed(2, Control.Context)) {
                             Position = GetCurrentLevelElevatorPos().GetValueOrDefault();

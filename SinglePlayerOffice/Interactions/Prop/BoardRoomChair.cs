@@ -17,8 +17,6 @@ namespace SinglePlayerOffice.Interactions {
             chairIdleAnims = new List<string> { "idle_a_chair", "idle_d_chair", "idle_e_chair" };
         }
 
-        public override string HelpText => "Press ~INPUT_CONTEXT~ to sit down";
-
         public override void Update() {
             var currentBuilding = SinglePlayerOffice.CurrentBuilding;
 
@@ -32,7 +30,7 @@ namespace SinglePlayerOffice.Interactions {
                                 World.GetNearbyProps(prop.Position, 1.5f, 1385417869).Length != 0 ||
                                 World.GetNearbyPeds(prop.Position, 0.5f).Length != 0) continue;
 
-                            Utilities.DisplayHelpTextThisFrame(HelpText);
+                            Utilities.DisplayHelpTextThisFrame("Press ~INPUT_CONTEXT~ to sit down");
 
                             if (Game.IsControlJustPressed(2, Control.Context)) {
                                 chair = prop;

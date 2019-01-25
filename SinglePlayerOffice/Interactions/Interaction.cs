@@ -10,9 +10,6 @@ namespace SinglePlayerOffice.Interactions {
         protected Vector3 initialRot;
         protected int syncSceneHandle;
 
-        public virtual string HelpText { get; }
-        public virtual string RejectHelpText { get; }
-        public virtual bool IsCreated { get; }
         public int State { get; set; }
 
         public static void TalkShit() {
@@ -35,7 +32,7 @@ namespace SinglePlayerOffice.Interactions {
             }
         }
 
-        public virtual void Create() { }
+        public virtual void Initialize() { }
 
         public abstract void Update();
 
