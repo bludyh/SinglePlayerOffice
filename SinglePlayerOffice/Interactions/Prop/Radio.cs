@@ -168,6 +168,8 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Reset() {
+            base.Reset();
+
             IsRadioOn = false;
             Dispose();
         }

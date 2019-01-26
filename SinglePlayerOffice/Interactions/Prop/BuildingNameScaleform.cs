@@ -58,6 +58,8 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Reset() {
+            base.Reset();
+
             _buildingNameScaleform?.Dispose();
             _buildingNameScaleform = null;
         }

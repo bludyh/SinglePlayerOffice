@@ -113,6 +113,8 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Reset() {
+            base.Reset();
+
             IsSafeOpened = false;
         }
 

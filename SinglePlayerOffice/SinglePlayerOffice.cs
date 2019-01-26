@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using GTA;
+using GTA.Math;
 using GTA.Native;
 using SinglePlayerOffice.Buildings;
 
@@ -58,7 +59,8 @@ namespace SinglePlayerOffice {
 
         //Debug begin
         private static void OnKeyUp(object sender, KeyEventArgs e) {
-            if (e.KeyCode == Keys.F5) { }
+            if (e.KeyCode == Keys.F5) {
+            }
         }
 
         //Debug end

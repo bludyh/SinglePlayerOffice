@@ -163,6 +163,8 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Reset() {
+            base.Reset();
+
             Dispose();
         }
 

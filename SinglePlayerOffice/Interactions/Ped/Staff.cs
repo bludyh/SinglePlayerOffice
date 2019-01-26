@@ -136,8 +136,8 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Reset() {
+            State = ped == null ? 0 : 1;
             IsGreeted = false;
-            State = 1;
         }
 
         public override void Dispose() {

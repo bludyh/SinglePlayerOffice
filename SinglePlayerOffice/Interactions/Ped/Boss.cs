@@ -153,8 +153,9 @@ namespace SinglePlayerOffice.Interactions {
         }
 
         public override void Reset() {
+            base.Reset();
+
             IsGreeted = false;
-            State = 0;
         }
 
         public override void Dispose() {

@@ -36,7 +36,9 @@ namespace SinglePlayerOffice.Interactions {
 
         public abstract void Update();
 
-        public virtual void Reset() { }
+        public virtual void Reset() {
+            State = 0;
+        }
 
         public virtual void Dispose() { }
 

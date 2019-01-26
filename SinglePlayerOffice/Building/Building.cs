@@ -260,8 +260,19 @@ namespace SinglePlayerOffice.Buildings {
             if (IsOwnedBy(Game.Player.Character) || hours >= 9 && hours <= 16 ||
                 !(CurrentLocation is IInterior)) return;
 
-            UI.TeleportMenu.GoUp();
-            UI.TeleportMenu.SelectItem();
+            UI.MenuPool.CloseAllMenus();
+            UI.IsHudHidden = false;
+            Game.FadeScreenOut(1000);
+            Script.Wait(1000);
+            UnloadAllInteriors();
+            UnloadAllExteriors();
+            Game.Player.Character.Position = Entrance.SpawnPos;
+            Game.Player.Character.Heading = Entrance.SpawnHeading;
+            Game.Player.Character.Task.ClearAll();
+            Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_HEADING, 0f);
+            Function.Call(Hash.SET_GAMEPLAY_CAM_RELATIVE_PITCH, 0f);
+            Script.Wait(1000);
+            Game.FadeScreenIn(1000);
         }
 
         public void Update() {
